@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lucas Patricio – Gameplay Programmer</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Prism for code highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+</head>
+<body>
+
+  <h1>Lucas Patricio</h1>
+  <p>Unity Gameplay Programmer</p>
+
+  <div class="grid">
+    <div class="card" onclick="openModal()">
+      Conditional Milling Machine Start + In-game UI Feedback
+    </div>
+  </div>
+
+  <!-- MODAL -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+
+        <!-- Close button -->
+        <span class="close" onclick="closeModal()">×</span>
+
+        <!-- Clickable mechanic title -->
+        <h2 class="mechanic-title" onclick="playGif()">
+          Play StartMachine ▶
+        </h2>
+
+        <!-- GIF preview that swaps to actual GIF on click -->
+        <img
+          id="startMachine"
+          class="startMachine-gif"
+          src="gifs/startMachine_preview.png"
+          alt="Machine Start preview">
+
+        <p>
+          Combination of scripts that check if all safety
+          procedures have been applied and if the machine is properly set up
+          This is shown to the player through UI popups and feedback.
+        </p>
+
+        <!-- TAB BUTTONS -->
+        <div class="tab">
+          <button class="tablinks active" onclick="openTab(event, 'PlayerAction')">PlayerAction.cs</button>
+          <button class="tablinks" onclick="openTab(event, 'Validator')">ActionValidator.cs</button>
+        </div>
+
+        <!-- TAB CONTENT -->
+        <div id="PlayerAction" class="tabcontent" style="display:block;">
+          <pre class="code-block">
+    <code class="language-csharp">
+    // MachineManager.cs
+    using UnityEngine;
+    using TMPro;
+    using UnityEngine.UI;
+
+    public class MachineBehaviour : MonoBehaviour
+    {
+        [Header("Danger UI")]
+        public Image dangerImageLeft;
+        public Image dangerImageRight;
+    
+        [Header("Safety / Clothing")]
+        public ClothesManager clothesManager;
+
+        [Header("UI")]
+        public TMP_Text machineStatusText;
+        public TMP_Text RPMCheckText;
+        public TMP_Text FeedRateText;
+
+        [Header("Sockets and Database")]
+        public ToolSocket toolSocket;
+        public MaterialSocket materialSocket;
+        public SettingsTesting database;
+        public FeedRateMonitor feedMonitor;
+
+        [Header("Machine State")]
+        public float playerRPM = 0f; // Written by RPM dial
+        [HideInInspector] public bool machineRunning = false;
+
+        [Header("Clamp Dial")]
+        public DialManagerClamp clampDial;
+
+        // Feed check timing
+        private float feedUpdateInterval = 0.1f;
+        private float feedTimer = 0f;
+        private string lastFeedState = "";
+
+        // Mill settings
+        private MillSettings activeSetting;
+        private bool settingsLoaded = false;
+
+        public enum MillingQuality
+        {
+            Perfect,
+            Acceptable,
+            Dangerous
+        }
+
+        // ------------------------------------------------------------------------
+        private void Update()
+        {
+            TryLoadSettings();
+
+            if (!settingsLoaded || !machineRunning)
+            {
+                ResetMachineUI();
+                return;
+            }
+
+            ValidateRPM();
+            ValidateFeedRate();
+
+            MillingQuality quality = EvaluateMillingQuality();
+            UpdateQualityUI(quality);
+        }
+
+        // ------------------------------------------------------------------------
+        void TryLoadSettings()
+        {
+            if (toolSocket.currentTool == null || materialSocket.currentMaterial == null)
+            {
+                settingsLoaded = false;
+                return;
+            }
+
+            if (database.TryGetMillingSetting(
+                materialSocket.currentMaterial.materialName,
+                toolSocket.currentTool.bitName,
+                out activeSetting))
+            {
+                settingsLoaded = true;
+            }
+        }
+
+        void ValidateRPM()
+        {
+            if (playerRPM < activeSetting.minRPM)
+                RPMCheckText.text = "Low RPM";
+            else if (playerRPM > activeSetting.maxRPM)
+                RPMCheckText.text = "High RPM";
+            else
+                RPMCheckText.text = "Good RPM";
+        }
+
+        void ValidateFeedRate()
+        {
+            feedTimer += Time.deltaTime;
+
+            if (feedTimer < feedUpdateInterval)
+                return;
+
+            float feed = feedMonitor.latestFeedSpeed;
+            string newState;
+
+            if (feed < activeSetting.minFeedRate)
+                newState = "Feed Speed: Too Slow";
+            else if (feed > activeSetting.maxFeedRate)
+                newState = "Feed Speed: Too Fast";
+            else
+                newState = "Feed Speed: Good";
+
+            if (newState != lastFeedState)
+            {
+                FeedRateText.text = newState;
+                lastFeedState = newState;
+            }
+
+            feedTimer = 0f;
+        }
+
+        // ------------------------------------------------------------------------
+        public MillingQuality EvaluateMillingQuality()
+        {
+            bool rpmOk = playerRPM >= activeSetting.minRPM && playerRPM <= activeSetting.maxRPM;
+            bool feedOk = feedMonitor.latestFeedSpeed >= activeSetting.minFeedRate &&
+                          feedMonitor.latestFeedSpeed <= activeSetting.maxFeedRate;
+
+            if (rpmOk && feedOk) return MillingQuality.Perfect;
+            if (rpmOk || feedOk) return MillingQuality.Acceptable;
+            return MillingQuality.Dangerous;
+        }
+
+        void UpdateQualityUI(MillingQuality quality)
+        {
+            machineStatusText.text = quality switch
+            {
+                MillingQuality.Perfect => "Optimal Machining",
+                MillingQuality.Acceptable => "Suboptimal Setup",
+                MillingQuality.Dangerous => "DANGEROUS SETUP",
+                _ => "Unknown State"
+            };
+
+            bool isDangerous = quality == MillingQuality.Dangerous;
+
+            if (dangerImageLeft != null)
+                dangerImageLeft.gameObject.SetActive(isDangerous);
+
+            if (dangerImageRight != null)
+                dangerImageRight.gameObject.SetActive(isDangerous);
+        }
+
+        void ResetMachineUI()
+        {
+            RPMCheckText.text = "No RPM";
+            FeedRateText.text = "No Feed";
+            lastFeedState = "";
+
+            if (dangerImageLeft != null)
+                dangerImageLeft.gameObject.SetActive(false);
+
+            if (dangerImageRight != null)
+                dangerImageRight.gameObject.SetActive(false);
+        }
+
+        // ------------------------------------------------------------------------
+        public bool CanStartMachine(out string failureReason, bool checkForStart = true)
+        {
+            if (checkForStart)
+            {
+                if (clothesManager != null && !clothesManager.AreAllClothesEquipped())
+                {
+                    var missing = clothesManager.GetMissingClothes();
+                    failureReason = "Missing safety gear:\n• " + string.Join("\n• ", missing);
+                    return false;
+                }
+
+                if (!WorkpieceDetector.WorkpiecePlaced)
+                {
+                    failureReason = "No material loaded";
+                    return false;
+                }
+
+                if (!BitDetect.MillBitPlaced)
+                {
+                    failureReason = "No mill bit installed";
+                    return false;
+                }
+
+                if (playerRPM <= 0)
+                {
+                    failureReason = "RPM not set";
+                    return false;
+                }
+
+                if (clampDial == null || clampDial.dialOutputVal < 0.05f)
+                {
+                    failureReason = "Clamp is open";
+                    return false;
+                }
+            }
+
+            failureReason = "Machine ready";
+            return true;
+        }
+    }
+    </code>
+          </pre>
+        </div>
+
+        <div id="Validator" class="tabcontent">
+          <pre class="code-block">
+    <code class="language-csharp">
+    // ButtonManager.cs
+    using UnityEngine;
+    using TMPro;
+
+    public class ButtonManager : MonoBehaviour
+    {
+        [Header("Movement Settings")]
+        public float moveDistance = 1f;   // How far to move
+        public float moveSpeed = 2f;      // Speed of movement
+
+        private Vector3 initialPosition;
+        private Vector3 targetPosition;
+        private bool isMoving = false;
+        private bool hasMoved = false;
+
+        public static bool canRunTimer = false;
+
+        public TMP_Text UI_MachineState;
+        public MachineBehaviour machineBehaviour; // assign in inspector
+
+        void Start()
+        {
+            initialPosition = transform.position;
+            targetPosition = initialPosition;
+        }
+
+        void Update()
+        {
+            if (isMoving)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+
+                if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
+                    isMoving = false;
+            }
+
+            // Update UI text based on state
+            if (hasMoved)
+            {
+                UI_MachineState.text = "Stop Machine";
+                canRunTimer = true;
+            } 
+            else
+            {
+                UI_MachineState.text = "Start Machine";
+                canRunTimer = false;
+            }
+        }
+
+        // Called when the button is pressed
+        public void Move()
+        {
+            if (machineBehaviour == null)
+                return;
+
+            if (!machineBehaviour.machineRunning)
+            {
+                // Turning ON, check requirements
+                if (machineBehaviour.CanStartMachine(out string message, true))
+                {
+                    StartMachine(message);
+                }
+                else
+                {
+                    // Show failure reason
+                    if (machineBehaviour.machineStatusText != null)
+                        machineBehaviour.machineStatusText.text = message;
+                }
+            }
+            else
+            {
+                // Turning OFF, skip requirement checks
+                machineBehaviour.CanStartMachine(out string _, false);
+                StopMachine();
+            }
+        }
+
+        private void StartMachine(string message)
+        {
+            if (machineBehaviour.machineStatusText != null)
+                machineBehaviour.machineStatusText.text = message;
+
+            machineBehaviour.machineRunning = true;
+
+            targetPosition = initialPosition + Vector3.down * moveDistance;
+            hasMoved = true;
+            isMoving = true;
+        }
+
+        private void StopMachine()
+        {
+            if (machineBehaviour.machineStatusText != null)
+                machineBehaviour.machineStatusText.text = "Machine stopped";
+
+            machineBehaviour.machineRunning = false;
+
+            targetPosition = initialPosition;
+            hasMoved = false;
+            isMoving = true;
+        }
+    }
+
+    </code>
+          </pre>
+        </div>
+
+      </div>
+    </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+</body>
+</html>
