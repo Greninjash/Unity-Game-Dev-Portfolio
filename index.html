@@ -5,378 +5,2245 @@
   <title>Lucas Patricio – Gameplay Programmer</title>
 
   <link rel="stylesheet" href="style.css">
-
   <!-- Prism for code highlighting -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 </head>
 <body>
 
   <h1>Lucas Patricio</h1>
   <p>Unity Gameplay Programmer</p>
 
+  <!-- Extra Info & Evidence Link -->
+  <div class="extra-info">
+    <a href="https://docs.google.com/document/d/1OrEGbciRC0BLRrcSaxLHkMHJ20aH0DL6ds96aT9Gd7A/" target="_blank">
+      Extra Info & Evidence
+    </a>
+  </div>
+
   <div class="grid">
-    <div class="card" onclick="openModal()">
-      Conditional Milling Machine Start + In-game UI Feedback
+    <!-- Each mechanic card -->
+    <!-- Start Machine -->
+    <div class="card" onclick="openModal('startMachineModal')">
+      Start Machine Mechanic
+    </div>
+
+    <!-- Button Machine Rotate -->
+    <div class="card" onclick="openModal('buttonRotateModal')">
+      Button Machine Rotate Mechanic
+    </div>
+
+    <!-- Socket Tag Validator -->
+    <div class="card" onclick="openModal('socketValidatorModal')">
+      Socket Tag Validator Mechanic
+    </div>
+
+    <!-- Debug Codes -->
+    <div class="card" onclick="openModal('debugModal')">
+      Debug Codes Mechanic
+    </div>
+
+    <!-- UI Indicators -->
+    <div class="card" onclick="openModal('uiIndicatorsModal')">
+      UI Indicators Mechanic
+    </div>
+
+    <!-- Dials -->
+    <div class="card" onclick="openModal('dialsModal')">
+      Dial Scripts Mechanic
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="card" onclick="openModal('leaderboardModal')">
+      Leaderboard Mechanic
+    </div>
+
+    <!-- Workpiece Stages -->
+    <div class="card" onclick="openModal('workpieceModal')">
+      Workpiece Stages Mechanic
+    </div>
+
+    <!-- Scriptable Object -->
+    <div class="card" onclick="openModal('scriptableObjectModal')">
+      Scriptable Object Mechanic
     </div>
   </div>
 
-  <!-- MODAL -->
-    <div id="modal" class="modal">
-      <div class="modal-content">
+  <!-- MODALS TEMPLATE -->
+  <!-- Start Machine Modal (2 tabs) -->
+  <div id="startMachineModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('startMachineModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('startMachineModal')">⤢</span>
 
-        <!-- Close button -->
-        <span class="close" onclick="closeModal()">×</span>
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('startMachineGif', 'gifs/startMachine.gif', 'gifs/startMachine_preview.png')">
+        Start Machine
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/startMachine_preview.png" alt="Start Machine Preview" class="mechanic-gif" id="startMachineGif">
 
-        <!-- Clickable mechanic title -->
-        <h2 class="mechanic-title" onclick="playGif()">
-          Play StartMachine ▶
-        </h2>
+      <!-- DESCRIPTION -->
+      <p>
+        This is a combination of scripts which check if the machine
+        is okay to be started, checking for safety gear, proper tool
+        and material installation, and correct RPM and clamp status.
+        If any of these checks fail, the machine will not start and
+        a message will be displayed to the player indicating what needs
+        to be fixed. Once the machine is running, the UI provides real-time
+        feedback on the RPM and feed rate, updating the machine status
+        to reflect whether the current setup is optimal, suboptimal, or dangerous.
+      </p>
 
-        <!-- GIF preview that swaps to actual GIF on click -->
-        <img
-          id="startMachine"
-          class="startMachine-gif"
-          src="gifs/startMachine_preview.png"
-          alt="Machine Start preview">
+      <!-- TABS -->
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'MachineBehaviour')">MachineBehaviour.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'ButtonManager')">ButtonManager.cs</button>
+      </div>
 
-        <p>
-          Combination of scripts that check if all safety
-          procedures have been applied and if the machine is properly set up
-          This is shown to the player through UI popups and feedback.
-        </p>
+      <!-- TAB CONTENT -->
+      <div id="MachineBehaviour" class="tabcontent" style="display:block;">
+        <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
-        <!-- TAB BUTTONS -->
-        <div class="tab">
-          <button class="tablinks active" onclick="openTab(event, 'PlayerAction')">PlayerAction.cs</button>
-          <button class="tablinks" onclick="openTab(event, 'Validator')">ActionValidator.cs</button>
-        </div>
-
-        <!-- TAB CONTENT -->
-        <div id="PlayerAction" class="tabcontent" style="display:block;">
-          <pre class="code-block">
-    <code class="language-csharp">
-    // MachineManager.cs
-    using UnityEngine;
-    using TMPro;
-    using UnityEngine.UI;
-
-    public class MachineBehaviour : MonoBehaviour
-    {
-        [Header("Danger UI")]
-        public Image dangerImageLeft;
-        public Image dangerImageRight;
+public class MachineBehaviour : MonoBehaviour
+{
+    [Header("Danger UI")]
+    public Image dangerImageLeft;
+    public Image dangerImageRight;
     
-        [Header("Safety / Clothing")]
-        public ClothesManager clothesManager;
+    [Header("Safety / Clothing")]
+    public ClothesManager clothesManager;
 
-        [Header("UI")]
-        public TMP_Text machineStatusText;
-        public TMP_Text RPMCheckText;
-        public TMP_Text FeedRateText;
+    [Header("UI")]
+    public TMP_Text machineStatusText;
+    public TMP_Text RPMCheckText;
+    public TMP_Text FeedRateText;
 
-        [Header("Sockets and Database")]
-        public ToolSocket toolSocket;
-        public MaterialSocket materialSocket;
-        public SettingsTesting database;
-        public FeedRateMonitor feedMonitor;
+    [Header("Sockets and Database")]
+    public ToolSocket toolSocket;
+    public MaterialSocket materialSocket;
+    public SettingsTesting database;
+    public FeedRateMonitor feedMonitor;
 
-        [Header("Machine State")]
-        public float playerRPM = 0f; // Written by RPM dial
-        [HideInInspector] public bool machineRunning = false;
+    [Header("Machine State")]
+    public float playerRPM = 0f; // Written by RPM dial
+    [HideInInspector] public bool machineRunning = false;
 
-        [Header("Clamp Dial")]
-        public DialManagerClamp clampDial;
+    [Header("Clamp Dial")]
+    public DialManagerClamp clampDial;
 
-        // Feed check timing
-        private float feedUpdateInterval = 0.1f;
-        private float feedTimer = 0f;
-        private string lastFeedState = "";
+    // Feed check timing
+    private float feedUpdateInterval = 0.1f;
+    private float feedTimer = 0f;
+    private string lastFeedState = "";
 
-        // Mill settings
-        private MillSettings activeSetting;
-        private bool settingsLoaded = false;
+    // Mill settings
+    private MillSettings activeSetting;
+    private bool settingsLoaded = false;
 
-        public enum MillingQuality
+    public enum MillingQuality
+    {
+        Perfect,
+        Acceptable,
+        Dangerous
+    }
+
+    // ------------------------------------------------------------------------
+    private void Update()
+    {
+        TryLoadSettings();
+
+        if (!settingsLoaded || !machineRunning)
         {
-            Perfect,
-            Acceptable,
-            Dangerous
+            ResetMachineUI();
+            return;
         }
 
-        // ------------------------------------------------------------------------
-        private void Update()
+        ValidateRPM();
+        ValidateFeedRate();
+
+        MillingQuality quality = EvaluateMillingQuality();
+        UpdateQualityUI(quality);
+    }
+
+    // ------------------------------------------------------------------------
+    void TryLoadSettings()
+    {
+        if (toolSocket.currentTool == null || materialSocket.currentMaterial == null)
         {
-            TryLoadSettings();
-
-            if (!settingsLoaded || !machineRunning)
-            {
-                ResetMachineUI();
-                return;
-            }
-
-            ValidateRPM();
-            ValidateFeedRate();
-
-            MillingQuality quality = EvaluateMillingQuality();
-            UpdateQualityUI(quality);
+            settingsLoaded = false;
+            return;
         }
 
-        // ------------------------------------------------------------------------
-        void TryLoadSettings()
+        if (database.TryGetMillingSetting(
+            materialSocket.currentMaterial.materialName,
+            toolSocket.currentTool.bitName,
+            out activeSetting))
         {
-            if (toolSocket.currentTool == null || materialSocket.currentMaterial == null)
-            {
-                settingsLoaded = false;
-                return;
-            }
-
-            if (database.TryGetMillingSetting(
-                materialSocket.currentMaterial.materialName,
-                toolSocket.currentTool.bitName,
-                out activeSetting))
-            {
-                settingsLoaded = true;
-            }
-        }
-
-        void ValidateRPM()
-        {
-            if (playerRPM < activeSetting.minRPM)
-                RPMCheckText.text = "Low RPM";
-            else if (playerRPM > activeSetting.maxRPM)
-                RPMCheckText.text = "High RPM";
-            else
-                RPMCheckText.text = "Good RPM";
-        }
-
-        void ValidateFeedRate()
-        {
-            feedTimer += Time.deltaTime;
-
-            if (feedTimer < feedUpdateInterval)
-                return;
-
-            float feed = feedMonitor.latestFeedSpeed;
-            string newState;
-
-            if (feed < activeSetting.minFeedRate)
-                newState = "Feed Speed: Too Slow";
-            else if (feed > activeSetting.maxFeedRate)
-                newState = "Feed Speed: Too Fast";
-            else
-                newState = "Feed Speed: Good";
-
-            if (newState != lastFeedState)
-            {
-                FeedRateText.text = newState;
-                lastFeedState = newState;
-            }
-
-            feedTimer = 0f;
-        }
-
-        // ------------------------------------------------------------------------
-        public MillingQuality EvaluateMillingQuality()
-        {
-            bool rpmOk = playerRPM >= activeSetting.minRPM && playerRPM <= activeSetting.maxRPM;
-            bool feedOk = feedMonitor.latestFeedSpeed >= activeSetting.minFeedRate &&
-                          feedMonitor.latestFeedSpeed <= activeSetting.maxFeedRate;
-
-            if (rpmOk && feedOk) return MillingQuality.Perfect;
-            if (rpmOk || feedOk) return MillingQuality.Acceptable;
-            return MillingQuality.Dangerous;
-        }
-
-        void UpdateQualityUI(MillingQuality quality)
-        {
-            machineStatusText.text = quality switch
-            {
-                MillingQuality.Perfect => "Optimal Machining",
-                MillingQuality.Acceptable => "Suboptimal Setup",
-                MillingQuality.Dangerous => "DANGEROUS SETUP",
-                _ => "Unknown State"
-            };
-
-            bool isDangerous = quality == MillingQuality.Dangerous;
-
-            if (dangerImageLeft != null)
-                dangerImageLeft.gameObject.SetActive(isDangerous);
-
-            if (dangerImageRight != null)
-                dangerImageRight.gameObject.SetActive(isDangerous);
-        }
-
-        void ResetMachineUI()
-        {
-            RPMCheckText.text = "No RPM";
-            FeedRateText.text = "No Feed";
-            lastFeedState = "";
-
-            if (dangerImageLeft != null)
-                dangerImageLeft.gameObject.SetActive(false);
-
-            if (dangerImageRight != null)
-                dangerImageRight.gameObject.SetActive(false);
-        }
-
-        // ------------------------------------------------------------------------
-        public bool CanStartMachine(out string failureReason, bool checkForStart = true)
-        {
-            if (checkForStart)
-            {
-                if (clothesManager != null && !clothesManager.AreAllClothesEquipped())
-                {
-                    var missing = clothesManager.GetMissingClothes();
-                    failureReason = "Missing safety gear:\n• " + string.Join("\n• ", missing);
-                    return false;
-                }
-
-                if (!WorkpieceDetector.WorkpiecePlaced)
-                {
-                    failureReason = "No material loaded";
-                    return false;
-                }
-
-                if (!BitDetect.MillBitPlaced)
-                {
-                    failureReason = "No mill bit installed";
-                    return false;
-                }
-
-                if (playerRPM <= 0)
-                {
-                    failureReason = "RPM not set";
-                    return false;
-                }
-
-                if (clampDial == null || clampDial.dialOutputVal < 0.05f)
-                {
-                    failureReason = "Clamp is open";
-                    return false;
-                }
-            }
-
-            failureReason = "Machine ready";
-            return true;
+            settingsLoaded = true;
         }
     }
-    </code>
-          </pre>
-        </div>
 
-        <div id="Validator" class="tabcontent">
-          <pre class="code-block">
-    <code class="language-csharp">
-    // ButtonManager.cs
-    using UnityEngine;
-    using TMPro;
-
-    public class ButtonManager : MonoBehaviour
+    void ValidateRPM()
     {
-        [Header("Movement Settings")]
-        public float moveDistance = 1f;   // How far to move
-        public float moveSpeed = 2f;      // Speed of movement
+        if (playerRPM < activeSetting.minRPM)
+            RPMCheckText.text = "Low RPM";
+        else if (playerRPM > activeSetting.maxRPM)
+            RPMCheckText.text = "High RPM";
+        else
+            RPMCheckText.text = "Good RPM";
+    }
 
-        private Vector3 initialPosition;
-        private Vector3 targetPosition;
-        private bool isMoving = false;
-        private bool hasMoved = false;
+    void ValidateFeedRate()
+    {
+        feedTimer += Time.deltaTime;
 
-        public static bool canRunTimer = false;
+        if (feedTimer < feedUpdateInterval)
+            return;
 
-        public TMP_Text UI_MachineState;
-        public MachineBehaviour machineBehaviour; // assign in inspector
+        float feed = feedMonitor.latestFeedSpeed;
+        string newState;
 
-        void Start()
+        if (feed < activeSetting.minFeedRate)
+            newState = "Feed Speed: Too Slow";
+        else if (feed > activeSetting.maxFeedRate)
+            newState = "Feed Speed: Too Fast";
+        else
+            newState = "Feed Speed: Good";
+
+        if (newState != lastFeedState)
         {
-            initialPosition = transform.position;
-            targetPosition = initialPosition;
+            FeedRateText.text = newState;
+            lastFeedState = newState;
         }
 
-        void Update()
-        {
-            if (isMoving)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+        feedTimer = 0f;
+    }
 
-                if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
-                    isMoving = false;
+    // ------------------------------------------------------------------------
+    public MillingQuality EvaluateMillingQuality()
+    {
+        bool rpmOk = playerRPM >= activeSetting.minRPM && playerRPM <= activeSetting.maxRPM;
+        bool feedOk = feedMonitor.latestFeedSpeed >= activeSetting.minFeedRate &&
+                      feedMonitor.latestFeedSpeed <= activeSetting.maxFeedRate;
+
+        if (rpmOk && feedOk) return MillingQuality.Perfect;
+        if (rpmOk || feedOk) return MillingQuality.Acceptable;
+        return MillingQuality.Dangerous;
+    }
+
+    void UpdateQualityUI(MillingQuality quality)
+    {
+        machineStatusText.text = quality switch
+        {
+            MillingQuality.Perfect => "Optimal Machining",
+            MillingQuality.Acceptable => "Suboptimal Setup",
+            MillingQuality.Dangerous => "DANGEROUS SETUP",
+            _ => "Unknown State"
+        };
+
+        bool isDangerous = quality == MillingQuality.Dangerous;
+
+        if (dangerImageLeft != null)
+            dangerImageLeft.gameObject.SetActive(isDangerous);
+
+        if (dangerImageRight != null)
+            dangerImageRight.gameObject.SetActive(isDangerous);
+    }
+
+    void ResetMachineUI()
+    {
+        RPMCheckText.text = "No RPM";
+        FeedRateText.text = "No Feed";
+        lastFeedState = "";
+
+        if (dangerImageLeft != null)
+            dangerImageLeft.gameObject.SetActive(false);
+
+        if (dangerImageRight != null)
+            dangerImageRight.gameObject.SetActive(false);
+    }
+
+    // ------------------------------------------------------------------------
+    public bool CanStartMachine(out string failureReason, bool checkForStart = true)
+    {
+        if (checkForStart)
+        {
+            if (clothesManager != null && !clothesManager.AreAllClothesEquipped())
+            {
+                var missing = clothesManager.GetMissingClothes();
+                failureReason = "Missing safety gear:\n• " + string.Join("\n• ", missing);
+                return false;
             }
 
-            // Update UI text based on state
-            if (hasMoved)
+            if (!WorkpieceDetector.WorkpiecePlaced)
             {
-                UI_MachineState.text = "Stop Machine";
-                canRunTimer = true;
-            } 
+                failureReason = "No material loaded";
+                return false;
+            }
+
+            if (!BitDetect.MillBitPlaced)
+            {
+                failureReason = "No mill bit installed";
+                return false;
+            }
+
+            if (playerRPM <= 0)
+            {
+                failureReason = "RPM not set";
+                return false;
+            }
+
+            if (clampDial == null || clampDial.dialOutputVal < 0.05f)
+            {
+                failureReason = "Clamp is open";
+                return false;
+            }
+        }
+
+        failureReason = "Machine ready";
+        return true;
+    }
+}
+
+        </code></pre>
+      </div>
+
+      <div id="ButtonManager" class="tabcontent">
+        <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+
+public class ButtonManager : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    public float moveDistance = 1f;   // How far to move
+    public float moveSpeed = 2f;      // Speed of movement
+
+    private Vector3 initialPosition;
+    private Vector3 targetPosition;
+    private bool isMoving = false;
+    private bool hasMoved = false;
+
+    public static bool canRunTimer = false;
+
+    public TMP_Text UI_MachineState;
+    public MachineBehaviour machineBehaviour; // assign in inspector
+
+    void Start()
+    {
+        initialPosition = transform.position;
+        targetPosition = initialPosition;
+    }
+
+    void Update()
+    {
+        if (isMoving)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
+                isMoving = false;
+        }
+
+        // Update UI text based on state
+        if (hasMoved)
+        {
+            UI_MachineState.text = "Stop Machine";
+            canRunTimer = true;
+        } 
+        else
+        {
+            UI_MachineState.text = "Start Machine";
+            canRunTimer = false;
+        }
+    }
+
+    // Called when the button is pressed
+    public void Move()
+    {
+        if (machineBehaviour == null)
+            return;
+
+        if (!machineBehaviour.machineRunning)
+        {
+            // Turning ON, check requirements
+            if (machineBehaviour.CanStartMachine(out string message, true))
+            {
+                StartMachine(message);
+            }
             else
             {
-                UI_MachineState.text = "Start Machine";
-                canRunTimer = false;
+                // Show failure reason
+                if (machineBehaviour.machineStatusText != null)
+                    machineBehaviour.machineStatusText.text = message;
             }
         }
-
-        // Called when the button is pressed
-        public void Move()
+        else
         {
-            if (machineBehaviour == null)
-                return;
+            // Turning OFF, skip requirement checks
+            machineBehaviour.CanStartMachine(out string _, false);
+            StopMachine();
+        }
+    }
 
-            if (!machineBehaviour.machineRunning)
+    private void StartMachine(string message)
+    {
+        if (machineBehaviour.machineStatusText != null)
+            machineBehaviour.machineStatusText.text = message;
+
+        machineBehaviour.machineRunning = true;
+
+        targetPosition = initialPosition + Vector3.down * moveDistance;
+        hasMoved = true;
+        isMoving = true;
+    }
+
+    private void StopMachine()
+    {
+        if (machineBehaviour.machineStatusText != null)
+            machineBehaviour.machineStatusText.text = "Machine stopped";
+
+        machineBehaviour.machineRunning = false;
+
+        targetPosition = initialPosition;
+        hasMoved = false;
+        isMoving = true;
+    }
+}
+
+        </code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button Machine Rotate Modal (1 tab) -->
+  <div id="buttonRotateModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('buttonRotateModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('buttonRotateModal')">⤢</span>
+
+      <h2 class="mechanic-title">Button Machine Rotate</h2>
+      <img src="gifs/buttonRotate_preview.png" alt="Button Rotate GIF" class="mechanic-gif">
+      <p>This code was made with the purpose to rotate the milling machine, 
+        this was done because we wanted to limit player movement and wanted 
+        to experiment with ways for the player to reach every part of the machine 
+        even if it was far away from them.
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'ButtonRotate')">ButtonRotate.cs</button>
+      </div>
+
+      <div id="ButtonRotate" class="tabcontent" style="display:block;">
+        <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+
+public class ButtonRotate : MonoBehaviour
+{
+    [SerializeField] private float rotationAmount = 20f;
+
+    // Rotate +20 degrees
+    public void RotatePositive()
+    {
+        transform.Rotate(0f, rotationAmount, 0f);
+    }
+
+    // Rotate -20 degrees
+    public void RotateNegative()
+    {
+        transform.Rotate(0f, -rotationAmount, 0f);
+    }
+}
+
+        </code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Socket Tag Validator Modal (1 tab) -->
+  <div id="socketValidatorModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('socketValidatorModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('socketValidatorModal')">⤢</span>
+
+      <h2 class="mechanic-title">Socket Tag Validator</h2>
+      <img src="gifs/socketValidator_preview.png" alt="Socket Tag Validator GIF" class="mechanic-gif">
+      <p>This script was done to avoid the player placing socketable objects 
+        into the wrong place because it was a recurring thing that happened while testing.
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'SocketValidator')">SocketTagValidator.cs</button>
+      </div>
+
+      <div id="SocketValidator" class="tabcontent" style="display:block;">
+        <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+
+public class SocketTagValidator : MonoBehaviour
+{
+    [Header("Socket Settings")]
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
+
+    [Header("Allowed Tool Tag")]
+    public string requiredTag;
+
+    private void OnEnable()
+    {
+        socket.selectEntered.AddListener(OnSelectEntered);
+    }
+
+    private void OnDisable()
+    {
+        socket.selectEntered.RemoveListener(OnSelectEntered);
+    }
+
+    private void OnSelectEntered(SelectEnterEventArgs args)
+    {
+        GameObject insertedObject = args.interactableObject.transform.gameObject;
+
+        // If the object does NOT have the required tag
+        if (!insertedObject.CompareTag(requiredTag))
+        {
+            Debug.Log($"Rejected object {insertedObject.name}. Wrong tag.");
+
+            // Force remove it from the socket
+            socket.interactionManager.SelectExit(
+                socket,
+                args.interactableObject
+            );
+        }
+    }
+}
+
+        </code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debug Codes Modal (7 tabs) -->
+  <div id="debugModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('debugModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('debugModal')">⤢</span>
+
+      <h2 class="mechanic-title">Debug Codes</h2>
+      <img src="gifs/debug_preview.png" alt="Debug Codes GIF" class="mechanic-gif">
+      <p>These scripts were done with the goal of checking of triggers and collisions 
+        in order to isolate problems such as the clamp, workpiece socket and others.
+        I used refined versions in the final prototype to aid with future scriptable 
+        object functions, such as FeedRateMonitor, ToolSocket and MaterialSocket.
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Debug1')">BitDetect.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug2')">ClampCheck.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug3')">WorkpieceDetector.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug4')">XRTriggerTest.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug5')">FeedRateMonitor.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug6')">MaterialSocket.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug7')">ToolSocket.cs</button>
+      </div>
+
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Debug1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class BitDetect : MonoBehaviour
+{
+    public static bool MillBitPlaced = false;
+
+    public void BitPlaced()
+    {
+        MillBitPlaced = true;
+        Debug.Log("Mill bit placed");
+    }
+
+    public void BitRemoved()
+    {
+        MillBitPlaced = false;
+    }
+}
+</code></pre></div>
+      <div id="Debug2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class ClampCheck : MonoBehaviour
+{
+    /*public MachineBehaviour machineBehaviour; // assign your machine in inspector
+
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.CompareTag("Workpiece") && machineBehaviour != null)
+        {
+            machineBehaviour.isPieceClamped = true;
+            Debug.Log($"Workpiece clamped -> isPieceClamped={machineBehaviour.isPieceClamped}");
+        }
+    }
+
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.CompareTag("Workpiece") && machineBehaviour != null)
+        {
+            machineBehaviour.isPieceClamped = false;
+            Debug.Log($"Workpiece unclamped -> isPieceClamped={machineBehaviour.isPieceClamped}");
+        }
+    }*/
+}
+</code></pre></div>
+      <div id="Debug3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class WorkpieceDetector : MonoBehaviour
+{
+    public static bool WorkpiecePlaced = false;
+    
+    public void WorkPlaced()
+    {
+        WorkpiecePlaced = true;
+    }
+    public void WorkDisplaced() 
+    {
+        WorkpiecePlaced = false;
+    }
+}
+</code></pre></div>
+      <div id="Debug4" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class XRTriggerTest : MonoBehaviour
+{
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("ENTER: " + other.name);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log("STAY: " + other.name);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log("EXIT: " + other.name);
+    }
+}</code></pre></div>
+      <div id="Debug5" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using System.Collections.Generic;
+
+public class FeedRateMonitor : MonoBehaviour
+{
+    [Header("Debug")]
+    public bool debugFeedSpeed = true;
+    public float debugLogInterval = 0.25f; // seconds
+
+    private float debugTimer = 0f;
+    
+    private Dictionary<Transform, Vector3> lastPositions = new Dictionary<Transform, Vector3>();
+    public float latestFeedSpeed { get; private set; } // m/s
+
+    private float smoothedFeedSpeed = 0f;
+    [Range(0f,1f)] public float smoothing = 0.1f; // 0 = no smoothing, 1 = instant
+
+
+    void Update()
+    {
+        if (!debugFeedSpeed)
+            return;
+
+        debugTimer += Time.deltaTime;
+        if (debugTimer >= debugLogInterval)
+        {
+            Debug.Log($"[FeedRateMonitor] Feed Speed: {latestFeedSpeed:F4} m/s");
+            debugTimer = 0f;
+        }
+    }
+    
+    void OnTriggerEnter(Collider other)
+    {
+        if (!lastPositions.ContainsKey(other.transform))
+            lastPositions.Add(other.transform, other.transform.position);
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        Transform t = other.transform;
+        if (!lastPositions.ContainsKey(t))
+            lastPositions.Add(t, t.position);
+
+        Vector3 lastPos = lastPositions[t];
+        Vector3 currentPos = t.position;
+
+        float speed = (currentPos - lastPos).magnitude / Time.deltaTime;
+
+        // Smooth the feed speed
+        smoothedFeedSpeed = Mathf.Lerp(smoothedFeedSpeed, speed, smoothing);
+
+        latestFeedSpeed = smoothedFeedSpeed;
+        lastPositions[t] = currentPos;
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (lastPositions.ContainsKey(other.transform))
+            lastPositions.Remove(other.transform);
+    }
+}
+</code></pre></div>
+      <div id="Debug6" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+
+public class MaterialSocket : MonoBehaviour
+{
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
+    public MaterialInfo currentMaterial;
+
+    private void OnEnable()
+    {
+        socket.selectEntered.AddListener(OnMaterialInserted);
+        socket.selectExited.AddListener(OnMaterialRemoved);
+    }
+
+    private void OnDisable()
+    {
+        socket.selectEntered.RemoveListener(OnMaterialInserted);
+        socket.selectExited.RemoveListener(OnMaterialRemoved);
+    }
+
+    private void OnMaterialInserted(SelectEnterEventArgs args)
+    {
+        MaterialInfo mat = args.interactableObject.transform.GetComponent<MaterialInfo>();
+
+        if (mat != null)
+        {
+            currentMaterial = mat;
+            Debug.Log($"Material inserted: {mat.materialName}");
+        }
+    }
+
+    private void OnMaterialRemoved(SelectExitEventArgs args)
+    {
+        currentMaterial = null;
+        Debug.Log("Material removed from socket.");
+    }
+}
+</code></pre></div>
+      <div id="Debug7" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+
+public class ToolSocket : MonoBehaviour
+{
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
+    public MillBitInfo currentTool;
+
+    private void OnEnable()
+    {
+        socket.selectEntered.AddListener(OnToolInserted);
+        socket.selectExited.AddListener(OnToolRemoved);
+    }
+
+    private void OnDisable()
+    {
+        socket.selectEntered.RemoveListener(OnToolInserted);
+        socket.selectExited.RemoveListener(OnToolRemoved);
+    }
+
+    private void OnToolInserted(SelectEnterEventArgs args)
+    {
+        MillBitInfo tool = args.interactableObject.transform.GetComponent<MillBitInfo>();
+
+        if (tool != null)
+        {
+            currentTool = tool;
+            Debug.Log($"[ToolSocket] Tool inserted: {tool.bitName}");
+        }
+    }
+
+    private void OnToolRemoved(SelectExitEventArgs args)
+    {
+        currentTool = null;
+        Debug.Log("[ToolSocket] Tool removed");
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+
+  <!-- UI Indicators Modal (4 tabs) -->
+  <div id="uiIndicatorsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('uiIndicatorsModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('uiIndicatorsModal')">⤢</span>
+
+      <h2 class="mechanic-title">UI Indicators</h2>
+      <img src="gifs/uiIndicators_preview.png" alt="UI Indicators GIF" class="mechanic-gif">
+      <p>These scripts had the goal of giving feedback to the player of which materials, 
+        mill bits and rpm they were using, this was made because through testing it was clear 
+        that the player didn't seem to know what they were setting up or if it was set up correctly.
+
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'UI1')">BitIndicator.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'UI2')">FeedIndicator.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'UI3')">MaterialIndicator.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'UI4')">RPMIndicator.cs</button>
+      </div>
+
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="UI1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+
+public class BitIndicator : MonoBehaviour
+{
+    public ToolSocket toolSocket; 
+    public TMP_Text toolText;
+
+    private void Update()
+    {
+        if (toolSocket.currentTool != null)
+        {
+            toolText.text = ($"Mill Bit: {toolSocket.currentTool.bitName}");
+        }
+        else
+        {
+            toolText.text = "Mill Bit: None";
+        }
+    }
+}
+</code></pre></div>
+      <div id="UI2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class FeedIndicator : MonoBehaviour
+{
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
+</code></pre></div>
+      <div id="UI3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class MaterialIndicator : MonoBehaviour
+{
+    public MaterialSocket materialSocket;
+    public TMPro.TMP_Text materialText;
+
+    private void Update() 
+    {
+        if (materialSocket.currentMaterial != null)
+        {
+            materialText.text = ($"Material: {materialSocket.currentMaterial.materialName}");
+        }
+        else
+        {
+            materialText.text = "Material: None";
+        }
+    }
+}
+</code></pre></div>
+      <div id="UI4" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class RPMIndicator : MonoBehaviour
+{
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+
+  <!-- Dials Modal (3 tabs) -->
+  <div id="dialsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('dialsModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('dialsModal')">⤢</span>
+
+      <h2 class="mechanic-title">Dials</h2>
+      <img src="gifs/dials_preview.png" alt="Dials GIF" class="mechanic-gif">
+      <p>These scripts are the ones who manage and control the dials of the machine, 
+        translating their degrees into a float value in order to move objects 
+        such as the clamp and workbench, the rpm dial was the most challenging and important 
+        due to it not being able to display float values and also communicating 
+        with other scripts to tell the player if their set up was correct.
+
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Dial1')">DialManager.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Dial2')">DialManagerClamp.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Dial3')">DialManagerRPM.cs</button>
+      </div>
+
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Dial1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+
+
+public class DialManager : MonoBehaviour
+{
+    HingeJoint hinge;
+    public float storedDegrees;
+    float lastFramesAngle;
+    public float minValue, maxValue;
+    public float startingValue;
+
+    public float minOutputVal, maxOutputVal;
+    public float dialOutputVal;
+    
+    public Transform workStation;
+
+    private void Start() 
+    {
+        hinge = GetComponent<HingeJoint>();
+
+        if(startingValue >= minValue && startingValue <= maxValue)
+        {
+            storedDegrees = startingValue;
+        }
+    }
+
+    private void Update() 
+{
+    // Early exit if hinge is missing
+    if (hinge == null)
+        return;
+
+    float hingeAngle = hinge.angle;
+
+    // Sanity check hinge angle
+    if (float.IsNaN(hingeAngle) || float.IsInfinity(hingeAngle))
+    {
+        Debug.LogWarning("Hinge angle is invalid, skipping this frame.");
+        return;
+    }
+
+    // Calculate difference in angle since last frame
+    float differenceInAngle = hingeAngle - lastFramesAngle;
+
+    // Correct wraparound for 0/360 degree jumps
+    if (differenceInAngle > 300f) differenceInAngle -= 360f;
+    else if (differenceInAngle < -300f) differenceInAngle += 360f;
+
+    // Sanity clamp for extreme delta
+    if (Mathf.Abs(differenceInAngle) > 1000f)
+        differenceInAngle = 0f;
+
+    // Update stored degrees
+    storedDegrees += differenceInAngle;
+
+    // Clamp storedDegrees to min/max
+    storedDegrees = Mathf.Clamp(storedDegrees, minValue, maxValue);
+
+    // Handle joint limits near boundaries
+    if (storedDegrees >= maxValue - 10f)
+    {
+        JointLimits newLimits = hinge.limits;
+        newLimits.min = -180f;
+        newLimits.max = hingeAngle + (maxValue - storedDegrees);
+        hinge.limits = newLimits;
+        hinge.useLimits = true;
+        storedDegrees = Mathf.Min(maxValue, storedDegrees);
+    }
+    else if (storedDegrees <= minValue + 10f)
+    {
+        JointLimits newLimits = hinge.limits;
+        newLimits.min = hingeAngle - (storedDegrees - minValue);
+        newLimits.max = 180f;
+        hinge.limits = newLimits;
+        hinge.useLimits = true;
+        storedDegrees = Mathf.Max(minValue, storedDegrees);
+    }
+    else
+    {
+        hinge.useLimits = false;
+    }
+
+    // Calculate dial output safely
+    float range = maxValue - minValue;
+    if (range <= 0.0001f)
+    {
+        dialOutputVal = minOutputVal;
+    }
+    else
+    {
+        float betweenZeroAndOne = (storedDegrees - minValue) / range;
+        if (float.IsNaN(betweenZeroAndOne) || float.IsInfinity(betweenZeroAndOne))
+            betweenZeroAndOne = 0f;
+
+        dialOutputVal = Mathf.Lerp(minOutputVal, maxOutputVal, betweenZeroAndOne);
+    }
+
+    // Move work station if assigned
+    if (workStation != null)
+    {
+        Vector3 pos = workStation.localPosition;
+        if (!float.IsNaN(dialOutputVal) && !float.IsInfinity(dialOutputVal))
+            pos.x = dialOutputVal;
+
+        workStation.localPosition = pos;
+    }
+
+    // Store this frame’s angle for next frame
+    lastFramesAngle = hingeAngle;
+}
+
+}
+</code></pre></div>
+      <div id="Dial2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+[RequireComponent(typeof(HingeJoint))]
+public class DialManagerClamp : MonoBehaviour
+{
+    [Header("Hinge Settings")]
+    private HingeJoint hinge;
+    public float storedDegrees;
+    private float lastAngle;
+
+    [Tooltip("Allowed stored degree range (cumulative rotation)")]
+    public float minValue = 0f;
+    public float maxValue = 500f;
+    public float startingValue = 0f;
+
+    [Header("Output Settings")]
+    public float minOutputVal = 0f;
+    public float maxOutputVal = 1f;
+    public float dialOutputVal;
+
+    [Tooltip("Transform to move along local Z according to dial output")]
+    public Transform Clamp;
+
+    [Header("Boundary Limit Settings")]
+    [Tooltip("Distance (in storedDegrees) from min/max where we begin applying temporary hinge limits")]
+    public float boundaryZone = 10f;
+
+    // store original limits so we can restore them
+    private JointLimits originalLimits;
+    private bool originalLimitsSaved = false;
+
+    // whether we currently have applied temporary limits
+    private bool tempLimitsActive = false;
+
+    private void Start()
+    {
+        hinge = GetComponent<HingeJoint>();
+        storedDegrees = Mathf.Clamp(startingValue, minValue, maxValue);
+
+        if (hinge != null)
+        {
+            lastAngle = hinge.angle;
+
+            // save original limits once (so we can restore)
+            originalLimits = hinge.limits;
+            originalLimitsSaved = true;
+        }
+    }
+
+    private void Update()
+    {
+        if (WorkpieceDetector.WorkpiecePlaced == true)
+        {
+            minOutputVal = 0.078f;
+        }
+        else
+        {
+            minOutputVal = 0f;
+        }
+
+        if (hinge == null) return;
+
+        float currentAngle = hinge.angle;
+        float delta = Mathf.DeltaAngle(lastAngle, currentAngle); // handles wraparound -180..180
+
+        // apply delta to our cumulative storedDegrees
+        storedDegrees += delta;
+        storedDegrees = Mathf.Clamp(storedDegrees, minValue, maxValue);
+
+        // Check boundary zones and apply / restore limits accordingly
+        HandleBoundaryLimits(currentAngle);
+
+        // Output mapping (safe against zero range)
+        if (float.IsNaN(storedDegrees) || float.IsInfinity(storedDegrees))
+        {
+            storedDegrees = Mathf.Clamp(startingValue, minValue, maxValue);
+        }
+
+        float range = maxValue - minValue;
+        if (range <= 0f || float.IsNaN(range) || float.IsInfinity(range))
+        {
+            range = 0.0001f;
+        }
+
+        float t = (storedDegrees - minValue) / range;
+
+        if (float.IsNaN(t) || float.IsInfinity(t))
+            t = 0f;
+
+        dialOutputVal = Mathf.Lerp(minOutputVal, maxOutputVal, t);
+
+        if (float.IsNaN(dialOutputVal) || float.IsInfinity(dialOutputVal))
+            dialOutputVal = minOutputVal;
+
+        // Move the clamp transform if assigned
+        if (Clamp != null)
+        {
+            float safeZ = dialOutputVal;
+            if (float.IsNaN(safeZ) || float.IsInfinity(safeZ))
+                safeZ = 0f;
+
+            Vector3 pos = Clamp.localPosition;
+            pos.z = safeZ;
+            Clamp.localPosition = pos;
+        }
+
+        lastAngle = currentAngle;
+    }
+
+    /// <summary>
+    /// Apply temporary hinge limits when storedDegrees is near min or max.
+    /// The temporary limits are computed relative to the current hinge.angle so we don't compress
+    /// the hinge over time. We only write hinge.limits/useLimits when we need to change them.
+    /// </summary>
+    private void HandleBoundaryLimits(float hingeAngle)
+    {
+        bool nearMax = storedDegrees >= (maxValue - boundaryZone);
+        bool nearMin = storedDegrees <= (minValue + boundaryZone);
+
+        // If both true (rare when boundaryZone >= range), prefer hard clamping
+        if (nearMax && nearMin)
+        {
+            // set exact stop limits (no motion) if the range is effectively zero
+            ApplyTemporaryLimits(hingeAngle, hingeAngle);
+            return;
+        }
+
+        if (nearMax)
+        {
+            // how many stored degrees remain until the absolute max
+            float remaining = maxValue - storedDegrees; // >= 0 and < boundaryZone
+
+            // convert remaining storedDegrees to how many hinge degrees we should still allow the joint to rotate.
+            // Here we assume 1-to-1 mapping between storedDegrees delta and hinge.angle delta (common case).
+            // If your dial-to-hinge mapping differs, adapt this conversion.
+            float allowExtra = remaining;
+
+            // compute new limits relative to current hinge angle
+            float newMax = hingeAngle + allowExtra;
+            newMax = Mathf.Min(newMax, 180f); // hinge.angle max is +180
+
+            // allow full negative swing so we don't restrict backwards motion unnecessarily
+            float newMin = -180f;
+
+            ApplyTemporaryLimits(newMin, newMax);
+        }
+        else if (nearMin)
+        {
+            float remaining = storedDegrees - minValue; // >= 0 and < boundaryZone
+            float allowExtra = remaining;
+
+            float newMin = hingeAngle - allowExtra;
+            newMin = Mathf.Max(newMin, -180f);
+
+            float newMax = 180f;
+
+            ApplyTemporaryLimits(newMin, newMax);
+        }
+        else
+        {
+            // outside any boundary zone -> restore original limits (if we changed them)
+            RestoreOriginalLimitsIfNeeded();
+        }
+    }
+
+    private void ApplyTemporaryLimits(float minLimit, float maxLimit)
+    {
+        // ensure limits sensible
+        minLimit = Mathf.Clamp(minLimit, -180f, 180f);
+        maxLimit = Mathf.Clamp(maxLimit, -180f, 180f);
+
+        // if original not saved (unlikely) save it now
+        if (!originalLimitsSaved)
+        {
+            originalLimits = hinge.limits;
+            originalLimitsSaved = true;
+        }
+
+        // only update if something changed (avoid writing every frame)
+        JointLimits cur = hinge.limits;
+        if (!tempLimitsActive || !Mathf.Approximately(cur.min, minLimit) || !Mathf.Approximately(cur.max, maxLimit))
+        {
+            JointLimits nl = cur;
+            nl.min = minLimit;
+            nl.max = maxLimit;
+            hinge.limits = nl;
+            hinge.useLimits = true;
+            tempLimitsActive = true;
+        }
+    }
+
+    private void RestoreOriginalLimitsIfNeeded()
+    {
+        if (tempLimitsActive && originalLimitsSaved)
+        {
+            hinge.limits = originalLimits;
+            hinge.useLimits = originalLimits.max > originalLimits.min; // restore useLimits sensibly
+            tempLimitsActive = false;
+        }
+    }
+
+    private void OnDisable()
+    {
+        // restore on disable so we don't leave the hinge permanently modified
+        RestoreOriginalLimitsIfNeeded();
+    }
+
+    private void OnDestroy()
+    {
+        RestoreOriginalLimitsIfNeeded();
+    }
+}
+</code></pre></div>
+      <div id="Dial3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+
+public class DialManagerRPM : MonoBehaviour
+{
+    HingeJoint hinge;
+    public float storedDegrees;
+    float lastFramesAngle;
+
+    [Header("Dial Range (Degrees)")]
+    public float minValue = 0f;
+    public float maxValue = 360f;
+    public float startingValue = 0f;
+
+    [Header("RPM Output Range")]
+    public float minRPM = 0f;
+    public float maxRPM = 20000f;
+
+    [Header("Allowed RPM Steps")]
+    public int[] allowedRPMValues = new int[] { 500, 1000, 1500, 2000, 5000, 10000, 15000, 20000 };
+
+    [Header("UI")]
+    public TextMeshProUGUI rpmText;
+
+    [Header("Machine Behaviour")]
+    public MachineBehaviour machineBehaviour; // assign in inspector
+
+    public float CurrentRPM { get; private set; }
+
+    private void Start()
+    {
+        hinge = GetComponent<HingeJoint>();
+
+        if (startingValue >= minValue && startingValue <= maxValue)
+            storedDegrees = startingValue;
+    }
+
+    private void Update()
+    {
+        if (hinge == null)
+            return;
+
+        float hingeAngle = hinge.angle;
+
+        if (float.IsNaN(hingeAngle) || float.IsInfinity(hingeAngle))
+            return;
+
+        float differenceInAngle = hingeAngle - lastFramesAngle;
+
+        // Correct wraparound
+        if (differenceInAngle > 300f) differenceInAngle -= 360f;
+        else if (differenceInAngle < -300f) differenceInAngle += 360f;
+
+        if (Mathf.Abs(differenceInAngle) > 1000f)
+            differenceInAngle = 0f;
+
+        storedDegrees += differenceInAngle;
+        storedDegrees = Mathf.Clamp(storedDegrees, minValue, maxValue);
+
+        // Handle joint limits near boundaries
+        if (storedDegrees >= maxValue - 10f)
+        {
+            JointLimits newLimits = hinge.limits;
+            newLimits.min = -180f;
+            newLimits.max = hingeAngle + (maxValue - storedDegrees);
+            hinge.limits = newLimits;
+            hinge.useLimits = true;
+            storedDegrees = Mathf.Min(maxValue, storedDegrees);
+        }
+        else if (storedDegrees <= minValue + 10f)
+        {
+            JointLimits newLimits = hinge.limits;
+            newLimits.min = hingeAngle - (storedDegrees - minValue);
+            newLimits.max = 180f;
+            hinge.limits = newLimits;
+            hinge.useLimits = true;
+            storedDegrees = Mathf.Max(minValue, storedDegrees);
+        }
+        else
+        {
+            hinge.useLimits = false;
+        }
+
+        // Calculate normalized value
+        float range = maxValue - minValue;
+        float normalized = 0f;
+        if (range > 0.000001f)
+        {
+            normalized = (storedDegrees - minValue) / range;
+            if (float.IsNaN(normalized) || float.IsInfinity(normalized))
+                normalized = 0f;
+            normalized = Mathf.Clamp01(normalized);
+        }
+
+        // Map to raw RPM
+        float rawRPM = Mathf.Lerp(minRPM, maxRPM, normalized);
+
+        // Snap to nearest allowed RPM
+        if (allowedRPMValues != null && allowedRPMValues.Length > 0)
+        {
+            int closest = allowedRPMValues[0];
+            float closestDist = Mathf.Abs(rawRPM - closest);
+
+            for (int i = 1; i < allowedRPMValues.Length; i++)
             {
-                // Turning ON, check requirements
-                if (machineBehaviour.CanStartMachine(out string message, true))
+                float dist = Mathf.Abs(rawRPM - allowedRPMValues[i]);
+                if (dist < closestDist)
                 {
-                    StartMachine(message);
+                    closest = allowedRPMValues[i];
+                    closestDist = dist;
+                }
+            }
+
+            CurrentRPM = Mathf.Clamp(closest, (int)minRPM, (int)maxRPM);
+        }
+        else
+        {
+            CurrentRPM = rawRPM;
+        }
+
+        // Update UI
+        if (rpmText != null)
+            rpmText.text = Mathf.RoundToInt(CurrentRPM) + " RPM";
+
+        // ---- NEW: write RPM to machine ----
+        if (machineBehaviour != null)
+            machineBehaviour.playerRPM = CurrentRPM;
+
+        lastFramesAngle = hingeAngle;
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Modal (3 tabs) -->
+  <div id="leaderboardModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('leaderboardModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('leaderboardModal')">⤢</span>
+
+      <h2 class="mechanic-title">Leaderboard</h2>
+      <img src="gifs/leaderboard_preview.png" alt="Leaderboard GIF" class="mechanic-gif">
+      <p>This online leaderboard was done using the PlayFab service due to its ease to set up and manage, 
+        we decided on making a leaderboard to incite competitiveness between players 
+        and to add a more game-like element, I also made the run timer script separate 
+        so I could call the start and stop timer through other scripts as it might change when the timer would start or stop
+
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Leaderboard1')">PlayFabTest.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Leaderboard2')">RunTimer.cs</button>
+      </div>
+
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Leaderboard1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using System.Collections.Generic;
+using UnityEngine;
+using PlayFab;
+using PlayFab.ClientModels;
+using TMPro;
+
+public class PlayFabTest : MonoBehaviour
+{
+    private bool isLoggedIn = false;
+    private float? pendingTimeSubmission = null;
+
+    public static PlayFabTest Instance;
+
+    public TMP_Text leaderboardText;
+
+    private string localPlayFabId;
+
+    public string leaderboardStatisticName = "BestTime";
+    public int leaderboardMaxResults = 10;
+
+    // Season / version tracking
+    private int currentStatVersion = -1;
+    private bool hasSubmittedThisSeason = false;
+
+    #region Unity Lifecycle
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        Login();
+        Debug.Log("Starting PlayFab login...");
+    }
+
+    #endregion
+
+    #region Login
+
+    private void Login()
+    {
+        var request = new LoginWithCustomIDRequest
+        {
+            CustomId = SystemInfo.deviceUniqueIdentifier,
+            CreateAccount = true,
+            InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
+            {
+                GetPlayerProfile = true
+            }
+        };
+
+        PlayFabClientAPI.LoginWithCustomID(
+            request,
+            OnLoginSuccess,
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+
+    private void OnLoginSuccess(LoginResult result)
+    {
+        localPlayFabId = result.PlayFabId;
+        isLoggedIn = true;
+
+        Debug.Log("PlayFab login successful");
+
+        if (string.IsNullOrEmpty(result.InfoResultPayload?.PlayerProfile?.DisplayName))
+        {
+            SetDisplayName();
+        }
+        else
+        {
+            GetLeaderboard();
+        }
+
+        // 🔹 Submit pending run if one finished before login
+        if (pendingTimeSubmission.HasValue)
+        {
+            OnRunFinished(pendingTimeSubmission.Value);
+            pendingTimeSubmission = null;
+        }
+    }
+
+
+    #endregion
+
+    #region Display Name
+
+    private string GenerateDisplayName()
+    {
+        return "Player" + Random.Range(1000, 9999);
+    }
+
+    private void SetDisplayName()
+    {
+        var request = new UpdateUserTitleDisplayNameRequest
+        {
+            DisplayName = GenerateDisplayName()
+        };
+
+        PlayFabClientAPI.UpdateUserTitleDisplayName(
+            request,
+            result =>
+            {
+                Debug.Log("Display name set: " + result.DisplayName);
+                GetLeaderboard();
+            },
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+
+    #endregion
+
+    #region Public API (CALL THIS WHEN A RUN ENDS)
+
+    /// <summary>
+    /// Call this ONLY when the player finishes a run
+    /// </summary>
+    public void OnRunFinished(float timeInSeconds)
+    {
+        if (!isLoggedIn)
+        {
+            Debug.Log("PlayFab not logged in yet, queuing time submission");
+            pendingTimeSubmission = timeInSeconds;
+            return;
+        }
+
+        if (hasSubmittedThisSeason)
+            return;
+
+        SubmitTime(timeInSeconds);
+    }
+
+
+    #endregion
+
+    #region Submit Time
+
+    private int submitRetryCount = 0;
+
+    private void SubmitTime(float timeInSeconds)
+    {
+        int timeMs = Mathf.RoundToInt(timeInSeconds * 1000f);
+
+        var request = new UpdatePlayerStatisticsRequest
+        {
+            Statistics = new List<StatisticUpdate>
+            {
+                new StatisticUpdate
+                {
+                    StatisticName = leaderboardStatisticName,
+                    Value = timeMs
+                }
+            }
+        };
+
+        PlayFabClientAPI.UpdatePlayerStatistics(
+            request,
+            result =>
+            {
+                submitRetryCount = 0;
+                Debug.Log("Time submitted successfully");
+                GetLeaderboard();
+            },
+            error =>
+            {
+                if (submitRetryCount < 3)
+                {
+                    submitRetryCount++;
+                    Debug.LogWarning("Retrying stat submit...");
+                    SubmitTime(timeInSeconds);
                 }
                 else
                 {
-                    // Show failure reason
-                    if (machineBehaviour.machineStatusText != null)
-                        machineBehaviour.machineStatusText.text = message;
+                    Debug.LogError(error.GenerateErrorReport());
                 }
             }
-            else
+        );
+    }
+
+    #endregion
+
+    #region Leaderboard
+
+    public void GetLeaderboard()
+    {
+        var request = new GetLeaderboardRequest
+        {
+            StatisticName = leaderboardStatisticName,
+            StartPosition = 0,
+            MaxResultsCount = leaderboardMaxResults
+        };
+
+        PlayFabClientAPI.GetLeaderboard(
+            request,
+            result =>
             {
-                // Turning OFF, skip requirement checks
-                machineBehaviour.CanStartMachine(out string _, false);
-                StopMachine();
-            }
-        }
+                leaderboardText.text = "";
 
-        private void StartMachine(string message)
+                // Capture current version
+                currentStatVersion = result.Version;
+
+                int savedVersion = PlayerPrefs.GetInt(
+                    leaderboardStatisticName + "_Version",
+                    -1
+                );
+
+                hasSubmittedThisSeason = (savedVersion == currentStatVersion);
+
+                bool localPlayerInTop = false;
+
+                foreach (var entry in result.Leaderboard)
+                {
+                    float timeSeconds = entry.StatValue / 1000f;
+                    string name = string.IsNullOrEmpty(entry.DisplayName)
+                        ? entry.PlayFabId
+                        : entry.DisplayName;
+
+                    bool isLocalPlayer = entry.PlayFabId == localPlayFabId;
+
+                    if (isLocalPlayer)
+                        localPlayerInTop = true;
+
+                    string line = $"{entry.Position + 1}. {name}  {timeSeconds:F2}s";
+
+                    if (isLocalPlayer)
+                        line = $"<color=red>{line}</color>";
+
+                    leaderboardText.text += line + "\n";
+                }
+
+                if (!localPlayerInTop)
+                {
+                    GetLocalPlayerRank();
+                }
+            },
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+
+    private void GetLocalPlayerRank()
+    {
+        var request = new GetLeaderboardAroundPlayerRequest
         {
-            if (machineBehaviour.machineStatusText != null)
-                machineBehaviour.machineStatusText.text = message;
+            StatisticName = leaderboardStatisticName,
+            MaxResultsCount = 1
+        };
 
-            machineBehaviour.machineRunning = true;
+        PlayFabClientAPI.GetLeaderboardAroundPlayer(
+            request,
+            result =>
+            {
+                if (result.Leaderboard.Count == 0)
+                    return;
 
-            targetPosition = initialPosition + Vector3.down * moveDistance;
-            hasMoved = true;
-            isMoving = true;
-        }
+                var entry = result.Leaderboard[0];
 
-        private void StopMachine()
+                float timeSeconds = entry.StatValue / 1000f;
+                string name = string.IsNullOrEmpty(entry.DisplayName)
+                    ? entry.PlayFabId
+                    : entry.DisplayName;
+
+                leaderboardText.text += "\n---------------------\n";
+                leaderboardText.text +=
+                    $"<color=red>{entry.Position + 1}. {name}  {timeSeconds:F2}s</color>";
+            },
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+
+    #endregion
+}
+</code></pre></div>
+      <div id="Leaderboard2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class RunTimer : MonoBehaviour
+{
+    private bool isRunning = false;
+    private float elapsedTime = 0f;
+
+    #region Timer Control
+
+    // Call this when the run starts
+    public void StartTimer()
+    {
+        elapsedTime = 0f;
+        isRunning = true;
+        Debug.Log("Run timer started");
+    }
+
+    // Call this when the run ends
+    public void StopTimer()
+    {
+        if (!isRunning)
+            return;
+
+        isRunning = false;
+
+        Debug.Log($"Run timer stopped: {elapsedTime:F2} seconds");
+
+        // Submit result to PlayFab (SAFE ENTRY POINT)
+        if (PlayFabTest.Instance != null)
         {
-            if (machineBehaviour.machineStatusText != null)
-                machineBehaviour.machineStatusText.text = "Machine stopped";
-
-            machineBehaviour.machineRunning = false;
-
-            targetPosition = initialPosition;
-            hasMoved = false;
-            isMoving = true;
+            PlayFabTest.Instance.OnRunFinished(elapsedTime);
+        }
+        else
+        {
+            Debug.LogWarning("PlayFabTest instance not found");
         }
     }
 
-    </code>
-          </pre>
-        </div>
+    #endregion
 
-      </div>
+    #region Unity Update
+
+    private void Update()
+    {
+        if (isRunning)
+        {
+            elapsedTime += UnityEngine.Time.deltaTime;
+        }
+    }
+
+    #endregion
+
+    #region Public Accessors
+
+    public float GetElapsedTime()
+    {
+        return elapsedTime;
+    }
+
+    public bool IsRunning()
+    {
+        return isRunning;
+    }
+
+    #endregion
+}
+</code></pre></div>
     </div>
+  </div>
+
+  <!-- Workpiece Stages Modal (3 tabs) -->
+  <div id="workpieceModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('workpieceModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('workpieceModal')">⤢</span>
+
+      <h2 class="mechanic-title">Workpiece Stages</h2>
+      <img src="gifs/workpiece_preview.png" alt="Workpiece Stages GIF" class="mechanic-gif">
+      <p>These scripts are what manages and gives the feeling of milling to the player, 
+        I added these because through testing it was apparent that the player had no feedback 
+        when they were milling so the game had a unfinished/pointless feel to it. 
+        I added things such as particles to indicate milling, UI feedback that told the player their setup 
+        and the quality of thier finished piece to make the game feel like reallife whilst also giving game-like feedback.
+
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Stage1')">EndPiecePseudoCode.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Stage2')">MillableSurface.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Stage3')">WorkpieceStageManager.cs</button>
+      </div>
+
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Stage1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class EndPiecePseudoCode : MonoBehaviour
+{
+    /* 
+    Pseudo Code for End Piece Logic
+    Initialize variables:
+    - workpiece stage
+    
+    Update:
+    - Check if workpiece stage is complete
+        - If complete, trigger piece animation
+        - Update game state to reflect completion
+
+    after 1st stage, rotate the attachment piece to face the next direction
+    - Check for player interaction to finalize the piece
+        - On interaction, play final animation
+        - Mark the end piece as finished
+        - Update game state to reflect completion
+
+    stop timer and record final time
+    put final time on leaderboard
+
+    
+
+
+    */
+}
+</code></pre></div>
+      <div id="Stage2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class MillableSurface : MonoBehaviour
+{
+    [Header("Milling Settings")]
+    public float millingTimeRequired = 3f;
+
+    [Tooltip("Optional: require a specific bit name")]
+    public string requiredBitName;
+
+    [Header("References")]
+    public WorkpieceStageManager stageManager;
+
+    [Header("Machine Tool Socket")]
+    public ToolSocket toolSocket;
+
+    [Header("Effects")]
+    public ParticleSystem millingParticles;
+
+    private float currentMillingTime;
+    private bool stageReadyToAdvance;
+    private bool isMilling;
+
+    // ------------------------------------------------------------------
+    private void Start()
+    {
+        StopMillingEffects();
+        ResetMillingState();
+    }
+
+    // ------------------------------------------------------------------
+    private void OnTriggerStay(Collider other)
+    {
+        if (stageReadyToAdvance)
+            return;
+
+        // Must be a mill bit
+        MillBitInfo bit = other.GetComponent<MillBitInfo>();
+        if (bit == null)
+            return;
+
+        // Tool must be installed in the machine
+        if (toolSocket == null || toolSocket.currentTool == null)
+            return;
+
+        // The touching bit MUST be the installed bit
+        if (toolSocket.currentTool != bit)
+            return;
+
+        // Optional: enforce specific bit
+        if (!string.IsNullOrEmpty(requiredBitName) &&
+            bit.bitName != requiredBitName)
+            return;
+
+        // Stage must allow milling
+        if (!stageManager.CanMillCurrentStage())
+            return;
+
+        StartMillingEffects();
+
+        currentMillingTime += Time.deltaTime * bit.millingSpeedMultiplier;
+
+        if (currentMillingTime >= millingTimeRequired)
+        {
+            stageReadyToAdvance = true;
+            Debug.Log("[MillableSurface] Milling complete, waiting for bit exit");
+        }
+    }
+
+    // ------------------------------------------------------------------
+    private void OnTriggerExit(Collider other)
+    {
+        MillBitInfo bit = other.GetComponent<MillBitInfo>();
+        if (bit == null)
+            return;
+
+        // Only respond if the exiting bit is the installed one
+        if (toolSocket != null && toolSocket.currentTool != bit)
+            return;
+
+        if (stageReadyToAdvance)
+        {
+            stageManager.OnStageMilled();
+        }
+
+        ResetMillingState();
+    }
+
+    // ------------------------------------------------------------------
+    private void StartMillingEffects()
+    {
+        if (isMilling)
+            return;
+
+        isMilling = true;
+
+        if (millingParticles != null && !millingParticles.isPlaying)
+            millingParticles.Play();
+    }
+
+    // ------------------------------------------------------------------
+    private void StopMillingEffects()
+    {
+        if (!isMilling)
+            return;
+
+        isMilling = false;
+
+        if (millingParticles != null && millingParticles.isPlaying)
+            millingParticles.Stop();
+    }
+
+    // ------------------------------------------------------------------
+    private void ResetMillingState()
+    {
+        currentMillingTime = 0f;
+        stageReadyToAdvance = false;
+        StopMillingEffects();
+    }
+}
+</code></pre></div>
+      <div id="Stage3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+
+public enum WorkpieceStage
+{
+    Raw,
+    Stage1,
+    Stage2,
+    Finished
+}
+
+public class WorkpieceStageManager : MonoBehaviour
+{
+    [Header("Stage State")]
+    public WorkpieceStage currentStage = WorkpieceStage.Raw;
+
+    [Header("Stage Models")]
+    public GameObject rawModel;
+    public GameObject stage1Model;
+    public GameObject stage2Model;
+    public GameObject finishedModel;
+
+    [Header("Attachment")]
+    public Transform attachmentPoint;
+    public Vector3 rotationPerStage = new Vector3(0, 90, 0);
+
+    [Header("Timer")]
+    public RunTimer runTimer;
+
+    [Header("UI")]
+    public TMP_Text materialText;
+    public string materialName = "Material";
+
+    [Header("Machine Reference")]
+    public MachineBehaviour machineBehaviour;
+
+    // ------------------------------------------------------------------
+    private void Start()
+    {
+        UpdateVisuals();
+        UpdateMaterialUI();
+    }
+
+    // ------------------------------------------------------------------
+    public void OnStageMilled()
+    {
+        switch (currentStage)
+        {
+            case WorkpieceStage.Raw:
+                AdvanceStage(WorkpieceStage.Stage1);
+                break;
+
+            case WorkpieceStage.Stage1:
+                AdvanceStage(WorkpieceStage.Stage2);
+                break;
+
+            case WorkpieceStage.Stage2:
+                Finish();
+                break;
+        }
+    }
+
+    public bool CanMillCurrentStage()
+    {
+        return currentStage != WorkpieceStage.Finished;
+    }
+
+    // ------------------------------------------------------------------
+    private void AdvanceStage(WorkpieceStage nextStage)
+    {
+        currentStage = nextStage;
+        RotateAttachment();
+        UpdateVisuals();
+        UpdateMaterialUI();
+    }
+
+    private void Finish()
+    {
+        currentStage = WorkpieceStage.Finished;
+        UpdateVisuals();
+        runTimer?.StopTimer();
+        UpdateMaterialUI();
+    }
+
+    // --------------------------- VISUALS ---------------------------
+    private void RotateAttachment()
+    {
+        if (attachmentPoint != null)
+            attachmentPoint.Rotate(rotationPerStage, Space.Self);
+    }
+
+    private void UpdateVisuals()
+    {
+        rawModel?.SetActive(currentStage == WorkpieceStage.Raw);
+        stage1Model?.SetActive(currentStage == WorkpieceStage.Stage1);
+        stage2Model?.SetActive(currentStage == WorkpieceStage.Stage2);
+        finishedModel?.SetActive(currentStage == WorkpieceStage.Finished);
+    }
+
+    // --------------------------- UI ---------------------------
+    private void UpdateMaterialUI()
+    {
+        if (materialText == null || machineBehaviour == null)
+            return;
+
+        string status = currentStage != WorkpieceStage.Finished
+            ? "Raw"
+            : machineBehaviour.EvaluateMillingQuality().ToString();
+
+        materialText.text = $"{materialName}: {status}";
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+
+  <!-- Scriptable Object Modal (6 tabs) -->
+  <div id="scriptableObjectModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('scriptableObjectModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('scriptableObjectModal')">⤢</span>
+
+      <h2 class="mechanic-title">Scriptable Object</h2>
+      <img src="gifs/scriptableObject_preview.png" alt="Scriptable Object GIF" class="mechanic-gif">
+      <p>This is the backbone of not only the machine but the whole project, 
+        I used a scriptable object to store all possible material/mill bit combinations 
+        and then added their optimal RPM range and Feed Speed Range, 
+        this was then used for the workpiece quality control and UI feedback, which made this the most important to polish 
+        because it made the game feel real and added the element where player could play around with set ups and learn the machine properly.
+
+      </p>
+
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'SO1')">MaterialInfo.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO2')">MillBitInfo.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO3')">MillHeadChecks.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO4')">MillSettings.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO5')">MachineSettings.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO6')">MachineSettings.asset</button>
+      </div>
+
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="SO1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class MaterialInfo : MonoBehaviour
+{
+    public string materialName;
+}
+</code></pre></div>
+      <div id="SO2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class MillBitInfo : MonoBehaviour
+{
+    public string bitName;
+
+    public float millingSpeedMultiplier = 1f;
+}
+</code></pre></div>
+      <div id="SO3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+public class MilHeadChecks : MonoBehaviour
+{
+    public SettingsTesting settings;
+    public MillBitInfo bitInfo;
+
+     void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent(out MaterialInfo mat)) 
+            return;
+
+        if (settings.TryGetMillingSetting(mat.materialName, bitInfo.bitName, out var setting))
+        {
+            Debug.Log($"Material: {mat.materialName}");
+            Debug.Log($"Bit: {bitInfo.bitName}");
+
+            Debug.Log($"Recommended RPM Range: {setting.minRPM} - {setting.maxRPM}");
+            Debug.Log($"Recommended Feed Range: {setting.minFeedRate} - {setting.maxFeedRate}");
+        }
+    }
+}
+</code></pre></div>
+      <div id="SO4" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+[System.Serializable]
+public struct MillSettings
+{
+    public string materialName;
+    public string millBitName;
+
+    [Header("Recommended RPM Range")]
+    public float minRPM;
+    public float maxRPM;
+
+    [Header("Recommended Feed Rate Range (mm/min)")]
+    public float minFeedRate;
+    public float maxFeedRate;
+}
+</code></pre></div>
+      <div id="SO5" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "SettingsTesting", menuName = "Scriptable Objects/SettingsTesting")]
+public class SettingsTesting : ScriptableObject
+{
+    [Tooltip("List of all valid milling setups")]
+    public MillSettings[] millingSettings;
+
+    /// <summary>
+    /// Returns milling data for a given material + bit combination.
+    /// Returns true if found.
+    /// </summary>
+    public bool TryGetMillingSetting(string material, string bit, out MillSettings setting)
+    {
+        foreach (var s in millingSettings)
+        {
+            if (s.materialName == material && s.millBitName == bit)
+            {
+                setting = s;
+                return true;
+            }
+        }
+
+        setting = default;
+        return false;
+    }
+}
+</code></pre></div>
+      <div id="SO6" class="tabcontent"><pre><code class="language-csharp">
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c130ce8274e7ce249818d275221021a7, type: 3}
+  m_Name: SettingsTesting
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsTesting
+  millingSettings:
+  - materialName: RegularWood
+    millBitName: FlyCutter
+    minRPM: 3000
+    maxRPM: 8000
+    minFeedRate: 0.07
+    maxFeedRate: 0.1
+  - materialName: SoftMaterial
+    millBitName: FlyCutter
+    minRPM: 1500
+    maxRPM: 4000
+    minFeedRate: 0.05
+    maxFeedRate: 0.1
+  - materialName: HardMaterial
+    millBitName: FlyCutter
+    minRPM: 200
+    maxRPM: 1000
+    minFeedRate: 0.035
+    maxFeedRate: 0.07
+  - materialName: RegularWood
+    millBitName: ShellMill
+    minRPM: 2000
+    maxRPM: 8000
+    minFeedRate: 0.04
+    maxFeedRate: 0.96
+  - materialName: SoftMaterial
+    millBitName: ShellMill
+    minRPM: 1000
+    maxRPM: 4000
+    minFeedRate: 0.003
+    maxFeedRate: 0.03
+  - materialName: HardMaterial
+    millBitName: ShellMill
+    minRPM: 200
+    maxRPM: 1500
+    minFeedRate: 0.02
+    maxFeedRate: 0.05
+  - materialName: RegularWood
+    millBitName: 2Flute
+    minRPM: 12000
+    maxRPM: 20000
+    minFeedRate: 0.032
+    maxFeedRate: 0.1
+  - materialName: SoftMaterial
+    millBitName: 2Flute
+    minRPM: 6000
+    maxRPM: 12000
+    minFeedRate: 0.01
+    maxFeedRate: 0.04
+  - materialName: HardMaterial
+    millBitName: 2Flute
+    minRPM: 1000
+    maxRPM: 4000
+    minFeedRate: 0.01
+    maxFeedRate: 0.035
+  - materialName: RegularWood
+    millBitName: 4Flute
+    minRPM: 12000
+    maxRPM: 20000
+    minFeedRate: 0.048
+    maxFeedRate: 0.16
+  - materialName: SoftMaterial
+    millBitName: 4Flute
+    minRPM: 6000
+    maxRPM: 12000
+    minFeedRate: 0.01
+    maxFeedRate: 0.05
+  - materialName: HardMaterial
+    millBitName: 4Flute
+    minRPM: 1000
+    maxRPM: 4000
+    minFeedRate: 0.01
+    maxFeedRate: 0.04
+</code></pre></div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 </body>
 </html>
