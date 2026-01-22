@@ -427,8 +427,13 @@ public class ButtonManager : MonoBehaviour
       <span class="close" onclick="closeModal('buttonRotateModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('buttonRotateModal')">⤢</span>
 
-      <h2 class="mechanic-title">Button Machine Rotate</h2>
-      <img src="gifs/buttonRotate_preview.png" alt="Button Rotate GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('buttonRotateGif', 'gifs/ButtonRotate.gif', 'gifs/buttonpreview.png')">
+        Machine Rotate Button
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/buttonpreview.png" alt="Machine Button Rotate Preview" class="mechanic-gif" id="buttonRotateGif">
       <p>This code was made with the purpose to rotate the milling machine, 
         this was done because we wanted to limit player movement and wanted 
         to experiment with ways for the player to reach every part of the machine 
@@ -471,8 +476,13 @@ public class ButtonRotate : MonoBehaviour
       <span class="close" onclick="closeModal('socketValidatorModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('socketValidatorModal')">⤢</span>
 
-      <h2 class="mechanic-title">Socket Tag Validator</h2>
-      <img src="gifs/socketValidator_preview.png" alt="Socket Tag Validator GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('sockettagGif', 'gifs/SocketValidator.gif', 'gifs/sockettagpreview.png')">
+        Socket Tag Validator
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/sockettagpreview.png" alt="Socket Tag Validator Preview" class="mechanic-gif" id="sockettagGif">
       <p>This script was done to avoid the player placing socketable objects 
         into the wrong place because it was a recurring thing that happened while testing.
       </p>
@@ -533,8 +543,13 @@ public class SocketTagValidator : MonoBehaviour
       <span class="close" onclick="closeModal('debugModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('debugModal')">⤢</span>
 
-      <h2 class="mechanic-title">Debug Codes</h2>
-      <img src="gifs/debug_preview.png" alt="Debug Codes GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('debugGif', 'gifs/Debug.gif', 'gifs/debugpreview.png')">
+        Debug Machine Functions
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/debugpreview.png" alt="Debug Preview" class="mechanic-gif" id="debugGif">
       <p>These scripts were done with the goal of checking of triggers and collisions 
         in order to isolate problems such as the clamp, workpiece socket and others.
         I used refined versions in the final prototype to aid with future scriptable 
@@ -784,8 +799,13 @@ public class ToolSocket : MonoBehaviour
       <span class="close" onclick="closeModal('uiIndicatorsModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('uiIndicatorsModal')">⤢</span>
 
-      <h2 class="mechanic-title">UI Indicators</h2>
-      <img src="gifs/uiIndicators_preview.png" alt="UI Indicators GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('UIindicatorsGif', 'gifs/UIindicator.gif', 'gifs/UIpreview.png')">
+        UI Indicators
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/UIpreview.png" alt="UI indicators Preview" class="mechanic-gif" id="UIindicatorsGif">
       <p>These scripts had the goal of giving feedback to the player of which materials, 
         mill bits and rpm they were using, this was made because through testing it was clear 
         that the player didn't seem to know what they were setting up or if it was set up correctly.
@@ -888,8 +908,13 @@ public class RPMIndicator : MonoBehaviour
       <span class="close" onclick="closeModal('dialsModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('dialsModal')">⤢</span>
 
-      <h2 class="mechanic-title">Dials</h2>
-      <img src="gifs/dials_preview.png" alt="Dials GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('dialsGif', 'gifs/Dials.gif', 'gifs/dialspreview.png')">
+        Dials Mechanic
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/dials.png" alt="Dials Preview" class="mechanic-gif" id="dialsGif">
       <p>These scripts are the ones who manage and control the dials of the machine, 
         translating their degrees into a float value in order to move objects 
         such as the clamp and workbench, the rpm dial was the most challenging and important 
@@ -1376,8 +1401,13 @@ public class DialManagerRPM : MonoBehaviour
       <span class="close" onclick="closeModal('leaderboardModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('leaderboardModal')">⤢</span>
 
-      <h2 class="mechanic-title">Leaderboard</h2>
-      <img src="gifs/leaderboard_preview.png" alt="Leaderboard GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('leaderboardGif', 'gifs/Leadrboard.gif', 'gifs/leaderboardpreview.png')">
+        Leaderboard Mechanic
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/leaderboardpreview.png" alt="Leaderboard Preview" class="mechanic-gif" id="leaderboardGif">
       <p>This online leaderboard was done using the PlayFab service due to its ease to set up and manage, 
         we decided on making a leaderboard to incite competitiveness between players 
         and to add a more game-like element, I also made the run timer script separate 
@@ -1751,8 +1781,13 @@ public class RunTimer : MonoBehaviour
       <span class="close" onclick="closeModal('workpieceModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('workpieceModal')">⤢</span>
 
-      <h2 class="mechanic-title">Workpiece Stages</h2>
-      <img src="gifs/workpiece_preview.png" alt="Workpiece Stages GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('workpiecestagesGif', 'gifs/WorkpieceStages.gif', 'gifs/workpiecestagespreview.png')">
+        Workpiece Stages Mechanic
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/workpiecestagespreview.png" alt="Workpiece Stages Preview" class="mechanic-gif" id="workpiecestagesGif">
       <p>These scripts are what manages and gives the feeling of milling to the player, 
         I added these because through testing it was apparent that the player had no feedback 
         when they were milling so the game had a unfinished/pointless feel to it. 
@@ -2043,8 +2078,13 @@ public class WorkpieceStageManager : MonoBehaviour
       <span class="close" onclick="closeModal('scriptableObjectModal')">×</span>
       <span class="fullscreen-toggle" onclick="toggleFullscreen('scriptableObjectModal')">⤢</span>
 
-      <h2 class="mechanic-title">Scriptable Object</h2>
-      <img src="gifs/scriptableObject_preview.png" alt="Scriptable Object GIF" class="mechanic-gif">
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('scriptableobjectGif', 'gifs/ScriptableObjects.gif', 'gifs/scriptableobjectspreview.png')">
+        Machine System Scriptable Object
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/scriptableobjectspreview.png" alt="Scriptable Object Preview" class="mechanic-gif" id="scriptableobjectGif">
       <p>This is the backbone of not only the machine but the whole project, 
         I used a scriptable object to store all possible material/mill bit combinations 
         and then added their optimal RPM range and Feed Speed Range, 

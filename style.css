@@ -98,12 +98,21 @@ p {
   margin-bottom: 15px;
 }
 
-/* GIF */
-.startMachine-gif {
+/* Mechanic GIF Fade-in */
+.mechanic-gif {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Shared Preview + GIF scaling */
+.mechanic-gif {
   width: 100%;
   max-height: 300px;
+  height: auto;
   object-fit: contain;
   margin-bottom: 15px;
+
+  display: block;
+  transition: opacity 0.3s ease-in-out;
 }
 
 /* Tab Buttons */
