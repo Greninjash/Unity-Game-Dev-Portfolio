@@ -5,12 +5,14 @@ let fullscreen = false;
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) modal.style.display = "block";
+  document.body.style.overflow = "hidden"
 }
 
 // Close modal by ID
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) modal.style.display = "none";
+  document.body.style.overflow = "auto";
 }
 
 // Tabs
@@ -70,6 +72,16 @@ function toggleGif(imgId, gifPath, previewPath) {
   } else {
     img.src = gifPath;
     icon.textContent = "⏸️"; // pause icon
+  }
+}
+
+function toggleTechBreakdown() {
+  const content = document.getElementById("techContent");
+
+  if (content.style.display === "block") {
+    content.style.display = "none";
+  } else {
+    content.style.display = "block";
   }
 }
 

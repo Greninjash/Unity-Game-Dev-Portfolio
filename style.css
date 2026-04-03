@@ -1,134 +1,234 @@
+/* BASE */
 body {
   font-family: Arial, sans-serif;
-  background: #f0f0f0;
+  background: #f4f6f8;
   color: #222;
   margin: 0;
-  padding: 20px;
 }
 
-h1 {
-  font-size: 2.2em;
-  margin-bottom: 0;
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px 20px 60px;
+  background: white;
 }
 
-p {
-  margin-top: 5px;
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.hero h2 {
+  font-size: 1.4em;
+  color: #666;
   margin-bottom: 20px;
 }
 
-.extra-link {
-  display: inline-block;
-  margin-bottom: 20px;
-  font-weight: bold;
-  text-decoration: underline;
-  color: #0645ad;
+.hero-description {
+  max-width: 600px;
+  margin: 0 auto 30px;
+  font-size: 1.1em;
+  line-height: 1.5;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+.hero-buttons {
+  display: flex;
+  justify-content: center;
   gap: 15px;
 }
 
-.card {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
+.btn-primary, .btn-secondary {
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background: #0645ad;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #053a91;
+}
+
+.btn-secondary {
+  border: 2px solid #0645ad;
+  color: #0645ad;
+}
+
+.btn-secondary:hover {
+  background: #0645ad;
+  color: white;
+}
+
+/* PROJECTS */
+.projects {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.project {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.project-title {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+  text-decoration: underline;
+}
+
+.project-image {
+  width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  margin-bottom: 15px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: transform 0.2s;
 }
 
-.card:hover {
-  transform: scale(1.02);
+.project-description {
+  margin-bottom: 15px;
+  line-height: 1.5;
 }
 
-/* MODAL */
+.project-tags {
+  margin-bottom: 20px;
+}
+
+.project-tags span {
+  display: inline-block;
+  background: #e6ecff;
+  color: #0645ad;
+  padding: 5px 10px;
+  margin-right: 8px;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+.project-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.project-buttons button {
+  background: #0645ad;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.project-buttons button:hover {
+  background: #053a91;
+}
+
+/* MODALS (keep compatible with your system) */
 .modal {
   display: none;
   position: fixed;
   z-index: 999;
-  padding-top: 50px;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0,0,0,0.5);
+
+  overflow: hidden; /* prevent background scroll */
 }
 
 .modal-content {
-  background-color: #fefefe;
-  margin: auto;
+  position: relative; 
+
+  background-color: white;
+  margin: 40px auto;
   padding: 20px;
   border-radius: 10px;
   width: 80%;
   max-width: 1000px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s;
+
+  max-height: 85vh;
+  overflow-y: auto;
 }
 
-/* Close button */
-.close {
-  color: #aaa;
+.modal-content::before {
+  content: "";
+  display: block;
+  height: 40px;
+  margin: -20px -20px 20px -20px;
+  background: #f5f7fb;
+  border-bottom: 1px solid #ddd;
+}
+
+/* SHARED BUTTON STYLE */
+.close,
+.fullscreen-toggle {
   position: absolute;
   top: 15px;
-  right: 20px;
-  font-size: 28px;
+  z-index: 10;
+
+  font-size: 16px;
   font-weight: bold;
+
+  padding: 6px 10px;
+  border-radius: 6px;
+
+  background: white;
+  border: 2px solid #0645ad;
+  color: #0645ad;
+
   cursor: pointer;
+  transition: 0.2s;
 }
 
-.close:hover {
-  color: #000;
+/* Positioning */
+.close {
+  right: 15px;
 }
 
-/* Mechanic title */
+.fullscreen-toggle {
+  right: 80px;
+}
+
+/* Hover */
+.close:hover,
+.fullscreen-toggle:hover {
+  background: #0645ad;
+  color: white;
+}
+
+/* Title */
 .mechanic-title {
   font-size: 1.8em;
-  font-weight: bold;
   text-decoration: underline;
-  margin-bottom: 10px;
 }
 
-/* Mechanic description */
-.mechanic-description {
-  font-size: 1em;
-  margin-bottom: 15px;
-}
-
-/* Mechanic GIF Fade-in */
-.mechanic-gif {
-  transition: opacity 0.3s ease-in-out;
-}
-
-/* Shared Preview + GIF scaling */
+/* GIF */
 .mechanic-gif {
   width: 100%;
   max-height: 300px;
-  height: auto;
   object-fit: contain;
   margin-bottom: 15px;
-
-  display: block;
-  transition: opacity 0.3s ease-in-out;
 }
 
-/* Tab Buttons */
+/* Tabs */
 .tab {
-  overflow: hidden;
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px;
 }
 
 .tab button {
-  background-color: inherit;
   border: none;
-  outline: none;
+  padding: 10px;
   cursor: pointer;
-  padding: 10px 15px;
-  transition: 0.3s;
   font-weight: bold;
 }
 
@@ -136,25 +236,166 @@ p {
   border-bottom: 3px solid #0645ad;
 }
 
-/* Tab content */
 .tabcontent {
   display: none;
 }
 
-/* Code block */
+/* Code */
 .code-block {
   max-height: 400px;
   overflow: auto;
 }
 
-/* Fullscreen buttons */
-.fullscreen-btn, .collapse-btn {
-  position: absolute;
-  top: 15px;
-  right: 70px;
+/* SYSTEM GRID */
+.system-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.system-card {
+  background: #f9fbff;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #e0e6f5;
+}
+
+.system-card h3 {
+  margin-top: 0;
+  font-size: 1.1em;
+}
+
+.system-card p {
+  font-size: 0.9em;
+  margin-bottom: 10px;
+}
+
+.system-card button {
+  background: #0645ad;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
   font-weight: bold;
+}
+
+.system-card button:hover {
+  background: #053a91;
+}
+
+/* CASE STUDY SECTION */
+.case-study {
+  margin-bottom: 20px;
+}
+
+.case-study h3 {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 1.2em;
   color: #0645ad;
-  user-select: none;
+}
+
+.case-study p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.case-study ul {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.case-study li {
+  margin-bottom: 5px;
+}
+
+.code-context {
+  font-style: italic;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.client-tag {
+  font-size: 0.6em;
+  background: #ffe9e9;
+  color: #c0392b;
+  padding: 4px 8px;
+  margin-left: 10px;
+  border-radius: 6px;
+  vertical-align: middle;
+  font-weight: bold;
+}
+
+.key-insight {
+  background: #eef4ff;
+  border-left: 4px solid #0645ad;
+  padding: 12px;
+  margin: 15px 0 20px;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.case-study-tag {
+  font-size: 0.8em;
+  margin-left: 5px;
+  color: #ffd700;
+}
+
+/* TECH BREAKDOWN */
+.tech-breakdown {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.tech-toggle {
+  background: #222;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tech-toggle:hover {
+  background: #000;
+}
+
+.tech-content {
+  margin-top: 20px;
+  display: none;
+}
+
+/* FLOWCHART */
+.flowchart {
+  margin-top: 20px;
+}
+
+.flow-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.flow-node {
+  background: #eef4ff;
+  border: 2px solid #0645ad;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.flow-node:hover {
+  background: #0645ad;
+  color: white;
+}
+
+.flow-arrow {
+  font-size: 20px;
+  margin: 5px 0;
 }

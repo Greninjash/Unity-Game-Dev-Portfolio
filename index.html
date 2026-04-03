@@ -5,69 +5,158 @@
   <title>Lucas Patricio – Gameplay Programmer</title>
 
   <link rel="stylesheet" href="style.css">
-  <!-- Prism for code highlighting -->
+
+  <!-- Prism -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 </head>
+
 <body>
 
-  <h1>Lucas Patricio</h1>
-  <p>Unity Gameplay Programmer</p>
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Lucas Patricio</h1>
+    <h2>Gameplay Programmer</h2>
 
-  <!-- Extra Info & Evidence Link -->
-  <div class="extra-info">
-    <a href="https://docs.google.com/document/d/1OrEGbciRC0BLRrcSaxLHkMHJ20aH0DL6ds96aT9Gd7A/" target="_blank">
-      Extra Info & Evidence
-    </a>
-  </div>
+    <p class="hero-description">
+      Focused on interactive systems, simulation mechanics, and player feedback design.
+    </p>
 
-  <div class="grid">
-    <!-- Each mechanic card -->
-    <!-- Start Machine -->
-    <div class="card" onclick="openModal('startMachineModal')">
-      Start Machine Mechanic
+    <div class="hero-buttons">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a href="https://docs.google.com/document/d/1OrEGbciRC0BLRrcSaxLHkMHJ20aH0DL6ds96aT9Gd7A/" target="_blank" class="btn-secondary">
+        Extra Info & Evidence
+      </a>
     </div>
+  </section>
 
-    <!-- Button Machine Rotate -->
-    <div class="card" onclick="openModal('buttonRotateModal')">
-      Button Machine Rotate Mechanic
-    </div>
+  <!-- PROJECTS -->
+  <section id="projects" class="projects">
 
-    <!-- Socket Tag Validator -->
-    <div class="card" onclick="openModal('socketValidatorModal')">
-      Socket Tag Validator Mechanic
-    </div>
+    <!-- 🔴 MILLING MACHINE -->
+    <div class="project">
 
-    <!-- Debug Codes -->
-    <div class="card" onclick="openModal('debugModal')">
-      Debug Codes Mechanic
-    </div>
+      <h2 class="project-title">
+          Milling Machine Simulator 
+          <span class="client-tag">Real Client Project</span>
+        </h2>
 
-    <!-- UI Indicators -->
-    <div class="card" onclick="openModal('uiIndicatorsModal')">
-      UI Indicators Mechanic
-    </div>
+      <img 
+        src="gifs/startMachine_preview.png" 
+        alt="Milling Machine Preview" 
+        class="project-image"
+        id="projectGif1"
+        onclick="toggleGif('projectGif1', 'gifs/startMachine.gif', 'gifs/startMachine_preview.png')"
+      >
 
-    <!-- Dials -->
-    <div class="card" onclick="openModal('dialsModal')">
-      Dial Scripts Mechanic
-    </div>
+      <p class="project-description">
+        A simulation-focused serious game built around modular gameplay systems.
+        The project replicates real-world milling logic using safety validation,
+        data-driven configurations, and real-time player feedback.
+      </p>
+      <div class="key-insight">
+          <strong>Key Insight:</strong>
+          Designing this system required treating each mechanic as part of a larger validation pipeline, 
+          where incorrect inputs propagate through feedback systems rather than failing silently.
+      </div>
 
-    <!-- Leaderboard -->
-    <div class="card" onclick="openModal('leaderboardModal')">
-      Leaderboard Mechanic
-    </div>
+      <div class="project-tags">
+        <span>Simulation</span>
+        <span>Systems Design</span>
+        <span>UI Feedback</span>
+        <span>Data-driven</span>
+      </div>
 
-    <!-- Workpiece Stages -->
-    <div class="card" onclick="openModal('workpieceModal')">
-      Workpiece Stages Mechanic
-    </div>
+      <!-- 🔥 SYSTEM BREAKDOWN -->
+      <div class="system-grid">
 
-    <!-- Scriptable Object -->
-    <div class="card" onclick="openModal('scriptableObjectModal')">
-      Scriptable Object Mechanic
+        <div class="system-card">
+          <h3>Machine Core</h3>
+          <p>Handles validation, safety checks, RPM + feed evaluation.</p>
+          <button onclick="openModal('startMachineModal')">
+              View Code <span class="case-study-tag">+ Case Study</span>
+          </button>
+        </div>
+
+        <div class="system-card">
+          <h3>UI Feedback</h3>
+          <p>Real-time indicators for setup correctness and player feedback.</p>
+          <button onclick="openModal('uiIndicatorsModal')">View Code</button>
+        </div>
+
+        <div class="system-card">
+          <h3>Dial Systems</h3>
+          <p>Transforms physical rotation into usable gameplay values.</p>
+          <button onclick="openModal('dialsModal')">View Code</button>
+        </div>
+
+        <div class="system-card">
+          <h3>Data System</h3>
+          <p>Scriptable Objects define valid material + tool combinations.</p>
+          <button onclick="openModal('scriptableObjectModal')">View Code</button>
+        </div>
+
+        <div class="system-card">
+          <h3>Progression System</h3>
+          <p>Workpiece stages simulate real milling progression.</p>
+          <button onclick="openModal('workpieceModal')">View Code</button>
+        </div>
+
+        <div class="system-card">
+          <h3>Leaderboard</h3>
+          <p>Online scoring system using PlayFab integration.</p>
+          <button onclick="openModal('leaderboardModal')">View Code</button>
+        </div>
+
+      </div>
+
+      <div class="tech-breakdown">
+
+      <button class="tech-toggle" onclick="toggleTechBreakdown()">
+        View Technical Breakdown
+      </button>
+
+      <div id="techContent" class="tech-content">
+
+        <h3>System Architecture Overview</h3>
+        <p>
+          This system is built as a chain of interconnected gameplay systems where
+          player input flows through validation, data checks, and feedback layers
+          before affecting the final machine state.
+        </p>
+
+        <div class="flowchart">
+
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('dialsModal')">Player Input (Dials)</div>
+          </div>
+
+          <div class="flow-arrow">↓</div>
+
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('startMachineModal')">Validation Logic</div>
+            <div class="flow-node" onclick="openModal('scriptableObjectModal')">Data System</div>
+          </div>
+
+          <div class="flow-arrow">↓</div>
+
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('uiIndicatorsModal')">UI Feedback</div>
+          </div>
+
+          <div class="flow-arrow">↓</div>
+
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('leaderboardModal')">Leaderboard</div>
+          </div>
+
+        </div>
+
+      </div>
+
+</div>
+
     </div>
-  </div>
 
   <!-- MODALS TEMPLATE -->
   <!-- Start Machine Modal (2 tabs) -->
@@ -84,6 +173,31 @@
     <!-- GIF PREVIEW/PLAY -->
     <img src="gifs/startMachine_preview.png" alt="Start Machine Preview" class="mechanic-gif" id="startMachineGif">
 
+    <!-- Case Study -->
+    <div class="case-study">
+
+      <h3>What This System Does</h3>
+      <p>
+        This system controls whether the milling machine can start based on multiple
+        safety and configuration checks such as RPM, feed rate, and tool setup.
+      </p>
+
+      <h3>Design Goal</h3>
+      <p>
+        The goal was to simulate real-world machine validation logic, ensuring that
+        incorrect setups are caught before execution, reinforcing learning through feedback.
+      </p>
+
+      <h3>System Breakdown</h3>
+      <ul>
+        <li>Validates RPM and feed rate against acceptable ranges</li>
+        <li>Checks tool and material compatibility</li>
+        <li>Prevents machine start if any condition fails</li>
+        <li>Triggers UI feedback for incorrect configurations</li>
+      </ul>
+
+    </div>
+
       <!-- DESCRIPTION -->
       <p>
         This is a combination of scripts which check if the machine
@@ -95,7 +209,12 @@
         feedback on the RPM and feed rate, updating the machine status
         to reflect whether the current setup is optimal, suboptimal, or dangerous.
       </p>
-
+      
+      <!-- Code Context -->
+      <p class="code-context">
+      Below is the core logic that validates whether the machine can start,
+      ensuring all safety and configuration requirements are met.
+    </p>
       <!-- TABS -->
       <div class="tab">
         <button class="tablinks active" onclick="openTab(event, 'MachineBehaviour')">MachineBehaviour.cs</button>
