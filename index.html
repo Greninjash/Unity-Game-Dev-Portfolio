@@ -1,0 +1,5196 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lucas Patricio – Gameplay Programmer</title>
+ 
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+ 
+  <!-- Prism -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.css" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</head>
+ 
+<body>
+<div id="scrollProgress"></div>
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">Lucas Patricio</div>
+ 
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+ 
+<main>
+  <!-- HERO -->
+  <section class="hero">
+      <h1>Lucas Patricio</h1>
+      <h2>Gameplay Programmer & Creative Developer</h2>
+ 
+      <p class="hero-description">
+        I design and build interactive systems using Unity and C#, 
+        combining technical gameplay logic with visual design.
+      </p>
+ 
+      <div class="hero-buttons">
+        <a href="#projects" class="btn-primary">View Projects</a>
+        <a href="#contact" class="btn-secondary">Contact Me</a>
+      </div>
+  </section>
+ 
+  <section id="about" class="about">
+ 
+      <div class="about-container">
+ 
+        <div class="about-text">
+          <h2>About Me</h2>
+ 
+          <p>
+            Creative Media and Game Technologies student specializing in gameplay systems 
+            and interactive design.
+          </p>
+ 
+          <p>
+            I focus on building structured, scalable systems in Unity while combining
+            technical development with visual design.
+          </p>
+ 
+          <div class="skill-badges">
+            <span class="skill-badge">Unity</span>
+            <span class="skill-badge">C#</span>
+            <span class="skill-badge">Systems Design</span>
+            <span class="skill-badge">Gameplay Programming</span>
+            <span class="skill-badge">UI/UX</span>
+            <span class="skill-badge">Scriptable Objects</span>
+            <span class="skill-badge">PlayFab</span>
+          </div>
+        </div>
+ 
+      </div>
+ 
+   </section>
+ 
+  <h2 class="section-title">Featured Project</h2>
+ 
+      <div class="featured-card">
+ 
+        <img src="gifs/startMachine_preview.png" class="featured-image">
+ 
+        <div class="featured-content">
+          <h3>Milling Machine Simulator</h3>
+ 
+          <p>
+            A system-driven serious game simulating real-world machining workflows 
+            through validation pipelines and interactive feedback.
+          </p>
+ 
+          <a href="#milling-machine" class="btn-primary">View Project</a>
+        </div>
+ 
+      </div>
+ 
+   </section>
+ 
+</main>
+ 
+  <!-- PROJECTS -->
+  <h2 class="section-title">Projects</h2>
+  <section id="projects" class="projects">
+ 
+    <!-- 🔴 MILLING MACHINE -->
+    <div class="project">
+ 
+      <h2 class="project-title">
+          Milling Machine Simulator 
+          <span class="client-tag">Real Client Project</span>
+        </h2>
+ 
+      <img 
+        src="gifs/startMachine_preview.png" 
+        alt="Milling Machine Preview" 
+        class="project-image"
+        id="projectGif1"
+        onclick="toggleGif('projectGif1', 'gifs/startMachine.gif', 'gifs/startMachine_preview.png')"
+      >
+ 
+      <p class="project-description">
+        A simulation-focused serious game built around modular gameplay systems.
+        The project replicates real-world milling logic using safety validation,
+        data-driven configurations, and real-time player feedback.
+      </p>
+      <div class="highlight-box">
+          <strong>Core Idea:</strong><br>
+          This system works as a validation pipeline where player input flows through 
+          safety checks, data validation, and feedback systems before affecting machine state.
+      </div>
+      <div class="key-insight">
+          <strong>Key Insight:</strong>
+          Designing this system required treating each mechanic as part of a larger validation pipeline, 
+          where incorrect inputs propagate through feedback systems rather than failing silently.
+      </div>
+      <div class="impact">
+          <strong>Why this matters:</strong><br>
+          This structure allows each system (RPM, feed rate, tool validation) to work independently, 
+          making the simulation scalable and easy to extend.
+      </div>
+ 
+      <div class="project-tags">
+        <span>Simulation</span>
+        <span>Systems Design</span>
+        <span>UI Feedback</span>
+        <span>Data-driven</span>
+      </div>
+ 
+      <!-- 🔥 SYSTEM BREAKDOWN -->
+      <div class="project-controls">
+ 
+          <button class="view-toggle" onclick="toggleViewMode()">
+            View System Breakdown
+          </button>
+ 
+          <button class="tech-toggle" onclick="toggleTechBreakdown()">
+            View Technical Breakdown
+          </button>
+ 
+      </div>
+ 
+      <div class="system-grid hidden-systems">
+ 
+        <div class="system-card">
+          <h3>Machine Core</h3>
+          <p>Handles validation, safety checks, RPM + feed evaluation.</p>
+          <button onclick="openModal('startMachineModal')">
+              View Code <span class="case-study-tag">+ Case Study</span>
+          </button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>UI Feedback</h3>
+          <p>Real-time indicators for setup correctness and player feedback.</p>
+          <button onclick="openModal('uiIndicatorsModal')">View Code</button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>Dial Systems</h3>
+          <p>Transforms physical rotation into usable gameplay values.</p>
+          <button onclick="openModal('dialsModal')">View Code</button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>Data System</h3>
+          <p>Scriptable Objects define valid material + tool combinations.</p>
+          <button onclick="openModal('scriptableObjectModal')">View Code</button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>Progression System</h3>
+          <p>Workpiece stages simulate real milling progression.</p>
+          <button onclick="openModal('workpieceModal')">View Code</button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>Leaderboard</h3>
+          <p>Online scoring system using PlayFab integration.</p>
+          <button onclick="openModal('leaderboardModal')">View Code</button>
+        </div>
+ 
+      </div>
+ 
+      <div id="techContent" class="tech-content">
+ 
+        <h3>System Architecture Overview</h3>
+        <p>
+          This system is built as a chain of interconnected gameplay systems where
+          player input flows through validation, data checks, and feedback layers
+          before affecting the final machine state.
+        </p>
+ 
+        <div class="flowchart">
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('dialsModal')">Player Input (Dials)</div>
+          </div>
+ 
+          <div class="flow-arrow">↓</div>
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('startMachineModal')">Validation Logic</div>
+            <div class="flow-node" onclick="openModal('scriptableObjectModal')">Data System</div>
+          </div>
+ 
+          <div class="flow-arrow">↓</div>
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('uiIndicatorsModal')">UI Feedback</div>
+          </div>
+ 
+          <div class="flow-arrow">↓</div>
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('leaderboardModal')">Leaderboard</div>
+          </div>
+ 
+        </div>
+ 
+      </div>
+ 
+    </div>
+    <!-- SPENT GAME -->
+    <div class="project">
+ 
+      <h2 class="project-title">
+        Spent
+        <span class="personal-tag">Personal Project</span>
+      </h2>
+ 
+      <img
+        src="gifs/fps_preview.png"
+        class="project-image"
+        id="fpsGif"
+        onclick="toggleGif('fpsGif', 'gifs/fps.gif', 'gifs/fps_preview.png')"
+      >
+ 
+      <p class="project-description">
+        A fast-paced FPS focused on momentum-based movement and player control.
+        The project explores how chaining mechanics like wall running, sliding,
+        grappling, and dashing can create fluid and expressive gameplay.
+      </p>
+ 
+      <div class="highlight-box">
+        <strong>Core Idea:</strong><br>
+        Movement mechanics are layered on a shared physics foundation — each ability
+        reads and modifies the same velocity state, so they combine naturally rather
+        than conflicting or resetting each other.
+      </div>
+ 
+      <div class="key-insight">
+        <strong>Key Insight:</strong>
+        The core challenge was designing movement systems that feel responsive individually,
+        but also combine seamlessly without breaking momentum or player control.
+      </div>
+ 
+      <div class="impact">
+        <strong>Why this matters:</strong><br>
+        Separating each mechanic (wall run, slide, grapple, dash) into its own state
+        handler means new moves can be added without touching existing logic, keeping
+        the codebase scalable and easy to iterate on.
+      </div>
+ 
+      <div class="project-tags">
+        <span>Gameplay Mechanics</span>
+        <span>Movement Systems</span>
+        <span>Player Physics</span>
+        <span>Game Feel</span>
+      </div>
+ 
+      <!-- CONTROLS -->
+      <div class="project-controls">
+        <button class="view-toggle" onclick="toggleViewMode2()">
+          View System Breakdown
+        </button>
+        <button class="tech-toggle" onclick="toggleTechBreakdown2()">
+          View Technical Breakdown
+        </button>
+      </div>
+ 
+      <!-- SYSTEM GRID (hidden by default) -->
+      <div class="system-grid hidden-systems" id="fpsSystemGrid">
+ 
+        <div class="system-card">
+          <h3>Player Combat System</h3>
+          <p>Player mechanics that can damage enemies.</p>
+          <button onclick="openModal('playerattackModal')">View Code</button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>Enemy Combat System</h3>
+          <p>Enemies attack and movement patterns.</p>
+          <button onclick="openModal('enemyattackModal')">View Code</button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>Player Movement</h3>
+          <p>Momentum-based mechanics: wall run, slide, dash, grapple — all chained smoothly.</p>
+          <button onclick="openModal('playermoveModal')">View Code</button>
+        </div>
+ 
+        <div class="system-card">
+          <h3>Gameplay Systems</h3>
+          <p>Supporting systems including dialogue, enemy spawning, and UI.</p>
+          <button onclick="openModal('gameplayModal')">View Code</button>
+        </div>
+ 
+      </div>
+ 
+      <!-- TECH BREAKDOWN (hidden by default) -->
+      <div id="fpsTechContent" class="tech-content">
+ 
+        <h3>System Architecture Overview</h3>
+        <p>
+          Movement is managed through a central state machine. Each mechanic writes to
+          and reads from a shared velocity context, keeping systems decoupled while
+          allowing natural chaining of moves.
+        </p>
+ 
+        <div class="flowchart">
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('playermoveModal')">Player Input</div>
+          </div>
+ 
+          <div class="flow-arrow">↓</div>
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('playermoveModal')">State Handler</div>
+            <div class="flow-node" onclick="openModal('playermoveModal')">Speed Control</div>
+          </div>
+ 
+          <div class="flow-arrow">↓</div>
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('playerattackModal')">Attack Logic</div>
+            <div class="flow-node" onclick="openModal('enemyattackModal')">Enemy Response</div>
+          </div>
+ 
+          <div class="flow-arrow">↓</div>
+ 
+          <div class="flow-row">
+            <div class="flow-node" onclick="openModal('gameplayModal')">UI / Gameplay Systems</div>
+          </div>
+ 
+        </div>
+ 
+      </div>
+ 
+    </div>
+ 
+    </div>
+ 
+  <!-- MODALS MILLING -->
+  <!-- Start Machine Modal (2 tabs) -->
+  <div id="startMachineModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('startMachineModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('startMachineModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title">
+        Start Machine
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/startMachine_preview.png" alt="Start Machine Preview" class="mechanic-gif" id="startMachineGif">
+ 
+    <!-- Case Study -->
+    <div class="case-study">
+ 
+      <h3>What This System Does</h3>
+      <p>
+        This system controls whether the milling machine can start based on multiple
+        safety and configuration checks such as RPM, feed rate, and tool setup.
+      </p>
+ 
+      <h3>Design Goal</h3>
+      <p>
+        The goal was to simulate real-world machine validation logic, ensuring that
+        incorrect setups are caught before execution, reinforcing learning through feedback.
+      </p>
+ 
+      <h3>System Breakdown</h3>
+      <ul>
+        <li>Validates RPM and feed rate against acceptable ranges</li>
+        <li>Checks tool and material compatibility</li>
+        <li>Prevents machine start if any condition fails</li>
+        <li>Triggers UI feedback for incorrect configurations</li>
+      </ul>
+ 
+      <h3>Why This Approach</h3>
+          <p>
+            Instead of directly starting the machine, the system separates validation 
+            into a dedicated step. This allows each condition (RPM, feed rate, tool setup)
+            to be evaluated independently and reused across other systems such as UI feedback.
+          </p>
+ 
+          <p>
+            This structure improves scalability and makes it easier to extend the system 
+            with additional checks without modifying core logic.
+          </p>
+    </div>
+ 
+      <!-- DESCRIPTION -->
+      <p>
+        This is a combination of scripts which check if the machine
+        is okay to be started, checking for safety gear, proper tool
+        and material installation, and correct RPM and clamp status.
+        If any of these checks fail, the machine will not start and
+        a message will be displayed to the player indicating what needs
+        to be fixed. Once the machine is running, the UI provides real-time
+        feedback on the RPM and feed rate, updating the machine status
+        to reflect whether the current setup is optimal, suboptimal, or dangerous.
+      </p>
+      
+      <!-- Code Context -->
+      <p class="code-context">
+      Below is the core logic that validates whether the machine can start,
+      ensuring all safety and configuration requirements are met.
+    </p>
+      <!-- TABS -->
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'MachineBehaviour')">MachineBehaviour.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'ButtonManager')">ButtonManager.cs</button>
+      </div>
+ 
+      <!-- TAB CONTENT -->
+      <div id="MachineBehaviour" class="tabcontent" style="display:block;">
+      <button class="case-toggle" onclick="toggleCaseStudy()">
+          View Advanced Case Study
+      </button>
+      <div id="machineCaseStudy" class="case-study-hidden">
+          <div class="case-study">
+ 
+              <h3>System Overview</h3>
+              <p>
+                The MachineBehaviour system controls the core state logic of the milling machine, 
+                handling when the machine can start, stop, or respond to player input.
+              </p>
+ 
+              <div class="highlight-box">
+                <strong>Goal:</strong>  
+                Ensure the machine only operates when all required conditions are valid, 
+                preventing incorrect or unsafe states.
+            </div>
+            <div class="case-study">
+ 
+              <h3>Problem → Solution</h3>
+ 
+              <p><strong>Problem:</strong><br>
+              The machine depends on multiple systems (RPM, feed rate, tool selection).  
+              Without structure, this leads to messy dependencies and unpredictable behavior.
+              </p>
+ 
+              <p><strong>Solution:</strong><br>
+              I designed MachineBehaviour as a central controller that checks all required 
+              conditions before allowing the machine to run.
+              </p>
+ 
+              <ul>
+                <li>Centralized validation logic</li>
+                <li>Clear machine states (idle, running, invalid)</li>
+                <li>Separation between input, validation, and output</li>
+              </ul>
+ 
+            </div>
+ 
+        </div>
+            <div class="case-study">
+ 
+              <h3>How It Works</h3>
+ 
+              <p>
+                The system evaluates whether the machine can run by checking multiple conditions.
+                Only when all checks pass does the machine transition into an active state.
+              </p>
+ 
+              <div class="flowchart">
+                <div class="flow-row">
+                  <div class="flow-node">Player presses Start</div>
+                </div>
+ 
+                <div class="flow-arrow">↓</div>
+ 
+                <div class="flow-row">
+                  <div class="flow-node">Check RPM</div>
+                  <div class="flow-node">Check Feed Rate</div>
+                  <div class="flow-node">Check Tool</div>
+                </div>
+ 
+                <div class="flow-arrow">↓</div>
+ 
+                <div class="flow-row">
+                  <div class="flow-node">All Valid?</div>
+                </div>
+ 
+                <div class="flow-arrow">↓</div>
+ 
+                <div class="flow-row">
+                  <div class="flow-node">Start Machine</div>
+                </div>
+              </div>
+ 
+            </div>
+            <p class="code-context">
+              This code controls the machine state and ensures all required conditions 
+              are met before allowing the machine to start.
+            </p>
+        </div>
+        <pre class="code-block"><code class="language-csharp" data-line="20-60">
+using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+ 
+public class MachineBehaviour : MonoBehaviour
+{
+    [Header("Danger UI")]
+    public Image dangerImageLeft;
+    public Image dangerImageRight;
+    
+    [Header("Safety / Clothing")]
+    public ClothesManager clothesManager;
+ 
+    [Header("UI")]
+    public TMP_Text machineStatusText;
+    public TMP_Text RPMCheckText;
+    public TMP_Text FeedRateText;
+ 
+    [Header("Sockets and Database")]
+    public ToolSocket toolSocket;
+    public MaterialSocket materialSocket;
+    public SettingsTesting database;
+    public FeedRateMonitor feedMonitor;
+ 
+    [Header("Machine State")]
+    public float playerRPM = 0f; // Written by RPM dial
+    [HideInInspector] public bool machineRunning = false;
+ 
+    [Header("Clamp Dial")]
+    public DialManagerClamp clampDial;
+ 
+    // Feed check timing
+    private float feedUpdateInterval = 0.1f;
+    private float feedTimer = 0f;
+    private string lastFeedState = "";
+ 
+    // Mill settings
+    private MillSettings activeSetting;
+    private bool settingsLoaded = false;
+ 
+    public enum MillingQuality
+    {
+        Perfect,
+        Acceptable,
+        Dangerous
+    }
+ 
+    // ------------------------------------------------------------------------
+    private void Update()
+    {
+        TryLoadSettings();
+ 
+        if (!settingsLoaded || !machineRunning)
+        {
+            ResetMachineUI();
+            return;
+        }
+ 
+        ValidateRPM();
+        ValidateFeedRate();
+ 
+        MillingQuality quality = EvaluateMillingQuality();
+        UpdateQualityUI(quality);
+    }
+ 
+    // ------------------------------------------------------------------------
+    void TryLoadSettings()
+    {
+        if (toolSocket.currentTool == null || materialSocket.currentMaterial == null)
+        {
+            settingsLoaded = false;
+            return;
+        }
+ 
+        if (database.TryGetMillingSetting(
+            materialSocket.currentMaterial.materialName,
+            toolSocket.currentTool.bitName,
+            out activeSetting))
+        {
+            settingsLoaded = true;
+        }
+    }
+ 
+    void ValidateRPM()
+    {
+        if (playerRPM < activeSetting.minRPM)
+            RPMCheckText.text = "Low RPM";
+        else if (playerRPM > activeSetting.maxRPM)
+            RPMCheckText.text = "High RPM";
+        else
+            RPMCheckText.text = "Good RPM";
+    }
+ 
+    void ValidateFeedRate()
+    {
+        feedTimer += Time.deltaTime;
+ 
+        if (feedTimer < feedUpdateInterval)
+            return;
+ 
+        float feed = feedMonitor.latestFeedSpeed;
+        string newState;
+ 
+        if (feed < activeSetting.minFeedRate)
+            newState = "Feed Speed: Too Slow";
+        else if (feed > activeSetting.maxFeedRate)
+            newState = "Feed Speed: Too Fast";
+        else
+            newState = "Feed Speed: Good";
+ 
+        if (newState != lastFeedState)
+        {
+            FeedRateText.text = newState;
+            lastFeedState = newState;
+        }
+ 
+        feedTimer = 0f;
+    }
+ 
+    // ------------------------------------------------------------------------
+    public MillingQuality EvaluateMillingQuality()
+    {
+        bool rpmOk = playerRPM >= activeSetting.minRPM && playerRPM <= activeSetting.maxRPM;
+        bool feedOk = feedMonitor.latestFeedSpeed >= activeSetting.minFeedRate &&
+                      feedMonitor.latestFeedSpeed <= activeSetting.maxFeedRate;
+ 
+        if (rpmOk && feedOk) return MillingQuality.Perfect;
+        if (rpmOk || feedOk) return MillingQuality.Acceptable;
+        return MillingQuality.Dangerous;
+    }
+ 
+    void UpdateQualityUI(MillingQuality quality)
+    {
+        machineStatusText.text = quality switch
+        {
+            MillingQuality.Perfect => "Optimal Machining",
+            MillingQuality.Acceptable => "Suboptimal Setup",
+            MillingQuality.Dangerous => "DANGEROUS SETUP",
+            _ => "Unknown State"
+        };
+ 
+        bool isDangerous = quality == MillingQuality.Dangerous;
+ 
+        if (dangerImageLeft != null)
+            dangerImageLeft.gameObject.SetActive(isDangerous);
+ 
+        if (dangerImageRight != null)
+            dangerImageRight.gameObject.SetActive(isDangerous);
+    }
+ 
+    void ResetMachineUI()
+    {
+        RPMCheckText.text = "No RPM";
+        FeedRateText.text = "No Feed";
+        lastFeedState = "";
+ 
+        if (dangerImageLeft != null)
+            dangerImageLeft.gameObject.SetActive(false);
+ 
+        if (dangerImageRight != null)
+            dangerImageRight.gameObject.SetActive(false);
+    }
+ 
+    // ------------------------------------------------------------------------
+    public bool CanStartMachine(out string failureReason, bool checkForStart = true)
+    {
+        if (checkForStart)
+        {
+            if (clothesManager != null && !clothesManager.AreAllClothesEquipped())
+            {
+                var missing = clothesManager.GetMissingClothes();
+                failureReason = "Missing safety gear:\n• " + string.Join("\n• ", missing);
+                return false;
+            }
+ 
+            if (!WorkpieceDetector.WorkpiecePlaced)
+            {
+                failureReason = "No material loaded";
+                return false;
+            }
+ 
+            if (!BitDetect.MillBitPlaced)
+            {
+                failureReason = "No mill bit installed";
+                return false;
+            }
+ 
+            if (playerRPM <= 0)
+            {
+                failureReason = "RPM not set";
+                return false;
+            }
+ 
+            if (clampDial == null || clampDial.dialOutputVal < 0.05f)
+            {
+                failureReason = "Clamp is open";
+                return false;
+            }
+        }
+ 
+        failureReason = "Machine ready";
+        return true;
+    }
+}
+ 
+        </code></pre>
+        <div class="key-insight">
+          <strong>Key Insight:</strong><br>
+          Separating validation from execution made the system easier to debug and extend.  
+          Instead of directly starting the machine, all conditions are verified first, 
+          making the behavior predictable and scalable.
+        </div>
+      </div>
+ 
+      <div id="ButtonManager" class="tabcontent">
+        <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+ 
+public class ButtonManager : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    public float moveDistance = 1f;   // How far to move
+    public float moveSpeed = 2f;      // Speed of movement
+ 
+    private Vector3 initialPosition;
+    private Vector3 targetPosition;
+    private bool isMoving = false;
+    private bool hasMoved = false;
+ 
+    public static bool canRunTimer = false;
+ 
+    public TMP_Text UI_MachineState;
+    public MachineBehaviour machineBehaviour; // assign in inspector
+ 
+    void Start()
+    {
+        initialPosition = transform.position;
+        targetPosition = initialPosition;
+    }
+ 
+    void Update()
+    {
+        if (isMoving)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+ 
+            if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
+                isMoving = false;
+        }
+ 
+        // Update UI text based on state
+        if (hasMoved)
+        {
+            UI_MachineState.text = "Stop Machine";
+            canRunTimer = true;
+        } 
+        else
+        {
+            UI_MachineState.text = "Start Machine";
+            canRunTimer = false;
+        }
+    }
+ 
+    // Called when the button is pressed
+    public void Move()
+    {
+        if (machineBehaviour == null)
+            return;
+ 
+        if (!machineBehaviour.machineRunning)
+        {
+            // Turning ON, check requirements
+            if (machineBehaviour.CanStartMachine(out string message, true))
+            {
+                StartMachine(message);
+            }
+            else
+            {
+                // Show failure reason
+                if (machineBehaviour.machineStatusText != null)
+                    machineBehaviour.machineStatusText.text = message;
+            }
+        }
+        else
+        {
+            // Turning OFF, skip requirement checks
+            machineBehaviour.CanStartMachine(out string _, false);
+            StopMachine();
+        }
+    }
+ 
+    private void StartMachine(string message)
+    {
+        if (machineBehaviour.machineStatusText != null)
+            machineBehaviour.machineStatusText.text = message;
+ 
+        machineBehaviour.machineRunning = true;
+ 
+        targetPosition = initialPosition + Vector3.down * moveDistance;
+        hasMoved = true;
+        isMoving = true;
+    }
+ 
+    private void StopMachine()
+    {
+        if (machineBehaviour.machineStatusText != null)
+            machineBehaviour.machineStatusText.text = "Machine stopped";
+ 
+        machineBehaviour.machineRunning = false;
+ 
+        targetPosition = initialPosition;
+        hasMoved = false;
+        isMoving = true;
+    }
+}
+ 
+        </code></pre>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Button Machine Rotate Modal (1 tab) -->
+  <div id="buttonRotateModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('buttonRotateModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('buttonRotateModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('buttonRotateGif', 'gifs/ButtonRotate.gif', 'gifs/buttonpreview.png')">
+        Machine Rotate Button
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/buttonpreview.png" alt="Machine Button Rotate Preview" class="mechanic-gif" id="buttonRotateGif">
+      <p>This code was made with the purpose to rotate the milling machine, 
+        this was done because we wanted to limit player movement and wanted 
+        to experiment with ways for the player to reach every part of the machine 
+        even if it was far away from them.
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'ButtonRotate')">ButtonRotate.cs</button>
+      </div>
+ 
+      <div id="ButtonRotate" class="tabcontent" style="display:block;">
+        <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+ 
+public class ButtonRotate : MonoBehaviour
+{
+    [SerializeField] private float rotationAmount = 20f;
+ 
+    // Rotate +20 degrees
+    public void RotatePositive()
+    {
+        transform.Rotate(0f, rotationAmount, 0f);
+    }
+ 
+    // Rotate -20 degrees
+    public void RotateNegative()
+    {
+        transform.Rotate(0f, -rotationAmount, 0f);
+    }
+}
+ 
+        </code></pre>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Socket Tag Validator Modal (1 tab) -->
+  <div id="socketValidatorModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('socketValidatorModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('socketValidatorModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('sockettagGif', 'gifs/SocketValidator.gif', 'gifs/sockettagpreview.png')">
+        Socket Tag Validator
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/sockettagpreview.png" alt="Socket Tag Validator Preview" class="mechanic-gif" id="sockettagGif">
+      <p>This script was done to avoid the player placing socketable objects 
+        into the wrong place because it was a recurring thing that happened while testing.
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'SocketValidator')">SocketTagValidator.cs</button>
+      </div>
+ 
+      <div id="SocketValidator" class="tabcontent" style="display:block;">
+        <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+ 
+public class SocketTagValidator : MonoBehaviour
+{
+    [Header("Socket Settings")]
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
+ 
+    [Header("Allowed Tool Tag")]
+    public string requiredTag;
+ 
+    private void OnEnable()
+    {
+        socket.selectEntered.AddListener(OnSelectEntered);
+    }
+ 
+    private void OnDisable()
+    {
+        socket.selectEntered.RemoveListener(OnSelectEntered);
+    }
+ 
+    private void OnSelectEntered(SelectEnterEventArgs args)
+    {
+        GameObject insertedObject = args.interactableObject.transform.gameObject;
+ 
+        // If the object does NOT have the required tag
+        if (!insertedObject.CompareTag(requiredTag))
+        {
+            Debug.Log($"Rejected object {insertedObject.name}. Wrong tag.");
+ 
+            // Force remove it from the socket
+            socket.interactionManager.SelectExit(
+                socket,
+                args.interactableObject
+            );
+        }
+    }
+}
+ 
+        </code></pre>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Debug Codes Modal (7 tabs) -->
+  <div id="debugModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('debugModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('debugModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('debugGif', 'gifs/Debug.gif', 'gifs/debugpreview.png')">
+        Debug Machine Functions
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/debugpreview.png" alt="Debug Preview" class="mechanic-gif" id="debugGif">
+      <p>These scripts were done with the goal of checking of triggers and collisions 
+        in order to isolate problems such as the clamp, workpiece socket and others.
+        I used refined versions in the final prototype to aid with future scriptable 
+        object functions, such as FeedRateMonitor, ToolSocket and MaterialSocket.
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Debug1')">BitDetect.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug2')">ClampCheck.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug3')">WorkpieceDetector.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug4')">XRTriggerTest.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug5')">FeedRateMonitor.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug6')">MaterialSocket.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Debug7')">ToolSocket.cs</button>
+      </div>
+ 
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Debug1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class BitDetect : MonoBehaviour
+{
+    public static bool MillBitPlaced = false;
+ 
+    public void BitPlaced()
+    {
+        MillBitPlaced = true;
+        Debug.Log("Mill bit placed");
+    }
+ 
+    public void BitRemoved()
+    {
+        MillBitPlaced = false;
+    }
+}
+</code></pre></div>
+      <div id="Debug2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class ClampCheck : MonoBehaviour
+{
+    /*public MachineBehaviour machineBehaviour; // assign your machine in inspector
+ 
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.CompareTag("Workpiece") && machineBehaviour != null)
+        {
+            machineBehaviour.isPieceClamped = true;
+            Debug.Log($"Workpiece clamped -> isPieceClamped={machineBehaviour.isPieceClamped}");
+        }
+    }
+ 
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.CompareTag("Workpiece") && machineBehaviour != null)
+        {
+            machineBehaviour.isPieceClamped = false;
+            Debug.Log($"Workpiece unclamped -> isPieceClamped={machineBehaviour.isPieceClamped}");
+        }
+    }*/
+}
+</code></pre></div>
+      <div id="Debug3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class WorkpieceDetector : MonoBehaviour
+{
+    public static bool WorkpiecePlaced = false;
+    
+    public void WorkPlaced()
+    {
+        WorkpiecePlaced = true;
+    }
+    public void WorkDisplaced() 
+    {
+        WorkpiecePlaced = false;
+    }
+}
+</code></pre></div>
+      <div id="Debug4" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class XRTriggerTest : MonoBehaviour
+{
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("ENTER: " + other.name);
+    }
+ 
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log("STAY: " + other.name);
+    }
+ 
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log("EXIT: " + other.name);
+    }
+}</code></pre></div>
+      <div id="Debug5" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using System.Collections.Generic;
+ 
+public class FeedRateMonitor : MonoBehaviour
+{
+    [Header("Debug")]
+    public bool debugFeedSpeed = true;
+    public float debugLogInterval = 0.25f; // seconds
+ 
+    private float debugTimer = 0f;
+    
+    private Dictionary<Transform, Vector3> lastPositions = new Dictionary<Transform, Vector3>();
+    public float latestFeedSpeed { get; private set; } // m/s
+ 
+    private float smoothedFeedSpeed = 0f;
+    [Range(0f,1f)] public float smoothing = 0.1f; // 0 = no smoothing, 1 = instant
+ 
+ 
+    void Update()
+    {
+        if (!debugFeedSpeed)
+            return;
+ 
+        debugTimer += Time.deltaTime;
+        if (debugTimer >= debugLogInterval)
+        {
+            Debug.Log($"[FeedRateMonitor] Feed Speed: {latestFeedSpeed:F4} m/s");
+            debugTimer = 0f;
+        }
+    }
+    
+    void OnTriggerEnter(Collider other)
+    {
+        if (!lastPositions.ContainsKey(other.transform))
+            lastPositions.Add(other.transform, other.transform.position);
+    }
+ 
+    void OnTriggerStay(Collider other)
+    {
+        Transform t = other.transform;
+        if (!lastPositions.ContainsKey(t))
+            lastPositions.Add(t, t.position);
+ 
+        Vector3 lastPos = lastPositions[t];
+        Vector3 currentPos = t.position;
+ 
+        float speed = (currentPos - lastPos).magnitude / Time.deltaTime;
+ 
+        // Smooth the feed speed
+        smoothedFeedSpeed = Mathf.Lerp(smoothedFeedSpeed, speed, smoothing);
+ 
+        latestFeedSpeed = smoothedFeedSpeed;
+        lastPositions[t] = currentPos;
+    }
+ 
+    void OnTriggerExit(Collider other)
+    {
+        if (lastPositions.ContainsKey(other.transform))
+            lastPositions.Remove(other.transform);
+    }
+}
+</code></pre></div>
+      <div id="Debug6" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+ 
+public class MaterialSocket : MonoBehaviour
+{
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
+    public MaterialInfo currentMaterial;
+ 
+    private void OnEnable()
+    {
+        socket.selectEntered.AddListener(OnMaterialInserted);
+        socket.selectExited.AddListener(OnMaterialRemoved);
+    }
+ 
+    private void OnDisable()
+    {
+        socket.selectEntered.RemoveListener(OnMaterialInserted);
+        socket.selectExited.RemoveListener(OnMaterialRemoved);
+    }
+ 
+    private void OnMaterialInserted(SelectEnterEventArgs args)
+    {
+        MaterialInfo mat = args.interactableObject.transform.GetComponent<MaterialInfo>();
+ 
+        if (mat != null)
+        {
+            currentMaterial = mat;
+            Debug.Log($"Material inserted: {mat.materialName}");
+        }
+    }
+ 
+    private void OnMaterialRemoved(SelectExitEventArgs args)
+    {
+        currentMaterial = null;
+        Debug.Log("Material removed from socket.");
+    }
+}
+</code></pre></div>
+      <div id="Debug7" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+ 
+public class ToolSocket : MonoBehaviour
+{
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
+    public MillBitInfo currentTool;
+ 
+    private void OnEnable()
+    {
+        socket.selectEntered.AddListener(OnToolInserted);
+        socket.selectExited.AddListener(OnToolRemoved);
+    }
+ 
+    private void OnDisable()
+    {
+        socket.selectEntered.RemoveListener(OnToolInserted);
+        socket.selectExited.RemoveListener(OnToolRemoved);
+    }
+ 
+    private void OnToolInserted(SelectEnterEventArgs args)
+    {
+        MillBitInfo tool = args.interactableObject.transform.GetComponent<MillBitInfo>();
+ 
+        if (tool != null)
+        {
+            currentTool = tool;
+            Debug.Log($"[ToolSocket] Tool inserted: {tool.bitName}");
+        }
+    }
+ 
+    private void OnToolRemoved(SelectExitEventArgs args)
+    {
+        currentTool = null;
+        Debug.Log("[ToolSocket] Tool removed");
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+ 
+  <!-- UI Indicators Modal (4 tabs) -->
+  <div id="uiIndicatorsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('uiIndicatorsModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('uiIndicatorsModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('UIindicatorsGif', 'gifs/UIindicator.gif', 'gifs/UIpreview.png')">
+        UI Indicators
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/UIpreview.png" alt="UI indicators Preview" class="mechanic-gif" id="UIindicatorsGif">
+      <p>These scripts had the goal of giving feedback to the player of which materials, 
+        mill bits and rpm they were using, this was made because through testing it was clear 
+        that the player didn't seem to know what they were setting up or if it was set up correctly.
+ 
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'UI1')">BitIndicator.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'UI2')">FeedIndicator.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'UI3')">MaterialIndicator.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'UI4')">RPMIndicator.cs</button>
+      </div>
+ 
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="UI1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+ 
+public class BitIndicator : MonoBehaviour
+{
+    public ToolSocket toolSocket; 
+    public TMP_Text toolText;
+ 
+    private void Update()
+    {
+        if (toolSocket.currentTool != null)
+        {
+            toolText.text = ($"Mill Bit: {toolSocket.currentTool.bitName}");
+        }
+        else
+        {
+            toolText.text = "Mill Bit: None";
+        }
+    }
+}
+</code></pre></div>
+      <div id="UI2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class FeedIndicator : MonoBehaviour
+{
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+ 
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
+</code></pre></div>
+      <div id="UI3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class MaterialIndicator : MonoBehaviour
+{
+    public MaterialSocket materialSocket;
+    public TMPro.TMP_Text materialText;
+ 
+    private void Update() 
+    {
+        if (materialSocket.currentMaterial != null)
+        {
+            materialText.text = ($"Material: {materialSocket.currentMaterial.materialName}");
+        }
+        else
+        {
+            materialText.text = "Material: None";
+        }
+    }
+}
+</code></pre></div>
+      <div id="UI4" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class RPMIndicator : MonoBehaviour
+{
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+ 
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+ 
+  <!-- Dials Modal (3 tabs) -->
+  <div id="dialsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('dialsModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('dialsModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('dialsGif', 'gifs/Dials.gif', 'gifs/dialspreview.png')">
+        Dials Mechanic
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/dials.png" alt="Dials Preview" class="mechanic-gif" id="dialsGif">
+      <p>These scripts are the ones who manage and control the dials of the machine, 
+        translating their degrees into a float value in order to move objects 
+        such as the clamp and workbench, the rpm dial was the most challenging and important 
+        due to it not being able to display float values and also communicating 
+        with other scripts to tell the player if their set up was correct.
+ 
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Dial1')">DialManager.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Dial2')">DialManagerClamp.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Dial3')">DialManagerRPM.cs</button>
+      </div>
+ 
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Dial1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+ 
+ 
+public class DialManager : MonoBehaviour
+{
+    HingeJoint hinge;
+    public float storedDegrees;
+    float lastFramesAngle;
+    public float minValue, maxValue;
+    public float startingValue;
+ 
+    public float minOutputVal, maxOutputVal;
+    public float dialOutputVal;
+    
+    public Transform workStation;
+ 
+    private void Start() 
+    {
+        hinge = GetComponent<HingeJoint>();
+ 
+        if(startingValue >= minValue && startingValue <= maxValue)
+        {
+            storedDegrees = startingValue;
+        }
+    }
+ 
+    private void Update() 
+{
+    // Early exit if hinge is missing
+    if (hinge == null)
+        return;
+ 
+    float hingeAngle = hinge.angle;
+ 
+    // Sanity check hinge angle
+    if (float.IsNaN(hingeAngle) || float.IsInfinity(hingeAngle))
+    {
+        Debug.LogWarning("Hinge angle is invalid, skipping this frame.");
+        return;
+    }
+ 
+    // Calculate difference in angle since last frame
+    float differenceInAngle = hingeAngle - lastFramesAngle;
+ 
+    // Correct wraparound for 0/360 degree jumps
+    if (differenceInAngle > 300f) differenceInAngle -= 360f;
+    else if (differenceInAngle < -300f) differenceInAngle += 360f;
+ 
+    // Sanity clamp for extreme delta
+    if (Mathf.Abs(differenceInAngle) > 1000f)
+        differenceInAngle = 0f;
+ 
+    // Update stored degrees
+    storedDegrees += differenceInAngle;
+ 
+    // Clamp storedDegrees to min/max
+    storedDegrees = Mathf.Clamp(storedDegrees, minValue, maxValue);
+ 
+    // Handle joint limits near boundaries
+    if (storedDegrees >= maxValue - 10f)
+    {
+        JointLimits newLimits = hinge.limits;
+        newLimits.min = -180f;
+        newLimits.max = hingeAngle + (maxValue - storedDegrees);
+        hinge.limits = newLimits;
+        hinge.useLimits = true;
+        storedDegrees = Mathf.Min(maxValue, storedDegrees);
+    }
+    else if (storedDegrees <= minValue + 10f)
+    {
+        JointLimits newLimits = hinge.limits;
+        newLimits.min = hingeAngle - (storedDegrees - minValue);
+        newLimits.max = 180f;
+        hinge.limits = newLimits;
+        hinge.useLimits = true;
+        storedDegrees = Mathf.Max(minValue, storedDegrees);
+    }
+    else
+    {
+        hinge.useLimits = false;
+    }
+ 
+    // Calculate dial output safely
+    float range = maxValue - minValue;
+    if (range <= 0.0001f)
+    {
+        dialOutputVal = minOutputVal;
+    }
+    else
+    {
+        float betweenZeroAndOne = (storedDegrees - minValue) / range;
+        if (float.IsNaN(betweenZeroAndOne) || float.IsInfinity(betweenZeroAndOne))
+            betweenZeroAndOne = 0f;
+ 
+        dialOutputVal = Mathf.Lerp(minOutputVal, maxOutputVal, betweenZeroAndOne);
+    }
+ 
+    // Move work station if assigned
+    if (workStation != null)
+    {
+        Vector3 pos = workStation.localPosition;
+        if (!float.IsNaN(dialOutputVal) && !float.IsInfinity(dialOutputVal))
+            pos.x = dialOutputVal;
+ 
+        workStation.localPosition = pos;
+    }
+ 
+    // Store this frame’s angle for next frame
+    lastFramesAngle = hingeAngle;
+}
+ 
+}
+</code></pre></div>
+      <div id="Dial2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+[RequireComponent(typeof(HingeJoint))]
+public class DialManagerClamp : MonoBehaviour
+{
+    [Header("Hinge Settings")]
+    private HingeJoint hinge;
+    public float storedDegrees;
+    private float lastAngle;
+ 
+    [Tooltip("Allowed stored degree range (cumulative rotation)")]
+    public float minValue = 0f;
+    public float maxValue = 500f;
+    public float startingValue = 0f;
+ 
+    [Header("Output Settings")]
+    public float minOutputVal = 0f;
+    public float maxOutputVal = 1f;
+    public float dialOutputVal;
+ 
+    [Tooltip("Transform to move along local Z according to dial output")]
+    public Transform Clamp;
+ 
+    [Header("Boundary Limit Settings")]
+    [Tooltip("Distance (in storedDegrees) from min/max where we begin applying temporary hinge limits")]
+    public float boundaryZone = 10f;
+ 
+    // store original limits so we can restore them
+    private JointLimits originalLimits;
+    private bool originalLimitsSaved = false;
+ 
+    // whether we currently have applied temporary limits
+    private bool tempLimitsActive = false;
+ 
+    private void Start()
+    {
+        hinge = GetComponent<HingeJoint>();
+        storedDegrees = Mathf.Clamp(startingValue, minValue, maxValue);
+ 
+        if (hinge != null)
+        {
+            lastAngle = hinge.angle;
+ 
+            // save original limits once (so we can restore)
+            originalLimits = hinge.limits;
+            originalLimitsSaved = true;
+        }
+    }
+ 
+    private void Update()
+    {
+        if (WorkpieceDetector.WorkpiecePlaced == true)
+        {
+            minOutputVal = 0.078f;
+        }
+        else
+        {
+            minOutputVal = 0f;
+        }
+ 
+        if (hinge == null) return;
+ 
+        float currentAngle = hinge.angle;
+        float delta = Mathf.DeltaAngle(lastAngle, currentAngle); // handles wraparound -180..180
+ 
+        // apply delta to our cumulative storedDegrees
+        storedDegrees += delta;
+        storedDegrees = Mathf.Clamp(storedDegrees, minValue, maxValue);
+ 
+        // Check boundary zones and apply / restore limits accordingly
+        HandleBoundaryLimits(currentAngle);
+ 
+        // Output mapping (safe against zero range)
+        if (float.IsNaN(storedDegrees) || float.IsInfinity(storedDegrees))
+        {
+            storedDegrees = Mathf.Clamp(startingValue, minValue, maxValue);
+        }
+ 
+        float range = maxValue - minValue;
+        if (range <= 0f || float.IsNaN(range) || float.IsInfinity(range))
+        {
+            range = 0.0001f;
+        }
+ 
+        float t = (storedDegrees - minValue) / range;
+ 
+        if (float.IsNaN(t) || float.IsInfinity(t))
+            t = 0f;
+ 
+        dialOutputVal = Mathf.Lerp(minOutputVal, maxOutputVal, t);
+ 
+        if (float.IsNaN(dialOutputVal) || float.IsInfinity(dialOutputVal))
+            dialOutputVal = minOutputVal;
+ 
+        // Move the clamp transform if assigned
+        if (Clamp != null)
+        {
+            float safeZ = dialOutputVal;
+            if (float.IsNaN(safeZ) || float.IsInfinity(safeZ))
+                safeZ = 0f;
+ 
+            Vector3 pos = Clamp.localPosition;
+            pos.z = safeZ;
+            Clamp.localPosition = pos;
+        }
+ 
+        lastAngle = currentAngle;
+    }
+ 
+    /// <summary>
+    /// Apply temporary hinge limits when storedDegrees is near min or max.
+    /// The temporary limits are computed relative to the current hinge.angle so we don't compress
+    /// the hinge over time. We only write hinge.limits/useLimits when we need to change them.
+    /// </summary>
+    private void HandleBoundaryLimits(float hingeAngle)
+    {
+        bool nearMax = storedDegrees >= (maxValue - boundaryZone);
+        bool nearMin = storedDegrees <= (minValue + boundaryZone);
+ 
+        // If both true (rare when boundaryZone >= range), prefer hard clamping
+        if (nearMax && nearMin)
+        {
+            // set exact stop limits (no motion) if the range is effectively zero
+            ApplyTemporaryLimits(hingeAngle, hingeAngle);
+            return;
+        }
+ 
+        if (nearMax)
+        {
+            // how many stored degrees remain until the absolute max
+            float remaining = maxValue - storedDegrees; // >= 0 and < boundaryZone
+ 
+            // convert remaining storedDegrees to how many hinge degrees we should still allow the joint to rotate.
+            // Here we assume 1-to-1 mapping between storedDegrees delta and hinge.angle delta (common case).
+            // If your dial-to-hinge mapping differs, adapt this conversion.
+            float allowExtra = remaining;
+ 
+            // compute new limits relative to current hinge angle
+            float newMax = hingeAngle + allowExtra;
+            newMax = Mathf.Min(newMax, 180f); // hinge.angle max is +180
+ 
+            // allow full negative swing so we don't restrict backwards motion unnecessarily
+            float newMin = -180f;
+ 
+            ApplyTemporaryLimits(newMin, newMax);
+        }
+        else if (nearMin)
+        {
+            float remaining = storedDegrees - minValue; // >= 0 and < boundaryZone
+            float allowExtra = remaining;
+ 
+            float newMin = hingeAngle - allowExtra;
+            newMin = Mathf.Max(newMin, -180f);
+ 
+            float newMax = 180f;
+ 
+            ApplyTemporaryLimits(newMin, newMax);
+        }
+        else
+        {
+            // outside any boundary zone -> restore original limits (if we changed them)
+            RestoreOriginalLimitsIfNeeded();
+        }
+    }
+ 
+    private void ApplyTemporaryLimits(float minLimit, float maxLimit)
+    {
+        // ensure limits sensible
+        minLimit = Mathf.Clamp(minLimit, -180f, 180f);
+        maxLimit = Mathf.Clamp(maxLimit, -180f, 180f);
+ 
+        // if original not saved (unlikely) save it now
+        if (!originalLimitsSaved)
+        {
+            originalLimits = hinge.limits;
+            originalLimitsSaved = true;
+        }
+ 
+        // only update if something changed (avoid writing every frame)
+        JointLimits cur = hinge.limits;
+        if (!tempLimitsActive || !Mathf.Approximately(cur.min, minLimit) || !Mathf.Approximately(cur.max, maxLimit))
+        {
+            JointLimits nl = cur;
+            nl.min = minLimit;
+            nl.max = maxLimit;
+            hinge.limits = nl;
+            hinge.useLimits = true;
+            tempLimitsActive = true;
+        }
+    }
+ 
+    private void RestoreOriginalLimitsIfNeeded()
+    {
+        if (tempLimitsActive && originalLimitsSaved)
+        {
+            hinge.limits = originalLimits;
+            hinge.useLimits = originalLimits.max > originalLimits.min; // restore useLimits sensibly
+            tempLimitsActive = false;
+        }
+    }
+ 
+    private void OnDisable()
+    {
+        // restore on disable so we don't leave the hinge permanently modified
+        RestoreOriginalLimitsIfNeeded();
+    }
+ 
+    private void OnDestroy()
+    {
+        RestoreOriginalLimitsIfNeeded();
+    }
+}
+</code></pre></div>
+      <div id="Dial3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+ 
+public class DialManagerRPM : MonoBehaviour
+{
+    HingeJoint hinge;
+    public float storedDegrees;
+    float lastFramesAngle;
+ 
+    [Header("Dial Range (Degrees)")]
+    public float minValue = 0f;
+    public float maxValue = 360f;
+    public float startingValue = 0f;
+ 
+    [Header("RPM Output Range")]
+    public float minRPM = 0f;
+    public float maxRPM = 20000f;
+ 
+    [Header("Allowed RPM Steps")]
+    public int[] allowedRPMValues = new int[] { 500, 1000, 1500, 2000, 5000, 10000, 15000, 20000 };
+ 
+    [Header("UI")]
+    public TextMeshProUGUI rpmText;
+ 
+    [Header("Machine Behaviour")]
+    public MachineBehaviour machineBehaviour; // assign in inspector
+ 
+    public float CurrentRPM { get; private set; }
+ 
+    private void Start()
+    {
+        hinge = GetComponent<HingeJoint>();
+ 
+        if (startingValue >= minValue && startingValue <= maxValue)
+            storedDegrees = startingValue;
+    }
+ 
+    private void Update()
+    {
+        if (hinge == null)
+            return;
+ 
+        float hingeAngle = hinge.angle;
+ 
+        if (float.IsNaN(hingeAngle) || float.IsInfinity(hingeAngle))
+            return;
+ 
+        float differenceInAngle = hingeAngle - lastFramesAngle;
+ 
+        // Correct wraparound
+        if (differenceInAngle > 300f) differenceInAngle -= 360f;
+        else if (differenceInAngle < -300f) differenceInAngle += 360f;
+ 
+        if (Mathf.Abs(differenceInAngle) > 1000f)
+            differenceInAngle = 0f;
+ 
+        storedDegrees += differenceInAngle;
+        storedDegrees = Mathf.Clamp(storedDegrees, minValue, maxValue);
+ 
+        // Handle joint limits near boundaries
+        if (storedDegrees >= maxValue - 10f)
+        {
+            JointLimits newLimits = hinge.limits;
+            newLimits.min = -180f;
+            newLimits.max = hingeAngle + (maxValue - storedDegrees);
+            hinge.limits = newLimits;
+            hinge.useLimits = true;
+            storedDegrees = Mathf.Min(maxValue, storedDegrees);
+        }
+        else if (storedDegrees <= minValue + 10f)
+        {
+            JointLimits newLimits = hinge.limits;
+            newLimits.min = hingeAngle - (storedDegrees - minValue);
+            newLimits.max = 180f;
+            hinge.limits = newLimits;
+            hinge.useLimits = true;
+            storedDegrees = Mathf.Max(minValue, storedDegrees);
+        }
+        else
+        {
+            hinge.useLimits = false;
+        }
+ 
+        // Calculate normalized value
+        float range = maxValue - minValue;
+        float normalized = 0f;
+        if (range > 0.000001f)
+        {
+            normalized = (storedDegrees - minValue) / range;
+            if (float.IsNaN(normalized) || float.IsInfinity(normalized))
+                normalized = 0f;
+            normalized = Mathf.Clamp01(normalized);
+        }
+ 
+        // Map to raw RPM
+        float rawRPM = Mathf.Lerp(minRPM, maxRPM, normalized);
+ 
+        // Snap to nearest allowed RPM
+        if (allowedRPMValues != null && allowedRPMValues.Length > 0)
+        {
+            int closest = allowedRPMValues[0];
+            float closestDist = Mathf.Abs(rawRPM - closest);
+ 
+            for (int i = 1; i < allowedRPMValues.Length; i++)
+            {
+                float dist = Mathf.Abs(rawRPM - allowedRPMValues[i]);
+                if (dist < closestDist)
+                {
+                    closest = allowedRPMValues[i];
+                    closestDist = dist;
+                }
+            }
+ 
+            CurrentRPM = Mathf.Clamp(closest, (int)minRPM, (int)maxRPM);
+        }
+        else
+        {
+            CurrentRPM = rawRPM;
+        }
+ 
+        // Update UI
+        if (rpmText != null)
+            rpmText.text = Mathf.RoundToInt(CurrentRPM) + " RPM";
+ 
+        // ---- NEW: write RPM to machine ----
+        if (machineBehaviour != null)
+            machineBehaviour.playerRPM = CurrentRPM;
+ 
+        lastFramesAngle = hingeAngle;
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+ 
+  <!-- Leaderboard Modal (3 tabs) -->
+  <div id="leaderboardModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('leaderboardModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('leaderboardModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('leaderboardGif', 'gifs/Leadrboard.gif', 'gifs/leaderboardpreview.png')">
+        Leaderboard Mechanic
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/leaderboardpreview.png" alt="Leaderboard Preview" class="mechanic-gif" id="leaderboardGif">
+      <p>This online leaderboard was done using the PlayFab service due to its ease to set up and manage, 
+        we decided on making a leaderboard to incite competitiveness between players 
+        and to add a more game-like element, I also made the run timer script separate 
+        so I could call the start and stop timer through other scripts as it might change when the timer would start or stop
+ 
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Leaderboard1')">PlayFabTest.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Leaderboard2')">RunTimer.cs</button>
+      </div>
+ 
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Leaderboard1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using System.Collections.Generic;
+using UnityEngine;
+using PlayFab;
+using PlayFab.ClientModels;
+using TMPro;
+ 
+public class PlayFabTest : MonoBehaviour
+{
+    private bool isLoggedIn = false;
+    private float? pendingTimeSubmission = null;
+ 
+    public static PlayFabTest Instance;
+ 
+    public TMP_Text leaderboardText;
+ 
+    private string localPlayFabId;
+ 
+    public string leaderboardStatisticName = "BestTime";
+    public int leaderboardMaxResults = 10;
+ 
+    // Season / version tracking
+    private int currentStatVersion = -1;
+    private bool hasSubmittedThisSeason = false;
+ 
+    #region Unity Lifecycle
+ 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+ 
+    private void Start()
+    {
+        Login();
+        Debug.Log("Starting PlayFab login...");
+    }
+ 
+    #endregion
+ 
+    #region Login
+ 
+    private void Login()
+    {
+        var request = new LoginWithCustomIDRequest
+        {
+            CustomId = SystemInfo.deviceUniqueIdentifier,
+            CreateAccount = true,
+            InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
+            {
+                GetPlayerProfile = true
+            }
+        };
+ 
+        PlayFabClientAPI.LoginWithCustomID(
+            request,
+            OnLoginSuccess,
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+ 
+    private void OnLoginSuccess(LoginResult result)
+    {
+        localPlayFabId = result.PlayFabId;
+        isLoggedIn = true;
+ 
+        Debug.Log("PlayFab login successful");
+ 
+        if (string.IsNullOrEmpty(result.InfoResultPayload?.PlayerProfile?.DisplayName))
+        {
+            SetDisplayName();
+        }
+        else
+        {
+            GetLeaderboard();
+        }
+ 
+        // 🔹 Submit pending run if one finished before login
+        if (pendingTimeSubmission.HasValue)
+        {
+            OnRunFinished(pendingTimeSubmission.Value);
+            pendingTimeSubmission = null;
+        }
+    }
+ 
+ 
+    #endregion
+ 
+    #region Display Name
+ 
+    private string GenerateDisplayName()
+    {
+        return "Player" + Random.Range(1000, 9999);
+    }
+ 
+    private void SetDisplayName()
+    {
+        var request = new UpdateUserTitleDisplayNameRequest
+        {
+            DisplayName = GenerateDisplayName()
+        };
+ 
+        PlayFabClientAPI.UpdateUserTitleDisplayName(
+            request,
+            result =>
+            {
+                Debug.Log("Display name set: " + result.DisplayName);
+                GetLeaderboard();
+            },
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+ 
+    #endregion
+ 
+    #region Public API (CALL THIS WHEN A RUN ENDS)
+ 
+    /// <summary>
+    /// Call this ONLY when the player finishes a run
+    /// </summary>
+    public void OnRunFinished(float timeInSeconds)
+    {
+        if (!isLoggedIn)
+        {
+            Debug.Log("PlayFab not logged in yet, queuing time submission");
+            pendingTimeSubmission = timeInSeconds;
+            return;
+        }
+ 
+        if (hasSubmittedThisSeason)
+            return;
+ 
+        SubmitTime(timeInSeconds);
+    }
+ 
+ 
+    #endregion
+ 
+    #region Submit Time
+ 
+    private int submitRetryCount = 0;
+ 
+    private void SubmitTime(float timeInSeconds)
+    {
+        int timeMs = Mathf.RoundToInt(timeInSeconds * 1000f);
+ 
+        var request = new UpdatePlayerStatisticsRequest
+        {
+            Statistics = new List<StatisticUpdate>
+            {
+                new StatisticUpdate
+                {
+                    StatisticName = leaderboardStatisticName,
+                    Value = timeMs
+                }
+            }
+        };
+ 
+        PlayFabClientAPI.UpdatePlayerStatistics(
+            request,
+            result =>
+            {
+                submitRetryCount = 0;
+                Debug.Log("Time submitted successfully");
+                GetLeaderboard();
+            },
+            error =>
+            {
+                if (submitRetryCount < 3)
+                {
+                    submitRetryCount++;
+                    Debug.LogWarning("Retrying stat submit...");
+                    SubmitTime(timeInSeconds);
+                }
+                else
+                {
+                    Debug.LogError(error.GenerateErrorReport());
+                }
+            }
+        );
+    }
+ 
+    #endregion
+ 
+    #region Leaderboard
+ 
+    public void GetLeaderboard()
+    {
+        var request = new GetLeaderboardRequest
+        {
+            StatisticName = leaderboardStatisticName,
+            StartPosition = 0,
+            MaxResultsCount = leaderboardMaxResults
+        };
+ 
+        PlayFabClientAPI.GetLeaderboard(
+            request,
+            result =>
+            {
+                leaderboardText.text = "";
+ 
+                // Capture current version
+                currentStatVersion = result.Version;
+ 
+                int savedVersion = PlayerPrefs.GetInt(
+                    leaderboardStatisticName + "_Version",
+                    -1
+                );
+ 
+                hasSubmittedThisSeason = (savedVersion == currentStatVersion);
+ 
+                bool localPlayerInTop = false;
+ 
+                foreach (var entry in result.Leaderboard)
+                {
+                    float timeSeconds = entry.StatValue / 1000f;
+                    string name = string.IsNullOrEmpty(entry.DisplayName)
+                        ? entry.PlayFabId
+                        : entry.DisplayName;
+ 
+                    bool isLocalPlayer = entry.PlayFabId == localPlayFabId;
+ 
+                    if (isLocalPlayer)
+                        localPlayerInTop = true;
+ 
+                    string line = $"{entry.Position + 1}. {name}  {timeSeconds:F2}s";
+ 
+                    if (isLocalPlayer)
+                        line = $"<color=red>{line}</color>";
+ 
+                    leaderboardText.text += line + "\n";
+                }
+ 
+                if (!localPlayerInTop)
+                {
+                    GetLocalPlayerRank();
+                }
+            },
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+ 
+    private void GetLocalPlayerRank()
+    {
+        var request = new GetLeaderboardAroundPlayerRequest
+        {
+            StatisticName = leaderboardStatisticName,
+            MaxResultsCount = 1
+        };
+ 
+        PlayFabClientAPI.GetLeaderboardAroundPlayer(
+            request,
+            result =>
+            {
+                if (result.Leaderboard.Count == 0)
+                    return;
+ 
+                var entry = result.Leaderboard[0];
+ 
+                float timeSeconds = entry.StatValue / 1000f;
+                string name = string.IsNullOrEmpty(entry.DisplayName)
+                    ? entry.PlayFabId
+                    : entry.DisplayName;
+ 
+                leaderboardText.text += "\n---------------------\n";
+                leaderboardText.text +=
+                    $"<color=red>{entry.Position + 1}. {name}  {timeSeconds:F2}s</color>";
+            },
+            error => Debug.LogError(error.GenerateErrorReport())
+        );
+    }
+ 
+    #endregion
+}
+</code></pre></div>
+      <div id="Leaderboard2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class RunTimer : MonoBehaviour
+{
+    private bool isRunning = false;
+    private float elapsedTime = 0f;
+ 
+    #region Timer Control
+ 
+    // Call this when the run starts
+    public void StartTimer()
+    {
+        elapsedTime = 0f;
+        isRunning = true;
+        Debug.Log("Run timer started");
+    }
+ 
+    // Call this when the run ends
+    public void StopTimer()
+    {
+        if (!isRunning)
+            return;
+ 
+        isRunning = false;
+ 
+        Debug.Log($"Run timer stopped: {elapsedTime:F2} seconds");
+ 
+        // Submit result to PlayFab (SAFE ENTRY POINT)
+        if (PlayFabTest.Instance != null)
+        {
+            PlayFabTest.Instance.OnRunFinished(elapsedTime);
+        }
+        else
+        {
+            Debug.LogWarning("PlayFabTest instance not found");
+        }
+    }
+ 
+    #endregion
+ 
+    #region Unity Update
+ 
+    private void Update()
+    {
+        if (isRunning)
+        {
+            elapsedTime += UnityEngine.Time.deltaTime;
+        }
+    }
+ 
+    #endregion
+ 
+    #region Public Accessors
+ 
+    public float GetElapsedTime()
+    {
+        return elapsedTime;
+    }
+ 
+    public bool IsRunning()
+    {
+        return isRunning;
+    }
+ 
+    #endregion
+}
+</code></pre></div>
+    </div>
+  </div>
+ 
+  <!-- Workpiece Stages Modal (3 tabs) -->
+  <div id="workpieceModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('workpieceModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('workpieceModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('workpiecestagesGif', 'gifs/WorkpieceStages.gif', 'gifs/workpiecestagespreview.png')">
+        Workpiece Stages Mechanic
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/workpiecestagespreview.png" alt="Workpiece Stages Preview" class="mechanic-gif" id="workpiecestagesGif">
+      <p>These scripts are what manages and gives the feeling of milling to the player, 
+        I added these because through testing it was apparent that the player had no feedback 
+        when they were milling so the game had a unfinished/pointless feel to it. 
+        I added things such as particles to indicate milling, UI feedback that told the player their setup 
+        and the quality of thier finished piece to make the game feel like reallife whilst also giving game-like feedback.
+ 
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Stage1')">EndPiecePseudoCode.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Stage2')">MillableSurface.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'Stage3')">WorkpieceStageManager.cs</button>
+      </div>
+ 
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="Stage1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class EndPiecePseudoCode : MonoBehaviour
+{
+    /* 
+    Pseudo Code for End Piece Logic
+    Initialize variables:
+    - workpiece stage
+    
+    Update:
+    - Check if workpiece stage is complete
+        - If complete, trigger piece animation
+        - Update game state to reflect completion
+ 
+    after 1st stage, rotate the attachment piece to face the next direction
+    - Check for player interaction to finalize the piece
+        - On interaction, play final animation
+        - Mark the end piece as finished
+        - Update game state to reflect completion
+ 
+    stop timer and record final time
+    put final time on leaderboard
+ 
+    
+ 
+ 
+    */
+}
+</code></pre></div>
+      <div id="Stage2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class MillableSurface : MonoBehaviour
+{
+    [Header("Milling Settings")]
+    public float millingTimeRequired = 3f;
+ 
+    [Tooltip("Optional: require a specific bit name")]
+    public string requiredBitName;
+ 
+    [Header("References")]
+    public WorkpieceStageManager stageManager;
+ 
+    [Header("Machine Tool Socket")]
+    public ToolSocket toolSocket;
+ 
+    [Header("Effects")]
+    public ParticleSystem millingParticles;
+ 
+    private float currentMillingTime;
+    private bool stageReadyToAdvance;
+    private bool isMilling;
+ 
+    // ------------------------------------------------------------------
+    private void Start()
+    {
+        StopMillingEffects();
+        ResetMillingState();
+    }
+ 
+    // ------------------------------------------------------------------
+    private void OnTriggerStay(Collider other)
+    {
+        if (stageReadyToAdvance)
+            return;
+ 
+        // Must be a mill bit
+        MillBitInfo bit = other.GetComponent<MillBitInfo>();
+        if (bit == null)
+            return;
+ 
+        // Tool must be installed in the machine
+        if (toolSocket == null || toolSocket.currentTool == null)
+            return;
+ 
+        // The touching bit MUST be the installed bit
+        if (toolSocket.currentTool != bit)
+            return;
+ 
+        // Optional: enforce specific bit
+        if (!string.IsNullOrEmpty(requiredBitName) &&
+            bit.bitName != requiredBitName)
+            return;
+ 
+        // Stage must allow milling
+        if (!stageManager.CanMillCurrentStage())
+            return;
+ 
+        StartMillingEffects();
+ 
+        currentMillingTime += Time.deltaTime * bit.millingSpeedMultiplier;
+ 
+        if (currentMillingTime >= millingTimeRequired)
+        {
+            stageReadyToAdvance = true;
+            Debug.Log("[MillableSurface] Milling complete, waiting for bit exit");
+        }
+    }
+ 
+    // ------------------------------------------------------------------
+    private void OnTriggerExit(Collider other)
+    {
+        MillBitInfo bit = other.GetComponent<MillBitInfo>();
+        if (bit == null)
+            return;
+ 
+        // Only respond if the exiting bit is the installed one
+        if (toolSocket != null && toolSocket.currentTool != bit)
+            return;
+ 
+        if (stageReadyToAdvance)
+        {
+            stageManager.OnStageMilled();
+        }
+ 
+        ResetMillingState();
+    }
+ 
+    // ------------------------------------------------------------------
+    private void StartMillingEffects()
+    {
+        if (isMilling)
+            return;
+ 
+        isMilling = true;
+ 
+        if (millingParticles != null && !millingParticles.isPlaying)
+            millingParticles.Play();
+    }
+ 
+    // ------------------------------------------------------------------
+    private void StopMillingEffects()
+    {
+        if (!isMilling)
+            return;
+ 
+        isMilling = false;
+ 
+        if (millingParticles != null && millingParticles.isPlaying)
+            millingParticles.Stop();
+    }
+ 
+    // ------------------------------------------------------------------
+    private void ResetMillingState()
+    {
+        currentMillingTime = 0f;
+        stageReadyToAdvance = false;
+        StopMillingEffects();
+    }
+}
+</code></pre></div>
+      <div id="Stage3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+ 
+public enum WorkpieceStage
+{
+    Raw,
+    Stage1,
+    Stage2,
+    Finished
+}
+ 
+public class WorkpieceStageManager : MonoBehaviour
+{
+    [Header("Stage State")]
+    public WorkpieceStage currentStage = WorkpieceStage.Raw;
+ 
+    [Header("Stage Models")]
+    public GameObject rawModel;
+    public GameObject stage1Model;
+    public GameObject stage2Model;
+    public GameObject finishedModel;
+ 
+    [Header("Attachment")]
+    public Transform attachmentPoint;
+    public Vector3 rotationPerStage = new Vector3(0, 90, 0);
+ 
+    [Header("Timer")]
+    public RunTimer runTimer;
+ 
+    [Header("UI")]
+    public TMP_Text materialText;
+    public string materialName = "Material";
+ 
+    [Header("Machine Reference")]
+    public MachineBehaviour machineBehaviour;
+ 
+    // ------------------------------------------------------------------
+    private void Start()
+    {
+        UpdateVisuals();
+        UpdateMaterialUI();
+    }
+ 
+    // ------------------------------------------------------------------
+    public void OnStageMilled()
+    {
+        switch (currentStage)
+        {
+            case WorkpieceStage.Raw:
+                AdvanceStage(WorkpieceStage.Stage1);
+                break;
+ 
+            case WorkpieceStage.Stage1:
+                AdvanceStage(WorkpieceStage.Stage2);
+                break;
+ 
+            case WorkpieceStage.Stage2:
+                Finish();
+                break;
+        }
+    }
+ 
+    public bool CanMillCurrentStage()
+    {
+        return currentStage != WorkpieceStage.Finished;
+    }
+ 
+    // ------------------------------------------------------------------
+    private void AdvanceStage(WorkpieceStage nextStage)
+    {
+        currentStage = nextStage;
+        RotateAttachment();
+        UpdateVisuals();
+        UpdateMaterialUI();
+    }
+ 
+    private void Finish()
+    {
+        currentStage = WorkpieceStage.Finished;
+        UpdateVisuals();
+        runTimer?.StopTimer();
+        UpdateMaterialUI();
+    }
+ 
+    // --------------------------- VISUALS ---------------------------
+    private void RotateAttachment()
+    {
+        if (attachmentPoint != null)
+            attachmentPoint.Rotate(rotationPerStage, Space.Self);
+    }
+ 
+    private void UpdateVisuals()
+    {
+        rawModel?.SetActive(currentStage == WorkpieceStage.Raw);
+        stage1Model?.SetActive(currentStage == WorkpieceStage.Stage1);
+        stage2Model?.SetActive(currentStage == WorkpieceStage.Stage2);
+        finishedModel?.SetActive(currentStage == WorkpieceStage.Finished);
+    }
+ 
+    // --------------------------- UI ---------------------------
+    private void UpdateMaterialUI()
+    {
+        if (materialText == null || machineBehaviour == null)
+            return;
+ 
+        string status = currentStage != WorkpieceStage.Finished
+            ? "Raw"
+            : machineBehaviour.EvaluateMillingQuality().ToString();
+ 
+        materialText.text = $"{materialName}: {status}";
+    }
+}
+</code></pre></div>
+    </div>
+  </div>
+ 
+  <!-- Scriptable Object Modal (6 tabs) -->
+  <div id="scriptableObjectModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('scriptableObjectModal')">×</span>
+      <span class="fullscreen-toggle" onclick="toggleFullscreen('scriptableObjectModal')">⤢</span>
+ 
+      <!-- HEADER: Mechanic Name -->
+      <h2 class="mechanic-title" onclick="toggleGif('scriptableobjectGif', 'gifs/ScriptableObjects.gif', 'gifs/scriptableobjectspreview.png')">
+        Machine System Scriptable Object
+        <span class="play-icon">▶️</span>
+    </h2>
+    <!-- GIF PREVIEW/PLAY -->
+    <img src="gifs/scriptableobjectspreview.png" alt="Scriptable Object Preview" class="mechanic-gif" id="scriptableobjectGif">
+      <p>This is the backbone of not only the machine but the whole project, 
+        I used a scriptable object to store all possible material/mill bit combinations 
+        and then added their optimal RPM range and Feed Speed Range, 
+        this was then used for the workpiece quality control and UI feedback, which made this the most important to polish 
+        because it made the game feel real and added the element where player could play around with set ups and learn the machine properly.
+ 
+      </p>
+ 
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'SO1')">MaterialInfo.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO2')">MillBitInfo.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO3')">MillHeadChecks.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO4')">MillSettings.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO5')">MachineSettings.cs</button>
+        <button class="tablinks" onclick="openTab(event, 'SO6')">MachineSettings.asset</button>
+      </div>
+ 
+      <!-- TAB CONTENT PLACEHOLDER -->
+      <div id="SO1" class="tabcontent" style="display:block;"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class MaterialInfo : MonoBehaviour
+{
+    public string materialName;
+}
+</code></pre></div>
+      <div id="SO2" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class MillBitInfo : MonoBehaviour
+{
+    public string bitName;
+ 
+    public float millingSpeedMultiplier = 1f;
+}
+</code></pre></div>
+      <div id="SO3" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+public class MilHeadChecks : MonoBehaviour
+{
+    public SettingsTesting settings;
+    public MillBitInfo bitInfo;
+ 
+     void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent(out MaterialInfo mat)) 
+            return;
+ 
+        if (settings.TryGetMillingSetting(mat.materialName, bitInfo.bitName, out var setting))
+        {
+            Debug.Log($"Material: {mat.materialName}");
+            Debug.Log($"Bit: {bitInfo.bitName}");
+ 
+            Debug.Log($"Recommended RPM Range: {setting.minRPM} - {setting.maxRPM}");
+            Debug.Log($"Recommended Feed Range: {setting.minFeedRate} - {setting.maxFeedRate}");
+        }
+    }
+}
+</code></pre></div>
+      <div id="SO4" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+[System.Serializable]
+public struct MillSettings
+{
+    public string materialName;
+    public string millBitName;
+ 
+    [Header("Recommended RPM Range")]
+    public float minRPM;
+    public float maxRPM;
+ 
+    [Header("Recommended Feed Rate Range (mm/min)")]
+    public float minFeedRate;
+    public float maxFeedRate;
+}
+</code></pre></div>
+      <div id="SO5" class="tabcontent"><pre><code class="language-csharp">
+using UnityEngine;
+ 
+[CreateAssetMenu(fileName = "SettingsTesting", menuName = "Scriptable Objects/SettingsTesting")]
+public class SettingsTesting : ScriptableObject
+{
+    [Tooltip("List of all valid milling setups")]
+    public MillSettings[] millingSettings;
+ 
+    /// <summary>
+    /// Returns milling data for a given material + bit combination.
+    /// Returns true if found.
+    /// </summary>
+    public bool TryGetMillingSetting(string material, string bit, out MillSettings setting)
+    {
+        foreach (var s in millingSettings)
+        {
+            if (s.materialName == material && s.millBitName == bit)
+            {
+                setting = s;
+                return true;
+            }
+        }
+ 
+        setting = default;
+        return false;
+    }
+}
+</code></pre></div>
+      <div id="SO6" class="tabcontent"><pre><code class="language-csharp">
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c130ce8274e7ce249818d275221021a7, type: 3}
+  m_Name: SettingsTesting
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsTesting
+  millingSettings:
+  - materialName: RegularWood
+    millBitName: FlyCutter
+    minRPM: 3000
+    maxRPM: 8000
+    minFeedRate: 0.07
+    maxFeedRate: 0.1
+  - materialName: SoftMaterial
+    millBitName: FlyCutter
+    minRPM: 1500
+    maxRPM: 4000
+    minFeedRate: 0.05
+    maxFeedRate: 0.1
+  - materialName: HardMaterial
+    millBitName: FlyCutter
+    minRPM: 200
+    maxRPM: 1000
+    minFeedRate: 0.035
+    maxFeedRate: 0.07
+  - materialName: RegularWood
+    millBitName: ShellMill
+    minRPM: 2000
+    maxRPM: 8000
+    minFeedRate: 0.04
+    maxFeedRate: 0.96
+  - materialName: SoftMaterial
+    millBitName: ShellMill
+    minRPM: 1000
+    maxRPM: 4000
+    minFeedRate: 0.003
+    maxFeedRate: 0.03
+  - materialName: HardMaterial
+    millBitName: ShellMill
+    minRPM: 200
+    maxRPM: 1500
+    minFeedRate: 0.02
+    maxFeedRate: 0.05
+  - materialName: RegularWood
+    millBitName: 2Flute
+    minRPM: 12000
+    maxRPM: 20000
+    minFeedRate: 0.032
+    maxFeedRate: 0.1
+  - materialName: SoftMaterial
+    millBitName: 2Flute
+    minRPM: 6000
+    maxRPM: 12000
+    minFeedRate: 0.01
+    maxFeedRate: 0.04
+  - materialName: HardMaterial
+    millBitName: 2Flute
+    minRPM: 1000
+    maxRPM: 4000
+    minFeedRate: 0.01
+    maxFeedRate: 0.035
+  - materialName: RegularWood
+    millBitName: 4Flute
+    minRPM: 12000
+    maxRPM: 20000
+    minFeedRate: 0.048
+    maxFeedRate: 0.16
+  - materialName: SoftMaterial
+    millBitName: 4Flute
+    minRPM: 6000
+    maxRPM: 12000
+    minFeedRate: 0.01
+    maxFeedRate: 0.05
+  - materialName: HardMaterial
+    millBitName: 4Flute
+    minRPM: 1000
+    maxRPM: 4000
+    minFeedRate: 0.01
+    maxFeedRate: 0.04
+</code></pre></div>
+    </div>
+  </div>
+<!-- MODALS SPENT -->
+<div id="playermoveModal" class="modal">
+  <div class="modal-content">
+ 
+    <span class="close" onclick="closeModal('playermoveModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('playermoveModal')">⤢</span>
+ 
+    <h2 class="mechanic-title">Player Movement System</h2>
+ 
+    <!-- =====================================================
+         SWAP THIS IMAGE PATH for your FPS movement preview GIF
+         e.g. src="gifs/fps_preview.png"
+    ===================================================== -->
+    <img src="gifs/fps_preview.png" alt="Player Movement Preview" class="mechanic-gif" id="playermoveGif">
+ 
+    <div class="case-study">
+ 
+      <h3>System Overview</h3>
+      <p>
+        The movement system is built around a central state machine that coordinates
+        four independent mechanics — base movement, wall running, sliding, and grappling.
+        Each system reads and modifies shared velocity, so they chain naturally without
+        interrupting each other.
+      </p>
+ 
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        Maintain continuous movement flow — every mechanic adds to momentum rather than resetting it.
+      </div>
+ 
+      <h3>Problem → Solution</h3>
+      <p><strong>Problem:</strong> With multiple movement systems (wall run, slide, grapple),
+      each mechanic can fight the others if they set velocity independently.</p>
+      <p><strong>Solution:</strong> A shared state handler determines which system is active.
+      Only one state owns velocity at a time, while others feed into it additively.</p>
+      <ul>
+        <li>Momentum is preserved across state transitions</li>
+        <li>Smooth chaining between wall run → slide → grapple</li>
+        <li>New mechanics can be added without touching existing states</li>
+      </ul>
+ 
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">Player Input</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">State Handler</div>
+          <div class="flow-node">Speed Control</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Wall Run</div>
+          <div class="flow-node">Slide</div>
+          <div class="flow-node">Grapple</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Apply Forces / Update Velocity</div>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <p class="code-context">
+      Four scripts cover the full movement system. Each tab is a standalone component
+      that plugs into the shared PlayerMovement state handler.
+    </p>
+ 
+    <!-- ===================== TABS ===================== -->
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'moveStateTab')">State Handling</button>
+      <button class="tablinks" onclick="openTab(event, 'moveWallRunTab')">Wall Running</button>
+      <button class="tablinks" onclick="openTab(event, 'moveSlidingTab')">Sliding</button>
+      <button class="tablinks" onclick="openTab(event, 'moveGrappleTab')">Grapple</button>
+    </div>
+ 
+    <!-- ===================== TAB 1: STATE HANDLING ===================== -->
+    <div id="moveStateTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        Central state machine — determines which movement mode is active and smoothly
+        lerps speed between states (e.g. sprint → slide preserves momentum).
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Speed is lerped rather than snapped when transitioning
+        between states. This is what makes sliding down a slope feel fast and expressive.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+ 
+/// Stuff changed
+/// Added wallrunning and restricted state (Don't forget FixedUpdate part)
+/// made grounded public
+ 
+public class PlayerMovementStateHandling : MonoBehaviour
+{
+    public bool isSprinting { get; private set; }
+    public bool isSliding { get; private set; }
+    
+    [Header("Movement")]
+    private float moveSpeed;
+    public float walkSpeed;
+    public float sprintSpeed;
+    public float slideSpeed;
+    public float wallrunSpeed;
+ 
+    private float desiredMoveSpeed;
+    private float lastDesiredMoveSpeed;
+ 
+    public float speedIncreaseMultiplier;
+    public float slopeIncreaseMultiplier;
+ 
+    public float groundDrag;
+ 
+    [Header("Headbob")]
+    public Transform cameraParent;
+    public float bobbingAmount = 0.05f;
+    public float walkingBobbingSpeed = 14f;
+    public float sprintBobMultiplier = 1.5f;
+    public float crouchCameraHeight = 0.75f;
+ 
+    private float originalCameraParentHeight;
+    private float currentCameraHeight;
+    private float bobTimer;
+    private float currentBobOffset;
+ 
+    [Header("Jumping")]
+    public float jumpForce;
+    public float jumpCooldown;
+    public float airMultiplier;
+    bool readyToJump;
+ 
+    [Header("Crouching")]
+    public float crouchSpeed;
+    public float crouchYScale;
+    private float startYScale;
+ 
+    [Header("Keybinds")]
+    public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode crouchKey = KeyCode.LeftControl;
+ 
+    [Header("Ground Check")]
+    public float playerHeight;
+    public LayerMask whatIsGround;
+    public bool grounded;
+ 
+    [Header("Slope Handling")]
+    public float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
+ 
+ 
+    public Transform orientation;
+ 
+    public Animator anim;
+ 
+    float horizontalInput;
+    float verticalInput;
+ 
+    Vector3 moveDirection;
+ 
+    Rigidbody rb;
+ 
+    public MovementState state;
+    public enum MovementState
+    {
+        restricted,
+        walking,
+        sprinting,
+        wallrunning,
+        crouching,
+        sliding,
+        air
+    }
+ 
+    public bool restricted; // no wasd movement
+    public bool sliding;
+    public bool wallrunning;
+ 
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+ 
+        readyToJump = true;
+ 
+        startYScale = transform.localScale.y;
+    }
+ 
+    private void Update()
+    {
+        anim.SetFloat("speed", Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
+ 
+        HandleHeadBob();
+        // ground check
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+ 
+        MyInput();
+        SpeedControl();
+        StateHandler();
+ 
+        // handle drag
+        if (grounded)
+            rb.linearDamping = groundDrag;
+        else
+            rb.linearDamping = 0;
+    }
+ 
+    private void FixedUpdate()
+    {
+        if (state != MovementState.restricted)
+            MovePlayer();
+    }
+ 
+    private void MyInput()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+ 
+        // when to jump
+        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        {
+            readyToJump = false;
+ 
+            Jump();
+ 
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+ 
+        // start crouch
+        if (Input.GetKeyDown(crouchKey))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+        }
+ 
+        // stop crouch
+        if (Input.GetKeyUp(crouchKey))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        }
+    }
+ 
+    private void StateHandler()
+    {
+        // Mode - Restricted (no input)
+        if (restricted)
+        {
+            state = MovementState.restricted;
+        }
+ 
+        // Mode - Wallrunning
+        else if (wallrunning)
+        {
+            state = MovementState.wallrunning;
+            desiredMoveSpeed = wallrunSpeed;
+        }
+ 
+        // Mode - Sliding
+        else if (sliding)
+        {
+            state = MovementState.sliding;
+            isSliding = true;
+ 
+            if (OnSlope() && rb.linearVelocity.y < 0.1f)
+                desiredMoveSpeed = slideSpeed;
+ 
+            else
+                desiredMoveSpeed = sprintSpeed;
+        }
+ 
+        // Mode - Crouching
+        else if (Input.GetKey(crouchKey))
+        {
+            state = MovementState.crouching;
+            desiredMoveSpeed = crouchSpeed;
+        }
+ 
+        // Mode - Sprinting
+        else if (grounded && Input.GetKey(sprintKey))
+        {
+            state = MovementState.sprinting;
+            isSprinting = true;
+            desiredMoveSpeed = sprintSpeed;
+        }
+ 
+        // Mode - Walking
+        else if (grounded)
+        {
+            state = MovementState.walking;
+            desiredMoveSpeed = walkSpeed;
+        }
+ 
+        // Mode - Air
+        else
+        {
+            state = MovementState.air;
+        }
+ 
+        // check if desiredMoveSpeed has changed drastically
+        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
+        {
+            StopAllCoroutines();
+            StartCoroutine(SmoothlyLerpMoveSpeed());
+        }
+        else
+        {
+            moveSpeed = desiredMoveSpeed;
+        }
+ 
+        lastDesiredMoveSpeed = desiredMoveSpeed;
+    }
+ 
+    private IEnumerator SmoothlyLerpMoveSpeed()
+    {
+        // smoothly lerp movementSpeed to desired value
+        float time = 0;
+        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+        float startValue = moveSpeed;
+ 
+        while (time < difference)
+        {
+            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+ 
+            if (OnSlope())
+            {
+                float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
+                float slopeAngleIncrease = 1 + (slopeAngle / 90f);
+ 
+                time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
+            }
+            else
+                time += Time.deltaTime * speedIncreaseMultiplier;
+ 
+            yield return null;
+        }
+ 
+        moveSpeed = desiredMoveSpeed;
+    }
+ 
+    private void MovePlayer()
+    {
+        if (Mathf.Abs(horizontalInput) < 0.01f && Mathf.Abs(verticalInput) < 0.01f)
+            return;
+ 
+        // calculate movement direction
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+ 
+        // skip movement if no input
+        if (moveDirection.sqrMagnitude < 0.01f) return;
+ 
+        // on slope
+        if (OnSlope() && !exitingSlope)
+        {
+            rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
+            if (rb.linearVelocity.y > 0)
+                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+        }
+        else if (grounded)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        else
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+ 
+        rb.useGravity = !OnSlope();
+    }
+    private void SpeedControl()
+    {
+        // limiting speed on slope
+        if (OnSlope() && !exitingSlope)
+        {
+            if (rb.linearVelocity.magnitude > moveSpeed)
+                rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+        }
+ 
+        // limiting speed on ground or in air
+        else
+        {
+            Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+ 
+            // limit velocity if needed
+            if (flatVel.magnitude > moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+            }
+        }
+    }
+ 
+    private void Jump()
+    {
+        exitingSlope = true;
+ 
+        // reset y velocity
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+ 
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+    private void ResetJump()
+    {
+        readyToJump = true;
+ 
+        exitingSlope = false;
+    }
+ 
+    public bool OnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+ 
+        return false;
+    }
+ 
+    public Vector3 GetSlopeMoveDirection(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+    
+    private void HandleHeadBob()
+    {
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        bool isMovingEnough = horizontalVelocity.magnitude > 0.1f;
+ 
+        float targetBobOffset = isMovingEnough ? Mathf.Sin(bobTimer) * bobbingAmount : 0f;
+        currentBobOffset = Mathf.Lerp(currentBobOffset, targetBobOffset, Time.deltaTime * walkingBobbingSpeed);
+ 
+        bool isCrouching = state == MovementState.crouching;
+        bool isSliding = state == MovementState.sliding;
+        bool isSprinting = state == MovementState.sprinting;
+ 
+        float targetCameraHeight = isCrouching || isSliding ? crouchCameraHeight : originalCameraParentHeight;
+        currentCameraHeight = Mathf.Lerp(currentCameraHeight, targetCameraHeight, Time.deltaTime * 10f);
+ 
+        if (!grounded || isSliding || isCrouching)
+        {
+            bobTimer = 0f;
+        }
+        else if (isMovingEnough)
+        {
+            float bobSpeed = walkingBobbingSpeed * (isSprinting ? sprintBobMultiplier : 1f);
+            bobTimer += Time.deltaTime * bobSpeed;
+        }
+        else
+        {
+            bobTimer = 0f;
+        }
+ 
+        cameraParent.localPosition = new Vector3(
+            cameraParent.localPosition.x,
+            currentCameraHeight + currentBobOffset,
+            cameraParent.localPosition.z);
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===================== TAB 2: WALL RUNNING ===================== -->
+    <div id="moveWallRunTab" class="tabcontent">
+      <p class="code-context">
+        Raycasts left and right each frame to detect walls. When a wall is found and
+        the player is airborne, it activates wall-running movement and starts a timer.
+        Wall jumps launch the player away from the wall surface with configurable force.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Wall memory (<code>lastWall</code>) prevents the player from
+        infinitely re-triggering the same wall — they must leave and return to use it again,
+        keeping wall-run chaining intentional rather than accidental.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+ 
+public class WallRunning : MonoBehaviour
+{
+    public bool isWallRunning { get; private set; }
+ 
+    [Header("Wall Running")]
+    public LayerMask whatIsWall;
+    public LayerMask whatIsGround;
+    public float wallRunForce = 200f;
+    public float wallRunJumpUpForce = 7f;
+    public float wallRunJumpSideForce = 7f;
+    public float maxWallRunTime = 1f;
+    public float wallClimbSpeed;
+    private float wallRunTimer;
+ 
+    [Header("Input")]
+    public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode upwardsRunKey = KeyCode.LeftShift;
+    public KeyCode downwardsRunKey = KeyCode.LeftControl;
+    private bool upwardsRunning;
+    private bool downwardsRunning;
+    private float horizontalInput;
+    private float verticalInput;
+ 
+    [Header("Limitations")]
+    public bool doJumpOnEndOfTimer = false;
+    public bool resetDoubleJumpsOnNewWall = true;
+    public bool resetDoubleJumpsOnEveryWall = false;
+    public int allowedWallJumps = 1;
+ 
+    [Header("Detection")]
+    public float wallCheckDistance = 0.7f;
+    public float minJumpHeight = 2f;
+    public float exitWallTime = 0.2f;
+    private float exitWallTimer;
+ 
+    [Header("Gravity")]
+    public bool useGravity = false;
+    public float yDrossleSpeed;
+ 
+    [Header("References")]
+    public Transform orientation;
+    private PlayerMovementAdvancedFinished pm;
+    private Rigidbody rb;
+ 
+    private RaycastHit leftWallHit;
+    private RaycastHit rightWallHit;
+    private bool wallLeft;
+    private bool wallRight;
+    private bool exitingWall;
+    private bool wallRemembered;
+    private Transform lastWall;
+    private int wallJumpsDone;
+ 
+    public TextMeshProUGUI text_wallState;
+ 
+    private void Start()
+    {
+        if (whatIsWall.value == 0)
+            whatIsWall = LayerMask.GetMask("Default");
+        if (whatIsGround.value == 0)
+            whatIsGround = LayerMask.GetMask("Default");
+ 
+        rb = GetComponent&lt;Rigidbody&gt;();
+        pm = GetComponent&lt;PlayerMovementAdvancedFinished&gt;();
+    }
+ 
+    private void Update()
+    {
+        CheckForWall();
+        StateMachine();
+        if (pm.grounded &amp;&amp; lastWall != null)
+            lastWall = null;
+    }
+ 
+    private void FixedUpdate()
+    {
+        if (pm.wallrunning &amp;&amp; !exitingWall)
+            WallRunningMovement();
+    }
+ 
+    private void StateMachine()
+    {
+        horizontalInput  = Input.GetAxisRaw("Horizontal");
+        verticalInput    = Input.GetAxisRaw("Vertical");
+        upwardsRunning   = Input.GetKey(upwardsRunKey);
+        downwardsRunning = Input.GetKey(downwardsRunKey);
+ 
+        if ((wallLeft || wallRight) &amp;&amp; verticalInput > 0 &amp;&amp; AboveGround() &amp;&amp; !exitingWall)
+        {
+            if (!pm.wallrunning) StartWallRun();
+            isWallRunning = true;
+ 
+            wallRunTimer -= Time.deltaTime;
+            if (wallRunTimer &lt; 0 &amp;&amp; pm.wallrunning)
+            {
+                if (doJumpOnEndOfTimer) WallJump();
+                else { exitingWall = true; exitWallTimer = exitWallTime; }
+            }
+            if (Input.GetKeyDown(jumpKey)) WallJump();
+        }
+        else if (exitingWall)
+        {
+            pm.restricted = true;
+            if (pm.wallrunning) StopWallRun();
+            if (exitWallTimer > 0) exitWallTimer -= Time.deltaTime;
+            if (exitWallTimer &lt;= 0) exitingWall = false;
+        }
+        else
+        {
+            if (pm.wallrunning) StopWallRun();
+        }
+ 
+        if (!exitingWall &amp;&amp; pm.restricted)
+            pm.restricted = false;
+    }
+ 
+    private void CheckForWall()
+    {
+        wallRight = Physics.Raycast(transform.position,  orientation.right, out rightWallHit, wallCheckDistance, whatIsWall);
+        wallLeft  = Physics.Raycast(transform.position, -orientation.right, out leftWallHit,  wallCheckDistance, whatIsWall);
+ 
+        if ((wallLeft || wallRight) &amp;&amp; NewWallHit())
+        {
+            wallJumpsDone = 0;
+            wallRunTimer  = maxWallRunTime;
+        }
+    }
+ 
+    private void RememberLastWall()
+    {
+        if (wallLeft)  lastWall = leftWallHit.transform;
+        if (wallRight) lastWall = rightWallHit.transform;
+    }
+ 
+    private bool NewWallHit()
+    {
+        if (lastWall == null) return true;
+        if (wallLeft  &amp;&amp; leftWallHit.transform  != lastWall) return true;
+        if (wallRight &amp;&amp; rightWallHit.transform != lastWall) return true;
+        return false;
+    }
+ 
+    private bool AboveGround()
+    {
+        return !Physics.Raycast(transform.position, Vector3.down, minJumpHeight, whatIsGround);
+    }
+ 
+    private void StartWallRun()
+    {
+        pm.wallrunning = true;
+        wallRunTimer   = maxWallRunTime;
+        rb.useGravity  = useGravity;
+        wallRemembered = false;
+    }
+ 
+    private void WallRunningMovement()
+    {
+        rb.useGravity = useGravity;
+ 
+        Vector3 wallNormal  = wallRight ? rightWallHit.normal : leftWallHit.normal;
+        Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+ 
+        if ((orientation.forward - wallForward).magnitude > (orientation.forward - -wallForward).magnitude)
+            wallForward = -wallForward;
+ 
+        float velY = rb.linearVelocity.y;
+        if (!useGravity)
+        {
+            if (velY > 0) velY -= yDrossleSpeed;
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, velY, rb.linearVelocity.z);
+        }
+ 
+        rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
+ 
+        if (upwardsRunning)
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x,  wallClimbSpeed, rb.linearVelocity.z);
+        if (downwardsRunning)
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, -wallClimbSpeed, rb.linearVelocity.z);
+ 
+        if (!exitingWall &amp;&amp; !(wallLeft &amp;&amp; horizontalInput > 0) &amp;&amp; !(wallRight &amp;&amp; horizontalInput &lt; 0))
+            rb.AddForce(-wallNormal * 100, ForceMode.Force);
+ 
+        if (!wallRemembered) { RememberLastWall(); wallRemembered = true; }
+    }
+ 
+    private void StopWallRun()
+    {
+        rb.useGravity  = true;
+        pm.wallrunning = false;
+    }
+ 
+    public void WallJump()
+    {
+        exitingWall   = true;
+        exitWallTimer = exitWallTime;
+ 
+        Vector3 forceToApply = Vector3.zero;
+        if (wallLeft)  forceToApply = transform.up * wallRunJumpUpForce + leftWallHit.normal  * wallRunJumpSideForce;
+        if (wallRight) forceToApply = transform.up * wallRunJumpUpForce + rightWallHit.normal * wallRunJumpSideForce;
+ 
+        bool firstJump = wallJumpsDone &lt; allowedWallJumps;
+        wallJumpsDone++;
+ 
+        if (!firstJump)
+            forceToApply = new Vector3(forceToApply.x, 0f, forceToApply.z);
+ 
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        rb.AddForce(forceToApply, ForceMode.Impulse);
+ 
+        RememberLastWall();
+        StopWallRun();
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===================== TAB 3: SLIDING ===================== -->
+    <div id="moveSlidingTab" class="tabcontent">
+      <p class="code-context">
+        Shrinks the player's collider and adds a downward impulse on start.
+        On flat ground it applies a timed force in the input direction; on slopes it
+        uses the slope projection so the player accelerates naturally downhill.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Checking <code>pm.wallrunning</code> before starting a slide
+        prevents the two systems from conflicting — you can't accidentally trigger a slide mid-wall-run.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+ 
+public class Sliding : MonoBehaviour
+{
+    public bool isSliding { get; private set; }
+ 
+    [Header("References")]
+    public Transform orientation;
+    public Transform playerObj;
+    private Rigidbody rb;
+    private PlayerMovementAdvancedFinished pm;
+ 
+    [Header("Sliding")]
+    public float maxSlideTime;
+    public float slideForce;
+    private float slideTimer;
+ 
+    public float slideYScale;
+    private float startYScale;
+ 
+    [Header("Input")]
+    public KeyCode slideKey = KeyCode.LeftControl;
+    private float horizontalInput;
+    private float verticalInput;
+ 
+    private void Start()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+        pm = GetComponent&lt;PlayerMovementAdvancedFinished&gt;();
+        startYScale = playerObj.localScale.y;
+    }
+ 
+    private void Update()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput   = Input.GetAxisRaw("Vertical");
+ 
+        if (Input.GetKeyDown(slideKey) &amp;&amp; (horizontalInput != 0 || verticalInput != 0))
+            StartSlide();
+ 
+        if (Input.GetKeyUp(slideKey) &amp;&amp; pm.sliding)
+            StopSlide();
+    }
+ 
+    private void FixedUpdate()
+    {
+        if (pm.sliding) SlidingMovement();
+    }
+ 
+    private void StartSlide()
+    {
+        if (pm.wallrunning) return;
+ 
+        pm.sliding = true;
+        isSliding  = true;
+ 
+        playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
+        rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+        slideTimer = maxSlideTime;
+    }
+ 
+    private void SlidingMovement()
+    {
+        Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+ 
+        if (!pm.OnSlope() || rb.linearVelocity.y > -0.1f)
+        {
+            rb.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
+            slideTimer -= Time.deltaTime;
+        }
+        else
+        {
+            rb.AddForce(pm.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force);
+        }
+ 
+        if (slideTimer &lt;= 0) StopSlide();
+    }
+ 
+    private void StopSlide()
+    {
+        pm.sliding = false;
+        playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===================== TAB 4: GRAPPLE ===================== -->
+    <div id="moveGrappleTab" class="tabcontent">
+      <p class="code-context">
+        A raycast from the camera detects grapple-able surfaces and shows a world-space
+        indicator. On right-click the player is pulled toward the hit point using
+        acceleration force. A rope is drawn via LineRenderer with a camera-relative
+        offset so it feels attached to the player's hand.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Using <code>ForceMode.Acceleration</code> (not Impulse)
+        means the pull builds gradually — the player swings through the point rather than
+        snapping, which keeps the momentum-based feel of the whole system intact.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+ 
+public class GrappleSystem : MonoBehaviour
+{
+    public bool isTutGrappling { get; private set; }
+ 
+    [Header("Grapple Settings")]
+    public float maxGrappleDistance = 25f;
+    public float pullSpeed          = 10f;
+    public float stopDistance       = 2f;
+    public float upwardBoost        = 3f;
+    public LayerMask grappleMask;
+ 
+    [Header("References")]
+    public Transform    playerCamera;
+    public Rigidbody    playerRb;
+    public LineRenderer lineRenderer;
+    public GameObject   indicatorPrefab;
+ 
+    private Vector3    grapplePoint;
+    private GameObject indicatorInstance;
+    private bool       isGrappling;
+    private Transform  currentTarget;
+ 
+    void Start()
+    {
+        if (indicatorPrefab)
+        {
+            indicatorInstance = Instantiate(indicatorPrefab);
+            indicatorInstance.SetActive(false);
+        }
+        lineRenderer.enabled = false;
+    }
+ 
+    void Update()
+    {
+        HandleTargetIndicator();
+ 
+        if (Input.GetMouseButtonDown(1) &amp;&amp; currentTarget != null) StartGrapple();
+        if (Input.GetMouseButtonUp(1))                             StopGrapple();
+        if (isGrappling)                                           DrawRope();
+    }
+ 
+    void FixedUpdate()
+    {
+        if (isGrappling) PullPlayer();
+    }
+ 
+    void HandleTargetIndicator()
+    {
+        Ray ray = new Ray(playerCamera.position, playerCamera.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, grappleMask))
+        {
+            currentTarget = hit.transform;
+            if (indicatorInstance)
+            {
+                indicatorInstance.SetActive(true);
+                indicatorInstance.transform.position = hit.point;
+            }
+        }
+        else
+        {
+            currentTarget = null;
+            if (indicatorInstance) indicatorInstance.SetActive(false);
+        }
+    }
+ 
+    void StartGrapple()
+    {
+        grapplePoint         = currentTarget.position;
+        isGrappling          = true;
+        lineRenderer.enabled = true;
+        isTutGrappling       = true;
+ 
+        // Ghostrunner-style upward kick on grapple start
+        playerRb.linearVelocity = new Vector3(
+            playerRb.linearVelocity.x,
+            upwardBoost,
+            playerRb.linearVelocity.z
+        );
+    }
+ 
+    void StopGrapple()
+    {
+        isGrappling          = false;
+        lineRenderer.enabled = false;
+    }
+ 
+    void PullPlayer()
+    {
+        Vector3 direction = (grapplePoint - playerRb.position).normalized;
+        float   distance  = Vector3.Distance(playerRb.position, grapplePoint);
+ 
+        if (distance &lt; stopDistance) { StopGrapple(); return; }
+ 
+        playerRb.AddForce(direction * pullSpeed, ForceMode.Acceleration);
+    }
+ 
+    void DrawRope()
+    {
+        Vector3 localOffset = new Vector3(0.3f, -0.2f, 0.3f);
+        Vector3 startPos    = playerCamera.TransformPoint(localOffset);
+ 
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, startPos);
+        lineRenderer.SetPosition(1, grapplePoint);
+    }
+}
+      </code></pre>
+    </div>
+    </div>
+ 
+</div>
+  <!-- ========================= -->
+<!-- PLAYER COMBAT MODAL START -->
+<!-- ========================= -->
+ 
+<div id="playerattackModal" class="modal">
+  <div class="modal-content">
+ 
+    <span class="close" onclick="closeModal('playerattackModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('playerattackModal')">⤢</span>
+ 
+    <h2 class="mechanic-title">Player Combat System</h2>
+ 
+    <img
+      id="attackGif"
+      src="gifs/attack_preview.png"
+      class="mechanic-gif"
+      onclick="toggleGif('attackGif', 'gifs/attack.gif', 'gifs/attack_preview.png')"
+    >
+ 
+    <div class="case-study">
+ 
+      <h3>System Overview</h3>
+      <p>
+        The combat system separates input, weapon behaviour, damage and abilities into
+        four focused layers. <code>PlayerShoot</code> catches raw input and fires C# Actions —
+        everything else subscribes to those events, so adding a new weapon never requires
+        touching the input layer.
+      </p>
+ 
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        Input, weapon state, damage and abilities are fully decoupled — each layer only
+        knows about its own responsibility.
+      </div>
+ 
+      <h3>Problem → Solution</h3>
+      <p><strong>Problem:</strong> Combining shooting, reloading, ammo tracking and damage
+      in one script creates a bloated class that breaks whenever any part changes.</p>
+      <p><strong>Solution:</strong> Static C# Actions on <code>PlayerShoot</code> act as a message bus.
+      <code>Gun</code> subscribes to reload, <code>Bullets</code> handles firing, and neither script
+      knows the other exists.</p>
+      <ul>
+        <li>Swap weapons by changing which <code>Gun</code>/<code>Bullets</code> objects are active</li>
+        <li><code>GunData</code> ScriptableObject stores all weapon stats — no magic numbers in code</li>
+        <li>Slam ability is self-contained and communicates with enemies through <code>EnemyHits</code></li>
+      </ul>
+ 
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">PlayerShoot (Input)</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Bullets + Gun</div>
+          <div class="flow-node">GunData (SO)</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Target / EnemyHit</div>
+          <div class="flow-node">PlayerSlamAttack</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">EnemyHits.HitBySlam() / WinManager.TriggerLoss()</div>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <p class="code-context">
+      Seven scripts, grouped into four tabs by responsibility.
+      Multiple scripts in one tab are shown as clearly labelled sections.
+    </p>
+ 
+    <!-- TABS -->
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'combatInputTab')">Input</button>
+      <button class="tablinks" onclick="openTab(event, 'combatWeaponTab')">Weapon</button>
+      <button class="tablinks" onclick="openTab(event, 'combatDamageTab')">Damage</button>
+      <button class="tablinks" onclick="openTab(event, 'combatAbilityTab')">Ability</button>
+    </div>
+ 
+    <!-- ===== TAB 1: INPUT ===== -->
+    <div id="combatInputTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        Fires static C# Actions on mouse click and reload key. All weapon scripts
+        subscribe to these events — the input layer never imports or references them directly.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Using static <code>Action</code> events means any number of
+        weapon scripts can listen for shoot/reload without <code>PlayerShoot</code> needing a
+        reference to any of them. Adding a new weapon is just a matter of subscribing.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── PlayerShoot.cs ────────────────────────────────────────────────
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+ 
+public class PlayerShoot : MonoBehaviour
+{
+    public static Action shootInput;
+    public static Action reloadInput;
+ 
+    [SerializeField] private KeyCode reloadKey = KeyCode.R;
+ 
+    private void Update()
+    {
+        if (Input.GetMouseButton(0))
+            shootInput?.Invoke();
+ 
+        if (Input.GetKeyDown(reloadKey))
+            reloadInput?.Invoke();
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 2: WEAPON ===== -->
+    <div id="combatWeaponTab" class="tabcontent">
+      <p class="code-context">
+        Three scripts make up the weapon layer. <code>GunData</code> is a ScriptableObject
+        that stores all stats. <code>Bullets</code> handles firing and the inspect animation.
+        <code>Gun</code> subscribes to the reload event and drives the HUD ammo counter.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> <code>GunData</code> as a ScriptableObject means weapon
+        stats live as an asset in the project — designers can tweak fire rate, mag size and
+        reload time without touching any code, and multiple weapons share the same scripts
+        with different data assets.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── GunData.cs (ScriptableObject) ────────────────────────────────
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+ 
+[CreateAssetMenu(fileName = "Gun", menuName = "Weapon/Gun")]
+public class GunData : ScriptableObject
+{
+    [Header("Info")]
+    public new string name;
+ 
+    [Header("Shooting")]
+    public float damage;
+    public float maxDistance;
+ 
+    [Header("Reloading")]
+    public int  currentAmmo  = 18;
+    public int  magSize      = 18;
+    public int  numberOfMags = 3;
+    [Tooltip("In RPM")] public float fireRate;
+    public float reloadTime;
+    [HideInInspector] public bool reloading;
+}
+ 
+ 
+// ── Bullets.cs ────────────────────────────────────────────────────
+using UnityEngine;
+using System.Collections;
+ 
+public class Bullets : MonoBehaviour
+{
+    [SerializeField] private GunData gunData;
+    public Transform   bulletSpawnPoint;
+    public GameObject  bulletPrefab;
+    public float       bulletSpeed = 100;
+    public Animator    anim;
+ 
+    private bool isShooting;
+ 
+    private void Start()
+    {
+        gunData.currentAmmo = gunData.magSize;
+    }
+ 
+    void Update()
+    {
+        anim.SetBool("shot", isShooting);
+ 
+        // Fire
+        if (Input.GetMouseButtonDown(0) &amp;&amp; gunData.currentAmmo &gt; 0)
+        {
+            isShooting = true;
+            var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+            gunData.currentAmmo--;
+ 
+            Rigidbody rb = bullet.GetComponent&lt;Rigidbody&gt;();
+            if (rb != null)
+                rb.linearVelocity = bulletSpawnPoint.forward * bulletSpeed;
+        }
+        else
+        {
+            isShooting = false;
+        }
+ 
+        // Inspect animation
+        if (Input.GetKeyDown(KeyCode.Mouse3))
+        {
+            anim.SetBool("inspecting", true);
+            StartCoroutine(InspectTime());
+        }
+ 
+        // Reload
+        if (gunData.numberOfMags != 0)
+        {
+            if (Input.GetKeyDown(KeyCode.R) &amp;&amp; gunData.currentAmmo != gunData.magSize)
+            {
+                gunData.currentAmmo = gunData.magSize;
+                gunData.numberOfMags--;
+            }
+        }
+        else
+        {
+            gunData.currentAmmo = gunData.numberOfMags;
+        }
+    }
+ 
+    IEnumerator InspectTime()
+    {
+        yield return new WaitForSeconds(3.733f);
+        anim.SetBool("inspecting", false);
+    }
+}
+ 
+ 
+// ── Gun.cs ────────────────────────────────────────────────────────
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+ 
+public class Gun : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private GunData  gunData;
+    [SerializeField] private Transform cam;
+ 
+    public TextMeshProUGUI BulletCounts;
+ 
+    float timeSinceLastShot;
+ 
+    private void Start()
+    {
+        PlayerShoot.reloadInput += StartReload;
+        gunData.currentAmmo  = 18;
+        gunData.numberOfMags = 3;
+    }
+ 
+    private void OnDisable() =&gt; gunData.reloading = false;
+ 
+    public void StartReload()
+    {
+        if (!gunData.reloading &amp;&amp; this.gameObject.activeSelf)
+            StartCoroutine(Reload());
+    }
+ 
+    private IEnumerator Reload()
+    {
+        gunData.reloading = true;
+        yield return new WaitForSeconds(gunData.reloadTime);
+        gunData.currentAmmo = gunData.magSize;
+        gunData.reloading   = false;
+    }
+ 
+    private void Update()
+    {
+        timeSinceLastShot += Time.deltaTime;
+        Debug.DrawRay(cam.position, cam.forward * gunData.maxDistance);
+ 
+        BulletCounts.text = "Bullets: " + gunData.currentAmmo + "/" + gunData.magSize
+                          + "&lt;br&gt;Number of Mags Left: " + gunData.numberOfMags;
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 3: DAMAGE ===== -->
+    <div id="combatDamageTab" class="tabcontent">
+      <p class="code-context">
+        Two scripts handle the damage layer. <code>Target</code> implements the
+        <code>IDamageable</code> interface for health/destruction. <code>EnemyHit</code> tracks
+        player lives and triggers the loss state when they run out.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> <code>Target</code> implements an <code>IDamageable</code>
+        interface — any script that deals damage just calls <code>TakeDamage()</code> without
+        needing to know what type of object it's hitting. New damageable objects are added
+        by implementing the interface, not by modifying the damage dealer.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── Target.cs ────────────────────────────────────────────────────
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+ 
+public class Target : MonoBehaviour, IDamageable
+{
+    public float health;
+ 
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health &lt;= 0) Destroy(gameObject);
+    }
+}
+ 
+ 
+// ── EnemyHit.cs ──────────────────────────────────────────────────
+using UnityEngine;
+ 
+public class EnemyHit : MonoBehaviour
+{
+    public int  playerLives = 3;
+    private bool isDead     = false;
+ 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("EnemyBullet"))
+        {
+            playerLives--;
+            Destroy(collision.gameObject);
+        }
+    }
+ 
+    void Update()
+    {
+        if (playerLives &lt;= 0 &amp;&amp; !isDead)
+        {
+            isDead = true;
+ 
+            WinManager winManager = FindObjectOfType&lt;WinManager&gt;();
+            if (winManager != null)
+                winManager.TriggerLoss();
+        }
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 4: ABILITY ===== -->
+    <div id="combatAbilityTab" class="tabcontent">
+      <p class="code-context">
+        Ground slam ability — only activates when the player is airborne and high enough
+        above the ground. On landing it fires an <code>OverlapSphere</code> and calls
+        <code>HitBySlam()</code> on every enemy in range.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> The height check uses a separate raycast before
+        the slam starts, not on landing — this gives the player immediate feedback
+        ("too close to ground") rather than silently doing nothing when they land.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── PlayerSlamAttack.cs ───────────────────────────────────────────
+using UnityEngine;
+ 
+public class PlayerSlamAttack : MonoBehaviour
+{
+    public bool hasSlammed { get; private set; }
+ 
+    [Header("Slam Settings")]
+    public float slamForce       = 20f;
+    public float aoeRadius       = 5f;
+    public float minSlamHeight   = 3f;
+    public LayerMask groundMask;
+    public LayerMask enemyMask;
+    public GameObject slamEffectPrefab;
+ 
+    private Rigidbody rb;
+    private bool isGrounded = true;
+    private bool isSlamming = false;
+ 
+    void Start()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+    }
+ 
+    void Update()
+    {
+        CheckGrounded();
+ 
+        if (!isGrounded &amp;&amp; !isSlamming &amp;&amp; Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            if (GetGroundDistance() &gt;= minSlamHeight)
+            {
+                StartSlam();
+                hasSlammed = true;
+            }
+        }
+    }
+ 
+    void StartSlam()
+    {
+        isSlamming = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.AddForce(Vector3.down * slamForce, ForceMode.VelocityChange);
+    }
+ 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (isSlamming &amp;&amp; collision.gameObject.CompareTag("Ground"))
+        {
+            DoAoE();
+            isSlamming = false;
+        }
+    }
+ 
+    void DoAoE()
+    {
+        if (slamEffectPrefab != null)
+            Instantiate(slamEffectPrefab, transform.position, Quaternion.identity);
+ 
+        Collider[] hits = Physics.OverlapSphere(transform.position, aoeRadius, enemyMask);
+        foreach (Collider hit in hits)
+        {
+            EnemyHits enemy = hit.GetComponentInParent&lt;EnemyHits&gt;();
+            if (enemy != null)
+                enemy.HitBySlam();
+        }
+    }
+ 
+    void CheckGrounded()
+    {
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, groundMask);
+    }
+ 
+    float GetGroundDistance()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundMask))
+            return hit.distance;
+        return Mathf.Infinity;
+    }
+ 
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, aoeRadius);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * minSlamHeight);
+    }
+}
+      </code></pre>
+    </div>
+ 
+  </div>
+</div>
+</div>
+ 
+<!-- ======================= -->
+<!-- PLAYER COMBAT MODAL END -->
+<!-- ======================= -->
+ 
+ 
+<!-- ================================ -->
+<!-- ENEMY COMBAT MODAL START         -->
+<!-- ================================ -->
+<div id="enemyattackModal" class="modal">
+  <div class="modal-content">
+ 
+    <span class="close" onclick="closeModal('enemyattackModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('enemyattackModal')">⤢</span>
+ 
+    <h2 class="mechanic-title">Enemy Combat System</h2>
+ 
+    <img src="gifs/enemy_preview.png" alt="Enemy Combat Preview" class="mechanic-gif">
+ 
+    <div class="case-study">
+ 
+      <h3>System Overview</h3>
+      <p>
+        The enemy combat system is made up of four independent components: hit detection,
+        ranged shooting, flying movement, and melee AI. Each enemy type is assembled from
+        these components, keeping behaviour modular and easy to extend.
+      </p>
+ 
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        Each enemy type is a composition of focused scripts — hit detection, movement, and
+        attack are separate so any combination can be mixed and matched.
+      </div>
+ 
+      <h3>Problem → Solution</h3>
+      <p><strong>Problem:</strong> Monolithic enemy scripts become hard to maintain when different
+      enemy types need different combinations of shooting, movement and hit responses.</p>
+      <p><strong>Solution:</strong> Split behaviour into single-responsibility components.
+      A flying shooter gets <code>FlyingEnemy</code> + <code>EnemyShooting</code> + <code>EnemyHits</code>.
+      A melee enemy gets <code>MeleeEnemyAI</code> + <code>EnemyHits</code>. No duplicated logic.</p>
+      <ul>
+        <li>Hit detection is shared across all enemy types</li>
+        <li>Shooting and movement are opt-in per enemy prefab</li>
+        <li>Wave spawner is fully decoupled from enemy behaviour</li>
+      </ul>
+ 
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">Wave Spawner</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Flying Enemy</div>
+          <div class="flow-node">Melee Enemy AI</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Enemy Shooting</div>
+          <div class="flow-node">Enemy Hits</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">On Enemy Killed → Spawner</div>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <p class="code-context">
+      Five scripts grouped into four tabs. Tabs with multiple scripts show each one as a clearly labelled section.
+    </p>
+ 
+    <!-- TABS -->
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'enemyHitDetectTab')">Hit Detection</button>
+      <button class="tablinks" onclick="openTab(event, 'enemyAITab')">AI &amp; Movement</button>
+      <button class="tablinks" onclick="openTab(event, 'enemyShootingTab')">Shooting</button>
+      <button class="tablinks" onclick="openTab(event, 'enemySpawnTab')">Spawning</button>
+    </div>
+ 
+    <!-- ===== TAB 1: HIT DETECTION ===== -->
+    <div id="enemyHitDetectTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        Tracks headshots and body hits separately with configurable thresholds.
+        Notifies the Wave Spawner on death so it can decrement the alive counter.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Headshots and body hits use separate counters with
+        their own thresholds — one headshot kills instantly while body shots require
+        multiple hits, creating satisfying skill-based variety without extra scripts.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+ 
+public class EnemyHits : MonoBehaviour
+{
+    private int bodyHits = 0;
+    private int headHits = 0;
+    public int headshotThreshold = 1;
+    public int bodyHitThreshold = 3;
+ 
+    private Animator anim;
+    private EnemySpawner spawner;
+ 
+    void Awake()
+    {
+        anim = GetComponent&lt;Animator&gt;();
+        spawner = FindObjectOfType&lt;EnemySpawner&gt;();
+    }
+ 
+    public void HitHead()
+    {
+        headHits++;
+        if (headHits &gt;= headshotThreshold)
+            Die();
+    }
+ 
+    public void HitBody()
+    {
+        bodyHits++;
+        if (bodyHits &gt;= bodyHitThreshold)
+            Die();
+    }
+ 
+    public void HitBySlam()
+    {
+        HitBody();
+    }
+ 
+    private void Die()
+    {
+        if (spawner != null)
+            spawner.OnEnemyKilled();
+ 
+        Destroy(gameObject);
+    }
+ 
+    private System.Collections.IEnumerator ResetSlamAnim(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (anim != null)
+            anim.SetBool("isSlammed", false);
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 2: AI & MOVEMENT ===== -->
+    <div id="enemyAITab" class="tabcontent">
+      <p class="code-context">
+        Two enemy movement types. <code>FlyingEnemy</code> drifts in random directions within
+        a spawn-relative bounding box. <code>MeleeEnemyAI</code> chases the player using
+        a FOV + line-of-sight check and randomised strafing.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Both scripts use kinematic Rigidbody movement —
+        they move via <code>MovePosition</code> rather than forces, giving precise control
+        without fighting Unity's physics solver.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── FlyingEnemy.cs ────────────────────────────────────────────────
+using UnityEngine;
+ 
+[RequireComponent(typeof(Rigidbody))]
+public class FlyingEnemy : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    public float moveSpeed = 5f;
+    public Vector3 movementBounds = new Vector3(20f, 10f, 20f);
+    public float changeDirectionInterval = 3f;
+ 
+    private Rigidbody rb;
+    private Vector3 moveDirection;
+    private Vector3 spawnCenter;
+    private float nextDirectionChange;
+ 
+    void Awake()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+        rb.useGravity = false;
+        rb.isKinematic = true;
+        rb.freezeRotation = true;
+    }
+ 
+    void Start()
+    {
+        spawnCenter = transform.position;
+        PickNewDirection();
+    }
+ 
+    void FixedUpdate()
+    {
+        Vector3 newPos = rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime;
+ 
+        Vector3 offset = newPos - spawnCenter;
+        offset.x = Mathf.Clamp(offset.x, -movementBounds.x, movementBounds.x);
+        offset.y = Mathf.Clamp(offset.y, -movementBounds.y, movementBounds.y);
+        offset.z = Mathf.Clamp(offset.z, -movementBounds.z, movementBounds.z);
+        rb.MovePosition(spawnCenter + offset);
+ 
+        if (Time.time &gt;= nextDirectionChange)
+            PickNewDirection();
+    }
+ 
+    void PickNewDirection()
+    {
+        moveDirection = new Vector3(
+            Random.Range(-1f, 1f),
+            Random.Range(-0.5f, 0.5f),
+            Random.Range(-1f, 1f)
+        ).normalized;
+ 
+        nextDirectionChange = Time.time + changeDirectionInterval;
+    }
+}
+ 
+ 
+// ── MeleeEnemyAI.cs ───────────────────────────────────────────────
+using UnityEngine;
+ 
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Collider))]
+public class MeleeEnemyAI : MonoBehaviour
+{
+    [Header("Target Settings")]
+    public string playerTag = "Player";
+    private Transform player;
+ 
+    [Header("Movement Settings")]
+    public float moveSpeed = 3f;
+    public float strafeSpeed = 2f;
+    public float strafeInterval = 2f;
+    public float strafeChance = 0.5f;
+ 
+    [Header("Detection Settings")]
+    public float detectionRange = 15f;
+    public float fieldOfViewAngle = 120f;
+    public LayerMask obstacleMask;
+    public float eyeHeight = 1.2f;
+ 
+    private float nextStrafeChangeTime;
+    private int strafeDirection = 0;
+    private Rigidbody rb;
+ 
+    void Awake()
+    {
+        rb = GetComponent&lt;Rigidbody&gt;();
+        rb.isKinematic = true;
+        rb.freezeRotation = true;
+    }
+ 
+    void Start()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag(playerTag);
+        if (playerObj != null)
+            player = playerObj.transform;
+    }
+ 
+    void FixedUpdate()
+    {
+        if (player == null) return;
+ 
+        float distance = Vector3.Distance(transform.position, player.position);
+        if (distance &gt; detectionRange || !PlayerInLineOfSight()) return;
+ 
+        Vector3 toPlayer = (player.position - transform.position).normalized;
+        Vector3 moveDir = toPlayer;
+ 
+        if (Time.time &gt;= nextStrafeChangeTime)
+        {
+            nextStrafeChangeTime = Time.time + strafeInterval;
+            strafeDirection = (Random.value &lt; strafeChance) ? Random.Range(-1, 2) : 0;
+        }
+ 
+        if (strafeDirection != 0)
+        {
+            Vector3 strafe = Vector3.Cross(Vector3.up, toPlayer) * strafeDirection;
+            moveDir = (toPlayer + strafe * 0.5f).normalized;
+        }
+ 
+        rb.MovePosition(rb.position + moveDir * moveSpeed * Time.fixedDeltaTime);
+ 
+        Vector3 lookDir = new Vector3(toPlayer.x, 0f, toPlayer.z);
+        if (lookDir.sqrMagnitude &gt; 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(lookDir);
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, 5f * Time.fixedDeltaTime));
+        }
+    }
+ 
+    bool PlayerInLineOfSight()
+    {
+        Vector3 origin    = transform.position + Vector3.up * eyeHeight;
+        Vector3 targetDir = (player.position + Vector3.up * eyeHeight - origin).normalized;
+ 
+        float angle = Vector3.Angle(transform.forward, targetDir);
+        if (angle &gt; fieldOfViewAngle / 2f) return false;
+ 
+        float distance = Vector3.Distance(origin, player.position + Vector3.up * eyeHeight);
+ 
+        if (Physics.Raycast(origin, targetDir, out RaycastHit hit, distance, obstacleMask))
+            return false;
+ 
+        return true;
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 3: SHOOTING ===== -->
+    <div id="enemyShootingTab" class="tabcontent">
+      <p class="code-context">
+        Raycasts toward the player each frame to check range and line of sight.
+        Only fires when both conditions are met, preventing shooting through walls.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> The line-of-sight raycast uses a combined obstacle +
+        player layer mask — if anything other than the player is hit first, it returns
+        false. Enemies never shoot through walls or other geometry.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+ 
+public class EnemyShooting : MonoBehaviour
+{
+    [Header("Setup")]
+    public GameObject projectilePrefab;
+    public Transform firePoint;
+ 
+    [Header("Shooting Settings")]
+    public float fireRate = 2f;
+    public float projectileSpeed = 10f;
+ 
+    [Header("Detection Settings")]
+    public float detectionRange = 15f;
+    public LayerMask obstacleMask;
+    public LayerMask playerMask;
+ 
+    private Transform player;
+    private float nextFireTime = 0f;
+ 
+    void Start()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+            player = playerObj.transform;
+    }
+ 
+    void Update()
+    {
+        if (player == null) return;
+ 
+        float distance = Vector3.Distance(transform.position, player.position);
+ 
+        if (distance &lt;= detectionRange &amp;&amp; HasLineOfSight())
+        {
+            if (Time.time &gt;= nextFireTime)
+            {
+                ShootAtPlayer();
+                nextFireTime = Time.time + fireRate;
+            }
+        }
+    }
+ 
+    bool HasLineOfSight()
+    {
+        Vector3 direction = (player.position - firePoint.position).normalized;
+        float distance = Vector3.Distance(firePoint.position, player.position);
+ 
+        if (Physics.Raycast(firePoint.position, direction, out RaycastHit hit, distance, obstacleMask | playerMask))
+            return hit.collider.CompareTag("Player");
+ 
+        return false;
+    }
+ 
+    void ShootAtPlayer()
+    {
+        if (projectilePrefab == null || firePoint == null) return;
+ 
+        GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Vector3 direction = (player.position - firePoint.position).normalized;
+ 
+        Rigidbody rb = projectile.GetComponent&lt;Rigidbody&gt;();
+        if (rb != null)
+            rb.linearVelocity = direction * projectileSpeed;
+ 
+        projectile.transform.rotation = Quaternion.LookRotation(direction);
+    }
+ 
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 4: SPAWNING ===== -->
+    <div id="enemySpawnTab" class="tabcontent">
+      <p class="code-context">
+        Data-driven wave system. Validates each spawn point with a slope check and
+        overlap sphere. Automatically triggers the win condition when all waves clear.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Up to 200 spawn attempts are made per enemy — the
+        spawner never silently skips an enemy on complex terrain. If no valid spot is
+        found after 200 tries, the enemy is simply skipped rather than crashing.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using System.Collections;
+using TMPro;
+ 
+[System.Serializable]
+public class Wave
+{
+    public string waveName;
+    public WaveEnemy[] enemies;
+}
+ 
+[System.Serializable]
+public class WaveEnemy
+{
+    public GameObject enemyPrefab;
+    public int count;
+}
+ 
+public class EnemySpawner : MonoBehaviour
+{
+    [Header("Spawn Settings")]
+    public float spawnRadius = 20f;
+    public float spawnHeight = 10f;
+    public LayerMask groundLayer;
+    public LayerMask obstacleLayer;
+    public float maxSlope = 45f;
+    public float spawnHeightOffset = 5f;
+ 
+    [Header("Waves")]
+    public Wave[] waves;
+    public float timeBetweenWaves = 5f;
+    public float spawnDelay = 0.3f;
+ 
+    [Header("UI")]
+    public TextMeshProUGUI enemiesAliveText;
+ 
+    private int currentWaveIndex = 0;
+    private int enemiesRemainingAlive = 0;
+    private bool isSpawning = false;
+ 
+    void Start()
+    {
+        StartCoroutine(BeginNextWave());
+    }
+ 
+    IEnumerator BeginNextWave()
+    {
+        if (currentWaveIndex &gt;= waves.Length)
+        {
+            enemiesAliveText.text = "All waves complete!";
+            yield return new WaitForSeconds(1f);
+ 
+            WinManager winManager = FindObjectOfType&lt;WinManager&gt;();
+            if (winManager != null)
+                winManager.TriggerWin();
+            yield break;
+        }
+ 
+        enemiesAliveText.text = $"Wave {currentWaveIndex + 1} Incoming...";
+        yield return new WaitForSeconds(timeBetweenWaves);
+ 
+        StartCoroutine(SpawnWave(waves[currentWaveIndex]));
+        currentWaveIndex++;
+    }
+ 
+    IEnumerator SpawnWave(Wave wave)
+    {
+        isSpawning = true;
+ 
+        foreach (var group in wave.enemies)
+        {
+            for (int i = 0; i &lt; group.count; i++)
+            {
+                SpawnEnemy(group.enemyPrefab);
+                yield return new WaitForSeconds(spawnDelay);
+            }
+        }
+ 
+        isSpawning = false;
+        UpdateUI();
+    }
+ 
+    void SpawnEnemy(GameObject prefab)
+    {
+        if (prefab == null) return;
+ 
+        int attempts = 0;
+        bool spawned = false;
+ 
+        while (!spawned &amp;&amp; attempts &lt; 200)
+        {
+            Vector3 randomPos = RandomPointInCapsule(transform.position, spawnRadius, spawnHeight);
+ 
+            if (Physics.Raycast(randomPos, Vector3.down, out RaycastHit hit, 100f, groundLayer))
+            {
+                float slope = Vector3.Angle(hit.normal, Vector3.up);
+                if (slope &lt;= maxSlope)
+                {
+                    Collider[] colliders = Physics.OverlapSphere(hit.point + Vector3.up * 0.5f, 0.5f, obstacleLayer);
+                    if (colliders.Length == 0)
+                    {
+                        Instantiate(prefab, hit.point, Quaternion.identity);
+                        enemiesRemainingAlive++;
+                        spawned = true;
+                    }
+                }
+            }
+            attempts++;
+        }
+    }
+ 
+    Vector3 RandomPointInCapsule(Vector3 center, float radius, float height)
+    {
+        float angle = Random.Range(0f, Mathf.PI * 2f);
+        float r = Mathf.Sqrt(Random.Range(0f, 1f)) * radius;
+        float x = Mathf.Cos(angle) * r;
+        float z = Mathf.Sin(angle) * r;
+        float y = Random.Range(0f, height);
+        return center + new Vector3(x, y + spawnHeightOffset, z);
+    }
+ 
+    public void OnEnemyKilled()
+    {
+        enemiesRemainingAlive--;
+        UpdateUI();
+ 
+        if (enemiesRemainingAlive &lt;= 0 &amp;&amp; !isSpawning)
+            StartCoroutine(BeginNextWave());
+    }
+ 
+    void UpdateUI()
+    {
+        if (enemiesAliveText == null) return;
+ 
+        if (enemiesRemainingAlive &gt; 0)
+            enemiesAliveText.text = $"Wave {currentWaveIndex} - Enemies Left: {enemiesRemainingAlive}";
+        else if (!isSpawning)
+            enemiesAliveText.text = "All enemies defeated!";
+    }
+}
+      </code></pre>
+    </div>
+ 
+  </div>
+</div>
+</div>
+<!-- ============================== -->
+<!-- ENEMY COMBAT MODAL END         -->
+<!-- ============================== -->
+ 
+ 
+<!-- ============================== -->
+<!-- GAMEPLAY SYSTEMS MODAL START   -->
+<!-- ============================== -->
+<div id="gameplayModal" class="modal">
+  <div class="modal-content">
+ 
+    <span class="close" onclick="closeModal('gameplayModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('gameplayModal')">⤢</span>
+ 
+    <h2 class="mechanic-title">Gameplay Systems</h2>
+ 
+    <img src="gifs/gameplay_preview.png" alt="Gameplay Systems Preview" class="mechanic-gif">
+ 
+    <div class="case-study">
+ 
+      <h3>System Overview</h3>
+      <p>
+        These are the supporting systems that tie the game together — dialogue, camera,
+        scene management, and wave triggering. Each script has a single clear job and
+        communicates with others only where necessary.
+      </p>
+ 
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        Keep game flow systems (intro, tutorial, win/loss) completely decoupled from
+        gameplay mechanics so either side can be changed without touching the other.
+      </div>
+ 
+      <h3>Problem → Solution</h3>
+      <p><strong>Problem:</strong> Game flow logic (dialogue, wins, scene loading) tends to
+      accumulate in one bloated manager script, making it fragile and hard to modify.</p>
+      <p><strong>Solution:</strong> Each responsibility gets its own script.
+      <code>IntroDialogue</code> owns the intro. <code>TutorialDialogue</code> owns the tutorial.
+      <code>WinManager</code> owns the end state. They communicate only through public method
+      calls, keeping dependencies minimal.</p>
+      <ul>
+        <li>Tutorial detects mechanic usage via public bool properties on each script</li>
+        <li>Win/loss state is triggered by a single public method call from the spawner</li>
+        <li>Camera and cursor management are isolated in dedicated small scripts</li>
+      </ul>
+ 
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">Intro Dialogue</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Tutorial Dialogue</div>
+          <div class="flow-node">Wave Manager</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Enemy Spawner</div>
+          <div class="flow-node">Player Cam</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Win Manager → Scene Load</div>
+        </div>
+      </div>
+ 
+    </div>
+ 
+    <p class="code-context">
+      Seven scripts grouped into three tabs by responsibility: Dialogue, Game Flow, and Camera.
+    </p>
+ 
+    <!-- TABS -->
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'gpDialogueTab')">Dialogue</button>
+      <button class="tablinks" onclick="openTab(event, 'gpFlowTab')">Game Flow</button>
+      <button class="tablinks" onclick="openTab(event, 'gpCameraTab')">Camera</button>
+    </div>
+ 
+    <!-- ===== TAB 1: DIALOGUE ===== -->
+    <div id="gpDialogueTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        Two dialogue systems. <code>IntroDialogue</code> blocks the player and runs a
+        typewriter sequence before the game starts. <code>TutorialDialogue</code> detects
+        mechanic usage via public bools on each script and advances prompts automatically.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> The tutorial reads public bool properties
+        (<code>isSliding</code>, <code>isWallRunning</code>, etc.) directly from each mechanic
+        script rather than using events — low coupling, and adding a new step is just
+        a new bool check in the switch statement.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── IntroDialogue.cs ─────────────────────────────────────────────
+using UnityEngine;
+using TMPro;
+using System.Collections;
+ 
+public class IntroDialogue : MonoBehaviour
+{
+    [TextArea(3, 10)]
+    public string[] dialogueLines;
+    public GameObject dialoguePanel;
+    public TMP_Text dialogueText;
+    public TMP_Text continuePrompt;
+    public GameObject player;
+    public GameObject playerUI;
+    public float typingSpeed = 0.03f;
+ 
+    private int currentLine = 0;
+    private bool isDialogueActive = true;
+    private bool isTyping = false;
+ 
+    void Start()
+    {
+        dialoguePanel.SetActive(true);
+        continuePrompt.gameObject.SetActive(false);
+        dialogueText.text = "";
+ 
+        if (player != null) player.SetActive(false);
+        if (playerUI != null) playerUI.SetActive(false);
+ 
+        StartCoroutine(TypeLine());
+    }
+ 
+    void Update()
+    {
+        if (!isDialogueActive) return;
+ 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (isTyping)
+            {
+                // Skip to full line instantly
+                StopAllCoroutines();
+                dialogueText.text = dialogueLines[currentLine];
+                isTyping = false;
+                continuePrompt.gameObject.SetActive(true);
+            }
+            else
+            {
+                currentLine++;
+                if (currentLine &lt; dialogueLines.Length)
+                {
+                    continuePrompt.gameObject.SetActive(false);
+                    StartCoroutine(TypeLine());
+                }
+                else
+                {
+                    EndDialogue();
+                }
+            }
+        }
+    }
+ 
+    IEnumerator TypeLine()
+    {
+        isTyping = true;
+        dialogueText.text = "";
+ 
+        foreach (char c in dialogueLines[currentLine])
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+ 
+        isTyping = false;
+        StartCoroutine(ShowContinuePrompt());
+    }
+ 
+    IEnumerator ShowContinuePrompt()
+    {
+        continuePrompt.gameObject.SetActive(true);
+        continuePrompt.alpha = 0f;
+        while (continuePrompt.alpha &lt; 1f)
+        {
+            continuePrompt.alpha += Time.deltaTime * 2f;
+            yield return null;
+        }
+    }
+ 
+    void EndDialogue()
+    {
+        isDialogueActive = false;
+        dialoguePanel.SetActive(false);
+        dialogueText.text = "";
+        continuePrompt.gameObject.SetActive(false);
+ 
+        if (player != null) player.SetActive(true);
+        if (playerUI != null) playerUI.SetActive(true);
+    }
+}
+ 
+ 
+// ── TutorialDialogue.cs ──────────────────────────────────────────
+using UnityEngine;
+using TMPro;
+using System.Collections;
+ 
+public class TutorialDialogue : MonoBehaviour
+{
+    [Header("References")]
+    public TMP_Text tutorialText;
+    public TMP_Text uiTextToHide;
+    public GameObject tutorialCanvas;
+    public GameObject WaveManager;
+ 
+    [Header("Mechanic Scripts")]
+    public PlayerMovementAdvancedFinished sprintScript;
+    public Sliding slideScript;
+    public GrappleSystem grappleScript;
+    public WallRunningRemakeDone wallRunScript;
+    public PlayerSlamAttack slamScript;
+ 
+    [Header("Tutorial Texts")]
+    [TextArea] public string sprintText = "";
+    [TextArea] public string slideText = "";
+    [TextArea] public string grappleText = "";
+    [TextArea] public string wallRunText = "";
+    [TextArea] public string slamText = "";
+ 
+    [Header("Settings")]
+    public float nextPromptDelay = 0.75f;
+    public float fadeSpeed = 3f;
+    public float typingSpeed = 0.03f;
+ 
+    private enum Step { Sprint, Slide, Grapple, WallRun, Slam, Done }
+    private Step currentStep = Step.Sprint;
+    private bool tutorialActive = true;
+    private bool transitioning = false;
+    private bool isTyping = false;
+ 
+    private CanvasGroup textGroup;
+ 
+    void Start()
+    {
+        if (uiTextToHide != null) uiTextToHide.enabled = false;
+        if (WaveManager != null) WaveManager.SetActive(false);
+        if (tutorialCanvas != null) tutorialCanvas.SetActive(true);
+ 
+        textGroup = tutorialText.GetComponent&lt;CanvasGroup&gt;();
+        if (textGroup == null)
+            textGroup = tutorialText.gameObject.AddComponent&lt;CanvasGroup&gt;();
+ 
+        textGroup.alpha = 0f;
+        StartCoroutine(ShowPromptWithFade());
+    }
+ 
+    void Update()
+    {
+        if (!tutorialActive || transitioning) return;
+ 
+        switch (currentStep)
+        {
+            case Step.Sprint:   if (sprintScript != null   &amp;&amp; sprintScript.isSprinting)     StartCoroutine(AdvanceTutorial()); break;
+            case Step.Slide:    if (slideScript != null    &amp;&amp; slideScript.isSliding)        StartCoroutine(AdvanceTutorial()); break;
+            case Step.Grapple:  if (grappleScript != null  &amp;&amp; grappleScript.isTutGrappling) StartCoroutine(AdvanceTutorial()); break;
+            case Step.WallRun:  if (wallRunScript != null  &amp;&amp; wallRunScript.isWallRunning)  StartCoroutine(AdvanceTutorial()); break;
+            case Step.Slam:     if (slamScript != null     &amp;&amp; slamScript.hasSlammed)        StartCoroutine(AdvanceTutorial()); break;
+        }
+    }
+ 
+    IEnumerator AdvanceTutorial()
+    {
+        if (isTyping) yield break;
+        transitioning = true;
+ 
+        yield return StartCoroutine(FadeOutText());
+        yield return new WaitForSeconds(nextPromptDelay);
+ 
+        currentStep++;
+        if (currentStep == Step.Done) { EndTutorial(); yield break; }
+ 
+        yield return StartCoroutine(ShowPromptWithFade());
+        transitioning = false;
+    }
+ 
+    IEnumerator ShowPromptWithFade()
+    {
+        tutorialText.text = "";
+        yield return StartCoroutine(FadeInText());
+        yield return StartCoroutine(TypeText(GetPromptForStep(currentStep)));
+    }
+ 
+    IEnumerator TypeText(string line)
+    {
+        isTyping = true;
+        tutorialText.text = "";
+        foreach (char c in line)
+        {
+            tutorialText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+        isTyping = false;
+    }
+ 
+    string GetPromptForStep(Step step)
+    {
+        switch (step)
+        {
+            case Step.Sprint:  return sprintText;
+            case Step.Slide:   return slideText;
+            case Step.Grapple: return grappleText;
+            case Step.WallRun: return wallRunText;
+            case Step.Slam:    return slamText;
+        }
+        return "";
+    }
+ 
+    IEnumerator FadeInText()
+    {
+        textGroup.alpha = 0f;
+        while (textGroup.alpha &lt; 1f) { textGroup.alpha += Time.deltaTime * fadeSpeed; yield return null; }
+        textGroup.alpha = 1f;
+    }
+ 
+    IEnumerator FadeOutText()
+    {
+        while (textGroup.alpha &gt; 0f) { textGroup.alpha -= Time.deltaTime * fadeSpeed; yield return null; }
+        textGroup.alpha = 0f;
+    }
+ 
+    void EndTutorial()
+    {
+        tutorialActive = false;
+        StartCoroutine(FinishSequence());
+    }
+ 
+    IEnumerator FinishSequence()
+    {
+        yield return StartCoroutine(FadeOutText());
+        tutorialText.text = "";
+        if (uiTextToHide != null) uiTextToHide.enabled = true;
+        if (WaveManager != null) WaveManager.SetActive(true);
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 2: GAME FLOW ===== -->
+    <div id="gpFlowTab" class="tabcontent">
+      <p class="code-context">
+        Three scripts manage game state. <code>WinManager</code> handles win/loss with a shared
+        dialogue coroutine. <code>WaveManager</code> is a lightweight trigger that activates the
+        spawner. <code>GoToMenu</code> returns to the main menu on Escape.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Win and loss both funnel through the same
+        <code>ShowEndDialogue</code> coroutine — the only difference is which string array
+        is passed in. Both paths always behave consistently with zero duplicated code.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── WinManager.cs ────────────────────────────────────────────────
+using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
+using System.Collections;
+using UnityEngine.UI;
+ 
+public class WinManager : MonoBehaviour
+{
+    [Header("References")]
+    public GameObject player;
+    public GameObject playerUI;
+    public GameObject dialogueCanvas;
+    public TMP_Text dialogueText;
+ 
+    [Header("Dialogue Settings")]
+    [TextArea] public string[] deathDialogue = { "You have fallen in battle..." };
+    [TextArea] public string[] winDialogue = { "You are victorious!" };
+    public float typingSpeed = 0.04f;
+    public float fadeDuration = 1.2f;
+ 
+    private bool isEnding = false;
+ 
+    void Start()
+    {
+        if (dialogueCanvas != null)
+            dialogueCanvas.SetActive(false);
+    }
+ 
+    public void TriggerLoss() { if (!isEnding) StartCoroutine(ShowEndDialogue(deathDialogue)); }
+    public void TriggerWin()  { if (!isEnding) StartCoroutine(ShowEndDialogue(winDialogue)); }
+ 
+    IEnumerator ShowEndDialogue(string[] dialogueLines)
+    {
+        isEnding = true;
+ 
+        if (player != null)   player.SetActive(false);
+        if (playerUI != null) playerUI.SetActive(false);
+        if (dialogueCanvas != null) dialogueCanvas.SetActive(true);
+ 
+        foreach (string line in dialogueLines)
+        {
+            yield return StartCoroutine(TypeText(line));
+            yield return StartCoroutine(WaitForSpace());
+        }
+ 
+        dialogueText.text = "&lt;color=#AAAAAA&gt;&lt;i&gt;[Press SPACE to return to menu]&lt;/i&gt;&lt;/color&gt;";
+        yield return StartCoroutine(WaitForSpace());
+ 
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        SceneManager.LoadScene(0);
+    }
+ 
+    IEnumerator TypeText(string fullText)
+    {
+        dialogueText.text = "";
+        foreach (char c in fullText)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+    }
+ 
+    IEnumerator WaitForSpace()
+    {
+        while (!Input.GetKeyDown(KeyCode.Space))
+            yield return null;
+        yield return null;
+    }
+}
+ 
+ 
+// ── WaveManager.cs ───────────────────────────────────────────────
+using UnityEngine;
+using System.Collections;
+ 
+public class WaveManager : MonoBehaviour
+{
+    public GameObject Wave;
+ 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+            StartWave();
+    }
+ 
+    public void StartWave()
+    {
+        Wave.SetActive(true);
+    }
+}
+ 
+ 
+// ── GoToMenu.cs ──────────────────────────────────────────────────
+using UnityEngine;
+using UnityEngine.SceneManagement;
+ 
+public class GoToMenu : MonoBehaviour
+{
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            SceneManager.LoadScene(0);
+        }
+    }
+}
+      </code></pre>
+    </div>
+ 
+    <!-- ===== TAB 3: CAMERA ===== -->
+    <div id="gpCameraTab" class="tabcontent">
+      <p class="code-context">
+        Two scripts split camera responsibility. <code>MoveCamera</code> snaps the camera body
+        to the player's position. <code>PlayerCam</code> handles mouse-look rotation on the
+        camera child, clamping vertical look and rotating an orientation transform for movement.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Separating position (MoveCamera) from rotation
+        (PlayerCam) keeps both scripts simple and independent — the player mesh never
+        tilts when looking up or down, but movement always follows the camera's
+        horizontal facing via the orientation transform.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── MoveCamera.cs ────────────────────────────────────────────────
+using UnityEngine;
+ 
+public class MoveCamera : MonoBehaviour
+{
+    public Transform cameraPosition;
+ 
+    private void Update()
+    {
+        transform.position = cameraPosition.position;
+    }
+}
+ 
+ 
+// ── PlayerCam.cs ─────────────────────────────────────────────────
+using UnityEngine;
+ 
+public class PlayerCam : MonoBehaviour
+{
+    public float sensX;
+    public float sensY;
+ 
+    public Transform orientation;
+ 
+    float xRotation;
+    float yRotation;
+ 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+ 
+    private void Update()
+    {
+        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+ 
+        yRotation += mouseX;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+ 
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+    }
+}
+      </code></pre>
+    </div>
+ 
+  </div>
+</div>
+</div>
+<!-- ============================== -->
+<!-- GAMEPLAY SYSTEMS MODAL END     -->
+<!-- ============================== -->
+ 
+ 
+<section id="contact" class="contact">
+  <h2 class="section-title">Contact</h2>
+ 
+  <p>Email: lpatriciogalle@gmail.com</p>
+  <p>Number: +34 604541670</p>
+</section>
+ 
+  <script src="script.js"></script>
+</body>
+</html>
