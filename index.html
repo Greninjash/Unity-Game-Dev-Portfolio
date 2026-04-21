@@ -22,6 +22,7 @@
  
     <div class="nav-links">
       <a href="#projects">Projects</a>
+      <a href="#systems">Systems</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </div>
@@ -2807,11 +2808,11 @@ MonoBehaviour:
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+
 /// Stuff changed
 /// Added wallrunning and restricted state (Don't forget FixedUpdate part)
 /// made grounded public
- 
+
 public class PlayerMovementStateHandling : MonoBehaviour
 {
     public bool isSprinting { get; private set; }
@@ -2823,65 +2824,65 @@ public class PlayerMovementStateHandling : MonoBehaviour
     public float sprintSpeed;
     public float slideSpeed;
     public float wallrunSpeed;
- 
+
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
- 
+
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
- 
+
     public float groundDrag;
- 
+
     [Header("Headbob")]
     public Transform cameraParent;
     public float bobbingAmount = 0.05f;
     public float walkingBobbingSpeed = 14f;
     public float sprintBobMultiplier = 1.5f;
     public float crouchCameraHeight = 0.75f;
- 
+
     private float originalCameraParentHeight;
     private float currentCameraHeight;
     private float bobTimer;
     private float currentBobOffset;
- 
+
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump;
- 
+
     [Header("Crouching")]
     public float crouchSpeed;
     public float crouchYScale;
     private float startYScale;
- 
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
     public KeyCode crouchKey = KeyCode.LeftControl;
- 
+
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
     public bool grounded;
- 
+
     [Header("Slope Handling")]
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
- 
- 
+
+
     public Transform orientation;
- 
+
     public Animator anim;
- 
+
     float horizontalInput;
     float verticalInput;
- 
+
     Vector3 moveDirection;
- 
+
     Rigidbody rb;
- 
+
     public MovementState state;
     public enum MovementState
     {
@@ -2893,75 +2894,75 @@ public class PlayerMovementStateHandling : MonoBehaviour
         sliding,
         air
     }
- 
+
     public bool restricted; // no wasd movement
     public bool sliding;
     public bool wallrunning;
- 
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
- 
+
         readyToJump = true;
- 
+
         startYScale = transform.localScale.y;
     }
- 
+
     private void Update()
     {
         anim.SetFloat("speed", Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
- 
+
         HandleHeadBob();
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
- 
+
         MyInput();
         SpeedControl();
         StateHandler();
- 
+
         // handle drag
         if (grounded)
             rb.linearDamping = groundDrag;
         else
             rb.linearDamping = 0;
     }
- 
+
     private void FixedUpdate()
     {
         if (state != MovementState.restricted)
             MovePlayer();
     }
- 
+
     private void MyInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
- 
+
         // when to jump
         if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
- 
+
             Jump();
- 
+
             Invoke(nameof(ResetJump), jumpCooldown);
         }
- 
+
         // start crouch
         if (Input.GetKeyDown(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
- 
+
         // stop crouch
         if (Input.GetKeyUp(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
     }
- 
+
     private void StateHandler()
     {
         // Mode - Restricted (no input)
@@ -2969,34 +2970,34 @@ public class PlayerMovementStateHandling : MonoBehaviour
         {
             state = MovementState.restricted;
         }
- 
+
         // Mode - Wallrunning
         else if (wallrunning)
         {
             state = MovementState.wallrunning;
             desiredMoveSpeed = wallrunSpeed;
         }
- 
+
         // Mode - Sliding
         else if (sliding)
         {
             state = MovementState.sliding;
             isSliding = true;
- 
+
             if (OnSlope() && rb.linearVelocity.y < 0.1f)
                 desiredMoveSpeed = slideSpeed;
- 
+
             else
                 desiredMoveSpeed = sprintSpeed;
         }
- 
+
         // Mode - Crouching
         else if (Input.GetKey(crouchKey))
         {
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
         }
- 
+
         // Mode - Sprinting
         else if (grounded && Input.GetKey(sprintKey))
         {
@@ -3004,20 +3005,20 @@ public class PlayerMovementStateHandling : MonoBehaviour
             isSprinting = true;
             desiredMoveSpeed = sprintSpeed;
         }
- 
+
         // Mode - Walking
         else if (grounded)
         {
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
         }
- 
+
         // Mode - Air
         else
         {
             state = MovementState.air;
         }
- 
+
         // check if desiredMoveSpeed has changed drastically
         if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
         {
@@ -3028,48 +3029,48 @@ public class PlayerMovementStateHandling : MonoBehaviour
         {
             moveSpeed = desiredMoveSpeed;
         }
- 
+
         lastDesiredMoveSpeed = desiredMoveSpeed;
     }
- 
+
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
         // smoothly lerp movementSpeed to desired value
         float time = 0;
         float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
         float startValue = moveSpeed;
- 
+
         while (time < difference)
         {
             moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
- 
+
             if (OnSlope())
             {
                 float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
                 float slopeAngleIncrease = 1 + (slopeAngle / 90f);
- 
+
                 time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
             }
             else
                 time += Time.deltaTime * speedIncreaseMultiplier;
- 
+
             yield return null;
         }
- 
+
         moveSpeed = desiredMoveSpeed;
     }
- 
+
     private void MovePlayer()
     {
         if (Mathf.Abs(horizontalInput) < 0.01f && Mathf.Abs(verticalInput) < 0.01f)
             return;
- 
+
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
- 
+
         // skip movement if no input
         if (moveDirection.sqrMagnitude < 0.01f) return;
- 
+
         // on slope
         if (OnSlope() && !exitingSlope)
         {
@@ -3081,7 +3082,7 @@ public class PlayerMovementStateHandling : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         else
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
- 
+
         rb.useGravity = !OnSlope();
     }
     private void SpeedControl()
@@ -3092,12 +3093,12 @@ public class PlayerMovementStateHandling : MonoBehaviour
             if (rb.linearVelocity.magnitude > moveSpeed)
                 rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
         }
- 
+
         // limiting speed on ground or in air
         else
         {
             Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
- 
+
             // limit velocity if needed
             if (flatVel.magnitude > moveSpeed)
             {
@@ -3106,23 +3107,23 @@ public class PlayerMovementStateHandling : MonoBehaviour
             }
         }
     }
- 
+
     private void Jump()
     {
         exitingSlope = true;
- 
+
         // reset y velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
- 
+
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
     private void ResetJump()
     {
         readyToJump = true;
- 
+
         exitingSlope = false;
     }
- 
+
     public bool OnSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
@@ -3130,10 +3131,10 @@ public class PlayerMovementStateHandling : MonoBehaviour
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
         }
- 
+
         return false;
     }
- 
+
     public Vector3 GetSlopeMoveDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
@@ -3143,17 +3144,17 @@ public class PlayerMovementStateHandling : MonoBehaviour
     {
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         bool isMovingEnough = horizontalVelocity.magnitude > 0.1f;
- 
+
         float targetBobOffset = isMovingEnough ? Mathf.Sin(bobTimer) * bobbingAmount : 0f;
         currentBobOffset = Mathf.Lerp(currentBobOffset, targetBobOffset, Time.deltaTime * walkingBobbingSpeed);
- 
+
         bool isCrouching = state == MovementState.crouching;
         bool isSliding = state == MovementState.sliding;
         bool isSprinting = state == MovementState.sprinting;
- 
+
         float targetCameraHeight = isCrouching || isSliding ? crouchCameraHeight : originalCameraParentHeight;
         currentCameraHeight = Mathf.Lerp(currentCameraHeight, targetCameraHeight, Time.deltaTime * 10f);
- 
+
         if (!grounded || isSliding || isCrouching)
         {
             bobTimer = 0f;
@@ -3167,7 +3168,7 @@ public class PlayerMovementStateHandling : MonoBehaviour
         {
             bobTimer = 0f;
         }
- 
+
         cameraParent.localPosition = new Vector3(
             cameraParent.localPosition.x,
             currentCameraHeight + currentBobOffset,
@@ -3643,24 +3644,24 @@ public class GrappleSystem : MonoBehaviour
   <!-- ========================= -->
 <!-- PLAYER COMBAT MODAL START -->
 <!-- ========================= -->
- 
+
 <div id="playerattackModal" class="modal">
   <div class="modal-content">
- 
+
     <span class="close" onclick="closeModal('playerattackModal')">&times;</span>
     <span class="fullscreen-toggle" onclick="toggleFullscreen('playerattackModal')">⤢</span>
- 
+
     <h2 class="mechanic-title">Player Combat System</h2>
- 
+
     <img
       id="attackGif"
       src="gifs/attack_preview.png"
       class="mechanic-gif"
       onclick="toggleGif('attackGif', 'gifs/attack.gif', 'gifs/attack_preview.png')"
     >
- 
+
     <div class="case-study">
- 
+
       <h3>System Overview</h3>
       <p>
         The combat system separates input, weapon behaviour, damage and abilities into
@@ -3668,13 +3669,13 @@ public class GrappleSystem : MonoBehaviour
         everything else subscribes to those events, so adding a new weapon never requires
         touching the input layer.
       </p>
- 
+
       <div class="highlight-box">
         <strong>Core Goal:</strong><br>
         Input, weapon state, damage and abilities are fully decoupled — each layer only
         knows about its own responsibility.
       </div>
- 
+
       <h3>Problem → Solution</h3>
       <p><strong>Problem:</strong> Combining shooting, reloading, ammo tracking and damage
       in one script creates a bloated class that breaks whenever any part changes.</p>
@@ -3686,7 +3687,7 @@ public class GrappleSystem : MonoBehaviour
         <li><code>GunData</code> ScriptableObject stores all weapon stats — no magic numbers in code</li>
         <li>Slam ability is self-contained and communicates with enemies through <code>EnemyHits</code></li>
       </ul>
- 
+
       <h3>How It Works</h3>
       <div class="flowchart">
         <div class="flow-row">
@@ -3707,14 +3708,14 @@ public class GrappleSystem : MonoBehaviour
           <div class="flow-node">EnemyHits.HitBySlam() / WinManager.TriggerLoss()</div>
         </div>
       </div>
- 
+
     </div>
- 
+
     <p class="code-context">
       Seven scripts, grouped into four tabs by responsibility.
       Multiple scripts in one tab are shown as clearly labelled sections.
     </p>
- 
+
     <!-- TABS -->
     <div class="tab">
       <button class="tablinks active" onclick="openTab(event, 'combatInputTab')">Input</button>
@@ -3722,7 +3723,7 @@ public class GrappleSystem : MonoBehaviour
       <button class="tablinks" onclick="openTab(event, 'combatDamageTab')">Damage</button>
       <button class="tablinks" onclick="openTab(event, 'combatAbilityTab')">Ability</button>
     </div>
- 
+
     <!-- ===== TAB 1: INPUT ===== -->
     <div id="combatInputTab" class="tabcontent" style="display:block;">
       <p class="code-context">
@@ -3740,26 +3741,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+
 public class PlayerShoot : MonoBehaviour
 {
     public static Action shootInput;
     public static Action reloadInput;
- 
+
     [SerializeField] private KeyCode reloadKey = KeyCode.R;
- 
+
     private void Update()
     {
         if (Input.GetMouseButton(0))
             shootInput?.Invoke();
- 
+
         if (Input.GetKeyDown(reloadKey))
             reloadInput?.Invoke();
     }
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 2: WEAPON ===== -->
     <div id="combatWeaponTab" class="tabcontent">
       <p class="code-context">
@@ -3778,17 +3779,17 @@ public class PlayerShoot : MonoBehaviour
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+
 [CreateAssetMenu(fileName = "Gun", menuName = "Weapon/Gun")]
 public class GunData : ScriptableObject
 {
     [Header("Info")]
     public new string name;
- 
+
     [Header("Shooting")]
     public float damage;
     public float maxDistance;
- 
+
     [Header("Reloading")]
     public int  currentAmmo  = 18;
     public int  magSize      = 18;
@@ -3797,12 +3798,12 @@ public class GunData : ScriptableObject
     public float reloadTime;
     [HideInInspector] public bool reloading;
 }
- 
- 
+
+
 // ── Bullets.cs ────────────────────────────────────────────────────
 using UnityEngine;
 using System.Collections;
- 
+
 public class Bullets : MonoBehaviour
 {
     [SerializeField] private GunData gunData;
@@ -3810,25 +3811,25 @@ public class Bullets : MonoBehaviour
     public GameObject  bulletPrefab;
     public float       bulletSpeed = 100;
     public Animator    anim;
- 
+
     private bool isShooting;
- 
+
     private void Start()
     {
         gunData.currentAmmo = gunData.magSize;
     }
- 
+
     void Update()
     {
         anim.SetBool("shot", isShooting);
- 
+
         // Fire
         if (Input.GetMouseButtonDown(0) &amp;&amp; gunData.currentAmmo &gt; 0)
         {
             isShooting = true;
             var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
             gunData.currentAmmo--;
- 
+
             Rigidbody rb = bullet.GetComponent&lt;Rigidbody&gt;();
             if (rb != null)
                 rb.linearVelocity = bulletSpawnPoint.forward * bulletSpeed;
@@ -3837,14 +3838,14 @@ public class Bullets : MonoBehaviour
         {
             isShooting = false;
         }
- 
+
         // Inspect animation
         if (Input.GetKeyDown(KeyCode.Mouse3))
         {
             anim.SetBool("inspecting", true);
             StartCoroutine(InspectTime());
         }
- 
+
         // Reload
         if (gunData.numberOfMags != 0)
         {
@@ -3859,47 +3860,47 @@ public class Bullets : MonoBehaviour
             gunData.currentAmmo = gunData.numberOfMags;
         }
     }
- 
+
     IEnumerator InspectTime()
     {
         yield return new WaitForSeconds(3.733f);
         anim.SetBool("inspecting", false);
     }
 }
- 
- 
+
+
 // ── Gun.cs ────────────────────────────────────────────────────────
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
- 
+
 public class Gun : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GunData  gunData;
     [SerializeField] private Transform cam;
- 
+
     public TextMeshProUGUI BulletCounts;
- 
+
     float timeSinceLastShot;
- 
+
     private void Start()
     {
         PlayerShoot.reloadInput += StartReload;
         gunData.currentAmmo  = 18;
         gunData.numberOfMags = 3;
     }
- 
+
     private void OnDisable() =&gt; gunData.reloading = false;
- 
+
     public void StartReload()
     {
         if (!gunData.reloading &amp;&amp; this.gameObject.activeSelf)
             StartCoroutine(Reload());
     }
- 
+
     private IEnumerator Reload()
     {
         gunData.reloading = true;
@@ -3907,19 +3908,19 @@ public class Gun : MonoBehaviour
         gunData.currentAmmo = gunData.magSize;
         gunData.reloading   = false;
     }
- 
+
     private void Update()
     {
         timeSinceLastShot += Time.deltaTime;
         Debug.DrawRay(cam.position, cam.forward * gunData.maxDistance);
- 
+
         BulletCounts.text = "Bullets: " + gunData.currentAmmo + "/" + gunData.magSize
                           + "&lt;br&gt;Number of Mags Left: " + gunData.numberOfMags;
     }
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 3: DAMAGE ===== -->
     <div id="combatDamageTab" class="tabcontent">
       <p class="code-context">
@@ -3938,27 +3939,27 @@ public class Gun : MonoBehaviour
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
- 
+
 public class Target : MonoBehaviour, IDamageable
 {
     public float health;
- 
+
     public void TakeDamage(float damage)
     {
         health -= damage;
         if (health &lt;= 0) Destroy(gameObject);
     }
 }
- 
- 
+
+
 // ── EnemyHit.cs ──────────────────────────────────────────────────
 using UnityEngine;
- 
+
 public class EnemyHit : MonoBehaviour
 {
     public int  playerLives = 3;
     private bool isDead     = false;
- 
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("EnemyBullet"))
@@ -3967,13 +3968,13 @@ public class EnemyHit : MonoBehaviour
             Destroy(collision.gameObject);
         }
     }
- 
+
     void Update()
     {
         if (playerLives &lt;= 0 &amp;&amp; !isDead)
         {
             isDead = true;
- 
+
             WinManager winManager = FindObjectOfType&lt;WinManager&gt;();
             if (winManager != null)
                 winManager.TriggerLoss();
@@ -3982,7 +3983,7 @@ public class EnemyHit : MonoBehaviour
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 4: ABILITY ===== -->
     <div id="combatAbilityTab" class="tabcontent">
       <p class="code-context">
@@ -3998,11 +3999,11 @@ public class EnemyHit : MonoBehaviour
       <pre class="code-block"><code class="language-csharp">
 // ── PlayerSlamAttack.cs ───────────────────────────────────────────
 using UnityEngine;
- 
+
 public class PlayerSlamAttack : MonoBehaviour
 {
     public bool hasSlammed { get; private set; }
- 
+
     [Header("Slam Settings")]
     public float slamForce       = 20f;
     public float aoeRadius       = 5f;
@@ -4010,20 +4011,20 @@ public class PlayerSlamAttack : MonoBehaviour
     public LayerMask groundMask;
     public LayerMask enemyMask;
     public GameObject slamEffectPrefab;
- 
+
     private Rigidbody rb;
     private bool isGrounded = true;
     private bool isSlamming = false;
- 
+
     void Start()
     {
         rb = GetComponent&lt;Rigidbody&gt;();
     }
- 
+
     void Update()
     {
         CheckGrounded();
- 
+
         if (!isGrounded &amp;&amp; !isSlamming &amp;&amp; Input.GetKeyDown(KeyCode.LeftControl))
         {
             if (GetGroundDistance() &gt;= minSlamHeight)
@@ -4033,14 +4034,14 @@ public class PlayerSlamAttack : MonoBehaviour
             }
         }
     }
- 
+
     void StartSlam()
     {
         isSlamming = true;
         rb.linearVelocity = Vector3.zero;
         rb.AddForce(Vector3.down * slamForce, ForceMode.VelocityChange);
     }
- 
+
     void OnCollisionEnter(Collision collision)
     {
         if (isSlamming &amp;&amp; collision.gameObject.CompareTag("Ground"))
@@ -4049,12 +4050,12 @@ public class PlayerSlamAttack : MonoBehaviour
             isSlamming = false;
         }
     }
- 
+
     void DoAoE()
     {
         if (slamEffectPrefab != null)
             Instantiate(slamEffectPrefab, transform.position, Quaternion.identity);
- 
+
         Collider[] hits = Physics.OverlapSphere(transform.position, aoeRadius, enemyMask);
         foreach (Collider hit in hits)
         {
@@ -4063,19 +4064,19 @@ public class PlayerSlamAttack : MonoBehaviour
                 enemy.HitBySlam();
         }
     }
- 
+
     void CheckGrounded()
     {
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, groundMask);
     }
- 
+
     float GetGroundDistance()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundMask))
             return hit.distance;
         return Mathf.Infinity;
     }
- 
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -4086,44 +4087,43 @@ public class PlayerSlamAttack : MonoBehaviour
 }
       </code></pre>
     </div>
- 
+
   </div>
 </div>
-</div>
- 
+
 <!-- ======================= -->
 <!-- PLAYER COMBAT MODAL END -->
 <!-- ======================= -->
- 
- 
+
+
 <!-- ================================ -->
 <!-- ENEMY COMBAT MODAL START         -->
 <!-- ================================ -->
 <div id="enemyattackModal" class="modal">
   <div class="modal-content">
- 
+
     <span class="close" onclick="closeModal('enemyattackModal')">&times;</span>
     <span class="fullscreen-toggle" onclick="toggleFullscreen('enemyattackModal')">⤢</span>
- 
+
     <h2 class="mechanic-title">Enemy Combat System</h2>
- 
+
     <img src="gifs/enemy_preview.png" alt="Enemy Combat Preview" class="mechanic-gif">
- 
+
     <div class="case-study">
- 
+
       <h3>System Overview</h3>
       <p>
         The enemy combat system is made up of four independent components: hit detection,
         ranged shooting, flying movement, and melee AI. Each enemy type is assembled from
         these components, keeping behaviour modular and easy to extend.
       </p>
- 
+
       <div class="highlight-box">
         <strong>Core Goal:</strong><br>
         Each enemy type is a composition of focused scripts — hit detection, movement, and
         attack are separate so any combination can be mixed and matched.
       </div>
- 
+
       <h3>Problem → Solution</h3>
       <p><strong>Problem:</strong> Monolithic enemy scripts become hard to maintain when different
       enemy types need different combinations of shooting, movement and hit responses.</p>
@@ -4135,7 +4135,7 @@ public class PlayerSlamAttack : MonoBehaviour
         <li>Shooting and movement are opt-in per enemy prefab</li>
         <li>Wave spawner is fully decoupled from enemy behaviour</li>
       </ul>
- 
+
       <h3>How It Works</h3>
       <div class="flowchart">
         <div class="flow-row">
@@ -4156,13 +4156,13 @@ public class PlayerSlamAttack : MonoBehaviour
           <div class="flow-node">On Enemy Killed → Spawner</div>
         </div>
       </div>
- 
+
     </div>
- 
+
     <p class="code-context">
       Five scripts grouped into four tabs. Tabs with multiple scripts show each one as a clearly labelled section.
     </p>
- 
+
     <!-- TABS -->
     <div class="tab">
       <button class="tablinks active" onclick="openTab(event, 'enemyHitDetectTab')">Hit Detection</button>
@@ -4170,7 +4170,7 @@ public class PlayerSlamAttack : MonoBehaviour
       <button class="tablinks" onclick="openTab(event, 'enemyShootingTab')">Shooting</button>
       <button class="tablinks" onclick="openTab(event, 'enemySpawnTab')">Spawning</button>
     </div>
- 
+
     <!-- ===== TAB 1: HIT DETECTION ===== -->
     <div id="enemyHitDetectTab" class="tabcontent" style="display:block;">
       <p class="code-context">
@@ -4184,50 +4184,50 @@ public class PlayerSlamAttack : MonoBehaviour
       </div>
       <pre class="code-block"><code class="language-csharp">
 using UnityEngine;
- 
+
 public class EnemyHits : MonoBehaviour
 {
     private int bodyHits = 0;
     private int headHits = 0;
     public int headshotThreshold = 1;
     public int bodyHitThreshold = 3;
- 
+
     private Animator anim;
     private EnemySpawner spawner;
- 
+
     void Awake()
     {
         anim = GetComponent&lt;Animator&gt;();
         spawner = FindObjectOfType&lt;EnemySpawner&gt;();
     }
- 
+
     public void HitHead()
     {
         headHits++;
         if (headHits &gt;= headshotThreshold)
             Die();
     }
- 
+
     public void HitBody()
     {
         bodyHits++;
         if (bodyHits &gt;= bodyHitThreshold)
             Die();
     }
- 
+
     public void HitBySlam()
     {
         HitBody();
     }
- 
+
     private void Die()
     {
         if (spawner != null)
             spawner.OnEnemyKilled();
- 
+
         Destroy(gameObject);
     }
- 
+
     private System.Collections.IEnumerator ResetSlamAnim(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -4237,7 +4237,7 @@ public class EnemyHits : MonoBehaviour
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 2: AI & MOVEMENT ===== -->
     <div id="enemyAITab" class="tabcontent">
       <p class="code-context">
@@ -4253,7 +4253,7 @@ public class EnemyHits : MonoBehaviour
       <pre class="code-block"><code class="language-csharp">
 // ── FlyingEnemy.cs ────────────────────────────────────────────────
 using UnityEngine;
- 
+
 [RequireComponent(typeof(Rigidbody))]
 public class FlyingEnemy : MonoBehaviour
 {
@@ -4261,12 +4261,12 @@ public class FlyingEnemy : MonoBehaviour
     public float moveSpeed = 5f;
     public Vector3 movementBounds = new Vector3(20f, 10f, 20f);
     public float changeDirectionInterval = 3f;
- 
+
     private Rigidbody rb;
     private Vector3 moveDirection;
     private Vector3 spawnCenter;
     private float nextDirectionChange;
- 
+
     void Awake()
     {
         rb = GetComponent&lt;Rigidbody&gt;();
@@ -4274,27 +4274,27 @@ public class FlyingEnemy : MonoBehaviour
         rb.isKinematic = true;
         rb.freezeRotation = true;
     }
- 
+
     void Start()
     {
         spawnCenter = transform.position;
         PickNewDirection();
     }
- 
+
     void FixedUpdate()
     {
         Vector3 newPos = rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime;
- 
+
         Vector3 offset = newPos - spawnCenter;
         offset.x = Mathf.Clamp(offset.x, -movementBounds.x, movementBounds.x);
         offset.y = Mathf.Clamp(offset.y, -movementBounds.y, movementBounds.y);
         offset.z = Mathf.Clamp(offset.z, -movementBounds.z, movementBounds.z);
         rb.MovePosition(spawnCenter + offset);
- 
+
         if (Time.time &gt;= nextDirectionChange)
             PickNewDirection();
     }
- 
+
     void PickNewDirection()
     {
         moveDirection = new Vector3(
@@ -4302,15 +4302,15 @@ public class FlyingEnemy : MonoBehaviour
             Random.Range(-0.5f, 0.5f),
             Random.Range(-1f, 1f)
         ).normalized;
- 
+
         nextDirectionChange = Time.time + changeDirectionInterval;
     }
 }
- 
- 
+
+
 // ── MeleeEnemyAI.cs ───────────────────────────────────────────────
 using UnityEngine;
- 
+
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class MeleeEnemyAI : MonoBehaviour
@@ -4318,61 +4318,61 @@ public class MeleeEnemyAI : MonoBehaviour
     [Header("Target Settings")]
     public string playerTag = "Player";
     private Transform player;
- 
+
     [Header("Movement Settings")]
     public float moveSpeed = 3f;
     public float strafeSpeed = 2f;
     public float strafeInterval = 2f;
     public float strafeChance = 0.5f;
- 
+
     [Header("Detection Settings")]
     public float detectionRange = 15f;
     public float fieldOfViewAngle = 120f;
     public LayerMask obstacleMask;
     public float eyeHeight = 1.2f;
- 
+
     private float nextStrafeChangeTime;
     private int strafeDirection = 0;
     private Rigidbody rb;
- 
+
     void Awake()
     {
         rb = GetComponent&lt;Rigidbody&gt;();
         rb.isKinematic = true;
         rb.freezeRotation = true;
     }
- 
+
     void Start()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag(playerTag);
         if (playerObj != null)
             player = playerObj.transform;
     }
- 
+
     void FixedUpdate()
     {
         if (player == null) return;
- 
+
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance &gt; detectionRange || !PlayerInLineOfSight()) return;
- 
+
         Vector3 toPlayer = (player.position - transform.position).normalized;
         Vector3 moveDir = toPlayer;
- 
+
         if (Time.time &gt;= nextStrafeChangeTime)
         {
             nextStrafeChangeTime = Time.time + strafeInterval;
             strafeDirection = (Random.value &lt; strafeChance) ? Random.Range(-1, 2) : 0;
         }
- 
+
         if (strafeDirection != 0)
         {
             Vector3 strafe = Vector3.Cross(Vector3.up, toPlayer) * strafeDirection;
             moveDir = (toPlayer + strafe * 0.5f).normalized;
         }
- 
+
         rb.MovePosition(rb.position + moveDir * moveSpeed * Time.fixedDeltaTime);
- 
+
         Vector3 lookDir = new Vector3(toPlayer.x, 0f, toPlayer.z);
         if (lookDir.sqrMagnitude &gt; 0.01f)
         {
@@ -4380,26 +4380,26 @@ public class MeleeEnemyAI : MonoBehaviour
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, 5f * Time.fixedDeltaTime));
         }
     }
- 
+
     bool PlayerInLineOfSight()
     {
         Vector3 origin    = transform.position + Vector3.up * eyeHeight;
         Vector3 targetDir = (player.position + Vector3.up * eyeHeight - origin).normalized;
- 
+
         float angle = Vector3.Angle(transform.forward, targetDir);
         if (angle &gt; fieldOfViewAngle / 2f) return false;
- 
+
         float distance = Vector3.Distance(origin, player.position + Vector3.up * eyeHeight);
- 
+
         if (Physics.Raycast(origin, targetDir, out RaycastHit hit, distance, obstacleMask))
             return false;
- 
+
         return true;
     }
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 3: SHOOTING ===== -->
     <div id="enemyShootingTab" class="tabcontent">
       <p class="code-context">
@@ -4413,38 +4413,38 @@ public class MeleeEnemyAI : MonoBehaviour
       </div>
       <pre class="code-block"><code class="language-csharp">
 using UnityEngine;
- 
+
 public class EnemyShooting : MonoBehaviour
 {
     [Header("Setup")]
     public GameObject projectilePrefab;
     public Transform firePoint;
- 
+
     [Header("Shooting Settings")]
     public float fireRate = 2f;
     public float projectileSpeed = 10f;
- 
+
     [Header("Detection Settings")]
     public float detectionRange = 15f;
     public LayerMask obstacleMask;
     public LayerMask playerMask;
- 
+
     private Transform player;
     private float nextFireTime = 0f;
- 
+
     void Start()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
             player = playerObj.transform;
     }
- 
+
     void Update()
     {
         if (player == null) return;
- 
+
         float distance = Vector3.Distance(transform.position, player.position);
- 
+
         if (distance &lt;= detectionRange &amp;&amp; HasLineOfSight())
         {
             if (Time.time &gt;= nextFireTime)
@@ -4454,32 +4454,32 @@ public class EnemyShooting : MonoBehaviour
             }
         }
     }
- 
+
     bool HasLineOfSight()
     {
         Vector3 direction = (player.position - firePoint.position).normalized;
         float distance = Vector3.Distance(firePoint.position, player.position);
- 
+
         if (Physics.Raycast(firePoint.position, direction, out RaycastHit hit, distance, obstacleMask | playerMask))
             return hit.collider.CompareTag("Player");
- 
+
         return false;
     }
- 
+
     void ShootAtPlayer()
     {
         if (projectilePrefab == null || firePoint == null) return;
- 
+
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         Vector3 direction = (player.position - firePoint.position).normalized;
- 
+
         Rigidbody rb = projectile.GetComponent&lt;Rigidbody&gt;();
         if (rb != null)
             rb.linearVelocity = direction * projectileSpeed;
- 
+
         projectile.transform.rotation = Quaternion.LookRotation(direction);
     }
- 
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
@@ -4488,7 +4488,7 @@ public class EnemyShooting : MonoBehaviour
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 4: SPAWNING ===== -->
     <div id="enemySpawnTab" class="tabcontent">
       <p class="code-context">
@@ -4504,21 +4504,21 @@ public class EnemyShooting : MonoBehaviour
 using UnityEngine;
 using System.Collections;
 using TMPro;
- 
+
 [System.Serializable]
 public class Wave
 {
     public string waveName;
     public WaveEnemy[] enemies;
 }
- 
+
 [System.Serializable]
 public class WaveEnemy
 {
     public GameObject enemyPrefab;
     public int count;
 }
- 
+
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Spawn Settings")]
@@ -4528,48 +4528,48 @@ public class EnemySpawner : MonoBehaviour
     public LayerMask obstacleLayer;
     public float maxSlope = 45f;
     public float spawnHeightOffset = 5f;
- 
+
     [Header("Waves")]
     public Wave[] waves;
     public float timeBetweenWaves = 5f;
     public float spawnDelay = 0.3f;
- 
+
     [Header("UI")]
     public TextMeshProUGUI enemiesAliveText;
- 
+
     private int currentWaveIndex = 0;
     private int enemiesRemainingAlive = 0;
     private bool isSpawning = false;
- 
+
     void Start()
     {
         StartCoroutine(BeginNextWave());
     }
- 
+
     IEnumerator BeginNextWave()
     {
         if (currentWaveIndex &gt;= waves.Length)
         {
             enemiesAliveText.text = "All waves complete!";
             yield return new WaitForSeconds(1f);
- 
+
             WinManager winManager = FindObjectOfType&lt;WinManager&gt;();
             if (winManager != null)
                 winManager.TriggerWin();
             yield break;
         }
- 
+
         enemiesAliveText.text = $"Wave {currentWaveIndex + 1} Incoming...";
         yield return new WaitForSeconds(timeBetweenWaves);
- 
+
         StartCoroutine(SpawnWave(waves[currentWaveIndex]));
         currentWaveIndex++;
     }
- 
+
     IEnumerator SpawnWave(Wave wave)
     {
         isSpawning = true;
- 
+
         foreach (var group in wave.enemies)
         {
             for (int i = 0; i &lt; group.count; i++)
@@ -4578,22 +4578,22 @@ public class EnemySpawner : MonoBehaviour
                 yield return new WaitForSeconds(spawnDelay);
             }
         }
- 
+
         isSpawning = false;
         UpdateUI();
     }
- 
+
     void SpawnEnemy(GameObject prefab)
     {
         if (prefab == null) return;
- 
+
         int attempts = 0;
         bool spawned = false;
- 
+
         while (!spawned &amp;&amp; attempts &lt; 200)
         {
             Vector3 randomPos = RandomPointInCapsule(transform.position, spawnRadius, spawnHeight);
- 
+
             if (Physics.Raycast(randomPos, Vector3.down, out RaycastHit hit, 100f, groundLayer))
             {
                 float slope = Vector3.Angle(hit.normal, Vector3.up);
@@ -4611,7 +4611,7 @@ public class EnemySpawner : MonoBehaviour
             attempts++;
         }
     }
- 
+
     Vector3 RandomPointInCapsule(Vector3 center, float radius, float height)
     {
         float angle = Random.Range(0f, Mathf.PI * 2f);
@@ -4621,20 +4621,20 @@ public class EnemySpawner : MonoBehaviour
         float y = Random.Range(0f, height);
         return center + new Vector3(x, y + spawnHeightOffset, z);
     }
- 
+
     public void OnEnemyKilled()
     {
         enemiesRemainingAlive--;
         UpdateUI();
- 
+
         if (enemiesRemainingAlive &lt;= 0 &amp;&amp; !isSpawning)
             StartCoroutine(BeginNextWave());
     }
- 
+
     void UpdateUI()
     {
         if (enemiesAliveText == null) return;
- 
+
         if (enemiesRemainingAlive &gt; 0)
             enemiesAliveText.text = $"Wave {currentWaveIndex} - Enemies Left: {enemiesRemainingAlive}";
         else if (!isSpawning)
@@ -4643,43 +4643,42 @@ public class EnemySpawner : MonoBehaviour
 }
       </code></pre>
     </div>
- 
+
   </div>
-</div>
 </div>
 <!-- ============================== -->
 <!-- ENEMY COMBAT MODAL END         -->
 <!-- ============================== -->
- 
- 
+
+
 <!-- ============================== -->
 <!-- GAMEPLAY SYSTEMS MODAL START   -->
 <!-- ============================== -->
 <div id="gameplayModal" class="modal">
   <div class="modal-content">
- 
+
     <span class="close" onclick="closeModal('gameplayModal')">&times;</span>
     <span class="fullscreen-toggle" onclick="toggleFullscreen('gameplayModal')">⤢</span>
- 
+
     <h2 class="mechanic-title">Gameplay Systems</h2>
- 
+
     <img src="gifs/gameplay_preview.png" alt="Gameplay Systems Preview" class="mechanic-gif">
- 
+
     <div class="case-study">
- 
+
       <h3>System Overview</h3>
       <p>
         These are the supporting systems that tie the game together — dialogue, camera,
         scene management, and wave triggering. Each script has a single clear job and
         communicates with others only where necessary.
       </p>
- 
+
       <div class="highlight-box">
         <strong>Core Goal:</strong><br>
         Keep game flow systems (intro, tutorial, win/loss) completely decoupled from
         gameplay mechanics so either side can be changed without touching the other.
       </div>
- 
+
       <h3>Problem → Solution</h3>
       <p><strong>Problem:</strong> Game flow logic (dialogue, wins, scene loading) tends to
       accumulate in one bloated manager script, making it fragile and hard to modify.</p>
@@ -4692,7 +4691,7 @@ public class EnemySpawner : MonoBehaviour
         <li>Win/loss state is triggered by a single public method call from the spawner</li>
         <li>Camera and cursor management are isolated in dedicated small scripts</li>
       </ul>
- 
+
       <h3>How It Works</h3>
       <div class="flowchart">
         <div class="flow-row">
@@ -4713,20 +4712,20 @@ public class EnemySpawner : MonoBehaviour
           <div class="flow-node">Win Manager → Scene Load</div>
         </div>
       </div>
- 
+
     </div>
- 
+
     <p class="code-context">
       Seven scripts grouped into three tabs by responsibility: Dialogue, Game Flow, and Camera.
     </p>
- 
+
     <!-- TABS -->
     <div class="tab">
       <button class="tablinks active" onclick="openTab(event, 'gpDialogueTab')">Dialogue</button>
       <button class="tablinks" onclick="openTab(event, 'gpFlowTab')">Game Flow</button>
       <button class="tablinks" onclick="openTab(event, 'gpCameraTab')">Camera</button>
     </div>
- 
+
     <!-- ===== TAB 1: DIALOGUE ===== -->
     <div id="gpDialogueTab" class="tabcontent" style="display:block;">
       <p class="code-context">
@@ -4745,7 +4744,7 @@ public class EnemySpawner : MonoBehaviour
 using UnityEngine;
 using TMPro;
 using System.Collections;
- 
+
 public class IntroDialogue : MonoBehaviour
 {
     [TextArea(3, 10)]
@@ -4756,27 +4755,27 @@ public class IntroDialogue : MonoBehaviour
     public GameObject player;
     public GameObject playerUI;
     public float typingSpeed = 0.03f;
- 
+
     private int currentLine = 0;
     private bool isDialogueActive = true;
     private bool isTyping = false;
- 
+
     void Start()
     {
         dialoguePanel.SetActive(true);
         continuePrompt.gameObject.SetActive(false);
         dialogueText.text = "";
- 
+
         if (player != null) player.SetActive(false);
         if (playerUI != null) playerUI.SetActive(false);
- 
+
         StartCoroutine(TypeLine());
     }
- 
+
     void Update()
     {
         if (!isDialogueActive) return;
- 
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isTyping)
@@ -4802,22 +4801,22 @@ public class IntroDialogue : MonoBehaviour
             }
         }
     }
- 
+
     IEnumerator TypeLine()
     {
         isTyping = true;
         dialogueText.text = "";
- 
+
         foreach (char c in dialogueLines[currentLine])
         {
             dialogueText.text += c;
             yield return new WaitForSeconds(typingSpeed);
         }
- 
+
         isTyping = false;
         StartCoroutine(ShowContinuePrompt());
     }
- 
+
     IEnumerator ShowContinuePrompt()
     {
         continuePrompt.gameObject.SetActive(true);
@@ -4828,25 +4827,25 @@ public class IntroDialogue : MonoBehaviour
             yield return null;
         }
     }
- 
+
     void EndDialogue()
     {
         isDialogueActive = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
         continuePrompt.gameObject.SetActive(false);
- 
+
         if (player != null) player.SetActive(true);
         if (playerUI != null) playerUI.SetActive(true);
     }
 }
- 
- 
+
+
 // ── TutorialDialogue.cs ──────────────────────────────────────────
 using UnityEngine;
 using TMPro;
 using System.Collections;
- 
+
 public class TutorialDialogue : MonoBehaviour
 {
     [Header("References")]
@@ -4854,52 +4853,52 @@ public class TutorialDialogue : MonoBehaviour
     public TMP_Text uiTextToHide;
     public GameObject tutorialCanvas;
     public GameObject WaveManager;
- 
+
     [Header("Mechanic Scripts")]
     public PlayerMovementAdvancedFinished sprintScript;
     public Sliding slideScript;
     public GrappleSystem grappleScript;
     public WallRunningRemakeDone wallRunScript;
     public PlayerSlamAttack slamScript;
- 
+
     [Header("Tutorial Texts")]
     [TextArea] public string sprintText = "";
     [TextArea] public string slideText = "";
     [TextArea] public string grappleText = "";
     [TextArea] public string wallRunText = "";
     [TextArea] public string slamText = "";
- 
+
     [Header("Settings")]
     public float nextPromptDelay = 0.75f;
     public float fadeSpeed = 3f;
     public float typingSpeed = 0.03f;
- 
+
     private enum Step { Sprint, Slide, Grapple, WallRun, Slam, Done }
     private Step currentStep = Step.Sprint;
     private bool tutorialActive = true;
     private bool transitioning = false;
     private bool isTyping = false;
- 
+
     private CanvasGroup textGroup;
- 
+
     void Start()
     {
         if (uiTextToHide != null) uiTextToHide.enabled = false;
         if (WaveManager != null) WaveManager.SetActive(false);
         if (tutorialCanvas != null) tutorialCanvas.SetActive(true);
- 
+
         textGroup = tutorialText.GetComponent&lt;CanvasGroup&gt;();
         if (textGroup == null)
             textGroup = tutorialText.gameObject.AddComponent&lt;CanvasGroup&gt;();
- 
+
         textGroup.alpha = 0f;
         StartCoroutine(ShowPromptWithFade());
     }
- 
+
     void Update()
     {
         if (!tutorialActive || transitioning) return;
- 
+
         switch (currentStep)
         {
             case Step.Sprint:   if (sprintScript != null   &amp;&amp; sprintScript.isSprinting)     StartCoroutine(AdvanceTutorial()); break;
@@ -4909,29 +4908,29 @@ public class TutorialDialogue : MonoBehaviour
             case Step.Slam:     if (slamScript != null     &amp;&amp; slamScript.hasSlammed)        StartCoroutine(AdvanceTutorial()); break;
         }
     }
- 
+
     IEnumerator AdvanceTutorial()
     {
         if (isTyping) yield break;
         transitioning = true;
- 
+
         yield return StartCoroutine(FadeOutText());
         yield return new WaitForSeconds(nextPromptDelay);
- 
+
         currentStep++;
         if (currentStep == Step.Done) { EndTutorial(); yield break; }
- 
+
         yield return StartCoroutine(ShowPromptWithFade());
         transitioning = false;
     }
- 
+
     IEnumerator ShowPromptWithFade()
     {
         tutorialText.text = "";
         yield return StartCoroutine(FadeInText());
         yield return StartCoroutine(TypeText(GetPromptForStep(currentStep)));
     }
- 
+
     IEnumerator TypeText(string line)
     {
         isTyping = true;
@@ -4943,7 +4942,7 @@ public class TutorialDialogue : MonoBehaviour
         }
         isTyping = false;
     }
- 
+
     string GetPromptForStep(Step step)
     {
         switch (step)
@@ -4956,26 +4955,26 @@ public class TutorialDialogue : MonoBehaviour
         }
         return "";
     }
- 
+
     IEnumerator FadeInText()
     {
         textGroup.alpha = 0f;
         while (textGroup.alpha &lt; 1f) { textGroup.alpha += Time.deltaTime * fadeSpeed; yield return null; }
         textGroup.alpha = 1f;
     }
- 
+
     IEnumerator FadeOutText()
     {
         while (textGroup.alpha &gt; 0f) { textGroup.alpha -= Time.deltaTime * fadeSpeed; yield return null; }
         textGroup.alpha = 0f;
     }
- 
+
     void EndTutorial()
     {
         tutorialActive = false;
         StartCoroutine(FinishSequence());
     }
- 
+
     IEnumerator FinishSequence()
     {
         yield return StartCoroutine(FadeOutText());
@@ -4986,7 +4985,7 @@ public class TutorialDialogue : MonoBehaviour
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 2: GAME FLOW ===== -->
     <div id="gpFlowTab" class="tabcontent">
       <p class="code-context">
@@ -5006,7 +5005,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
- 
+
 public class WinManager : MonoBehaviour
 {
     [Header("References")]
@@ -5014,46 +5013,46 @@ public class WinManager : MonoBehaviour
     public GameObject playerUI;
     public GameObject dialogueCanvas;
     public TMP_Text dialogueText;
- 
+
     [Header("Dialogue Settings")]
     [TextArea] public string[] deathDialogue = { "You have fallen in battle..." };
     [TextArea] public string[] winDialogue = { "You are victorious!" };
     public float typingSpeed = 0.04f;
     public float fadeDuration = 1.2f;
- 
+
     private bool isEnding = false;
- 
+
     void Start()
     {
         if (dialogueCanvas != null)
             dialogueCanvas.SetActive(false);
     }
- 
+
     public void TriggerLoss() { if (!isEnding) StartCoroutine(ShowEndDialogue(deathDialogue)); }
     public void TriggerWin()  { if (!isEnding) StartCoroutine(ShowEndDialogue(winDialogue)); }
- 
+
     IEnumerator ShowEndDialogue(string[] dialogueLines)
     {
         isEnding = true;
- 
+
         if (player != null)   player.SetActive(false);
         if (playerUI != null) playerUI.SetActive(false);
         if (dialogueCanvas != null) dialogueCanvas.SetActive(true);
- 
+
         foreach (string line in dialogueLines)
         {
             yield return StartCoroutine(TypeText(line));
             yield return StartCoroutine(WaitForSpace());
         }
- 
+
         dialogueText.text = "&lt;color=#AAAAAA&gt;&lt;i&gt;[Press SPACE to return to menu]&lt;/i&gt;&lt;/color&gt;";
         yield return StartCoroutine(WaitForSpace());
- 
+
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         SceneManager.LoadScene(0);
     }
- 
+
     IEnumerator TypeText(string fullText)
     {
         dialogueText.text = "";
@@ -5063,7 +5062,7 @@ public class WinManager : MonoBehaviour
             yield return new WaitForSeconds(typingSpeed);
         }
     }
- 
+
     IEnumerator WaitForSpace()
     {
         while (!Input.GetKeyDown(KeyCode.Space))
@@ -5071,33 +5070,33 @@ public class WinManager : MonoBehaviour
         yield return null;
     }
 }
- 
- 
+
+
 // ── WaveManager.cs ───────────────────────────────────────────────
 using UnityEngine;
 using System.Collections;
- 
+
 public class WaveManager : MonoBehaviour
 {
     public GameObject Wave;
- 
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
             StartWave();
     }
- 
+
     public void StartWave()
     {
         Wave.SetActive(true);
     }
 }
- 
- 
+
+
 // ── GoToMenu.cs ──────────────────────────────────────────────────
 using UnityEngine;
 using UnityEngine.SceneManagement;
- 
+
 public class GoToMenu : MonoBehaviour
 {
     void Update()
@@ -5112,7 +5111,7 @@ public class GoToMenu : MonoBehaviour
 }
       </code></pre>
     </div>
- 
+
     <!-- ===== TAB 3: CAMERA ===== -->
     <div id="gpCameraTab" class="tabcontent">
       <p class="code-context">
@@ -5129,61 +5128,2138 @@ public class GoToMenu : MonoBehaviour
       <pre class="code-block"><code class="language-csharp">
 // ── MoveCamera.cs ────────────────────────────────────────────────
 using UnityEngine;
- 
+
 public class MoveCamera : MonoBehaviour
 {
     public Transform cameraPosition;
- 
+
     private void Update()
     {
         transform.position = cameraPosition.position;
     }
 }
- 
- 
+
+
 // ── PlayerCam.cs ─────────────────────────────────────────────────
 using UnityEngine;
- 
+
 public class PlayerCam : MonoBehaviour
 {
     public float sensX;
     public float sensY;
- 
+
     public Transform orientation;
- 
+
     float xRotation;
     float yRotation;
- 
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
- 
+
     private void Update()
     {
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
- 
+
         yRotation += mouseX;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
- 
+
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 }
       </code></pre>
     </div>
- 
+
   </div>
-</div>
 </div>
 <!-- ============================== -->
 <!-- GAMEPLAY SYSTEMS MODAL END     -->
 <!-- ============================== -->
- 
- 
+
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- SYSTEMS SHOWCASE SECTION                                   -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<h2 class="section-title" id="systems">Systems Showcase</h2>
+<p class="systems-intro">
+  Standalone systems built outside of a single project context — each one designed
+  to be modular, reusable, and drop-in ready.
+</p>
+
+<div class="systems-lab">
+
+  <!-- ── CARD 1: DIALOGUE SYSTEM ── -->
+  <div class="system-lab-card">
+    <div class="system-lab-header">
+      <span class="system-lab-icon">💬</span>
+      <h3>Dialogue System</h3>
+    </div>
+    <p>
+      Node-based dialogue with typewriter rendering, branching choices,
+      and perspective shifting — changing the active character, loading a new scene,
+      and resuming story from a new entry node, all through a single ScriptableObject chain.
+    </p>
+    <div class="system-lab-tags">
+      <span>ScriptableObjects</span><span>Branching Narrative</span>
+      <span>Perspective Shifts</span><span>Scene Loading</span>
+    </div>
+    <div class="key-insight">
+      <strong>Key Insight:</strong> A <code>PerspectiveShift</code> ScriptableObject carries
+      everything needed for a full context switch — character name, transition text, scene
+      to load, and the new entry node — so the dialogue manager never hard-codes story logic.
+    </div>
+    <button class="system-lab-btn" onclick="openModal('dialogueSystemModal')">
+      View Code <span class="case-study-tag">+ Architecture</span>
+    </button>
+  </div>
+
+  <!-- ── CARD 2: RESOURCE MANAGEMENT ── -->
+  <div class="system-lab-card">
+    <div class="system-lab-header">
+      <span class="system-lab-icon">⚙️</span>
+      <h3>Resource Management</h3>
+    </div>
+    <p>
+      Data-driven resource manager with a fluent transaction API, integer/float snapping,
+      and C# events for every state change. Resources are defined as inspector entries —
+      no code changes needed to add a new resource type.
+    </p>
+    <div class="system-lab-tags">
+      <span>Singleton</span><span>Event System</span>
+      <span>Fluent API</span><span>Data-driven</span>
+    </div>
+    <div class="key-insight">
+      <strong>Key Insight:</strong> The fluent <code>Transaction</code> API validates all
+      changes before applying any of them — a multi-resource spend either succeeds
+      completely or fails completely, preventing partial state corruption.
+    </div>
+    <button class="system-lab-btn" onclick="openModal('resourceSystemModal')">
+      View Code <span class="case-study-tag">+ Architecture</span>
+    </button>
+  </div>
+
+  <!-- ── CARD 3: 2D PLAYER & SCENE TRACKING ── -->
+  <div class="system-lab-card">
+    <div class="system-lab-header">
+      <span class="system-lab-icon">🕷️</span>
+      <h3>2D Player &amp; Scene Tracking</h3>
+    </div>
+    <p>
+      Physics-based 2D spider character with surface-aligned movement, spring-joint
+      grappling with silk physics simulation, and climb input. Scene Tracker persists
+      visit state across loads using PlayerPrefs and refreshes map indicators automatically.
+    </p>
+    <div class="system-lab-tags">
+      <span>SpringJoint2D</span><span>Surface Rotation</span>
+      <span>Grapple Physics</span><span>Persistent State</span>
+    </div>
+    <div class="key-insight">
+      <strong>Key Insight:</strong> The spring joint's frequency is dynamically scaled by
+      stretch ratio — the silk gets stiffer the more it's stretched, simulating real
+      spider silk tension without any extra physics components.
+    </div>
+    <button class="system-lab-btn" onclick="openModal('player2dSystemModal')">
+      View Code <span class="case-study-tag">+ Architecture</span>
+    </button>
+  </div>
+
+  <!-- ── CARD 4: ENDING SEQUENCES ── -->
+  <div class="system-lab-card">
+    <div class="system-lab-header">
+      <span class="system-lab-icon">🎬</span>
+      <h3>Ending Sequences</h3>
+    </div>
+    <p>
+      Coroutine-driven cinematic ending with an alien typewriter effect that displays
+      garbled characters before translating to readable text. Fully sequenced: gun
+      animation, flashback with auto-advancing dialogue, ship landing, fade to black,
+      and scrolling credits.
+    </p>
+    <div class="system-lab-tags">
+      <span>Coroutine Sequencing</span><span>Typewriter FX</span>
+      <span>Sprite Fading</span><span>Credits Scroller</span>
+    </div>
+    <div class="key-insight">
+      <strong>Key Insight:</strong> The alien typewriter builds a full garbled string
+      first, then replaces characters one by one with the real text — this means the
+      full line length is always visible, preventing layout shifts during translation.
+    </div>
+    <button class="system-lab-btn" onclick="openModal('endingSystemModal')">
+      View Code <span class="case-study-tag">+ Architecture</span>
+    </button>
+  </div>
+
+</div>
+<!-- END SYSTEMS LAB SECTION -->
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DIALOGUE SYSTEM MODAL                                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="dialogueSystemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('dialogueSystemModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('dialogueSystemModal')">⤢</span>
+
+    <h2 class="mechanic-title">Dialogue System</h2>
+
+    <div class="case-study">
+      <h3>Architecture Overview</h3>
+      <p>
+        The system is built entirely on ScriptableObjects. A <code>Story</code> points to an entry
+        <code>DialogueNode</code>. Each node holds a list of <code>DialogueLine</code>s and optionally
+        a list of <code>DialogueChoice</code>s. A choice can either lead to another node or trigger
+        a <code>PerspectiveShift</code> — which fades the screen, shows a transition message,
+        loads a new scene, and resumes dialogue from a new node, all without any hard-coded story logic.
+      </p>
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        All story data lives in assets, not in code. The manager is a pure runtime engine —
+        swap the entry node and the entire story changes.
+      </div>
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">Story (SO)</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">DialogueNode (SO)</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">DialogueLines</div>
+          <div class="flow-node">DialogueChoices</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Next Node</div>
+          <div class="flow-node">PerspectiveShift</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Fade → Scene Load → New Entry Node</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="code-context">
+      Three tabs: Data structures (ScriptableObjects), the runtime manager, and the perspective/transition layer.
+    </p>
+
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'dlgDataTab')">Data Structures</button>
+      <button class="tablinks" onclick="openTab(event, 'dlgManagerTab')">Dialogue Manager</button>
+      <button class="tablinks" onclick="openTab(event, 'dlgPerspTab')">Perspective &amp; Transitions</button>
+    </div>
+
+    <!-- TAB 1: DATA STRUCTURES -->
+    <div id="dlgDataTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        Four small ScriptableObjects and data classes that define the entire story graph.
+        No manager references — pure data.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> <code>DialogueNode</code> as a ScriptableObject means nodes
+        are assets you can reference, reuse, and connect in the Inspector like a visual graph —
+        no scene dependencies, no prefab coupling.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── DialogueChoice.cs ─────────────────────────────────────────────
+[System.Serializable]
+public class DialogueChoice
+{
+    public string choiceText;
+    public DialogueNode nextNode;           // where this choice leads
+    public PerspectiveShift perspectiveShift; // null if no shift happens
+}
+
+
+// ── DialogueLine.cs ───────────────────────────────────────────────
+using UnityEngine;
+[System.Serializable]
+public class DialogueLine
+{
+    public string speakerName;
+    [TextArea(2, 5)]
+    public string text;
+    public Sprite portrait; // optional
+}
+
+
+// ── DialogueNode.cs ───────────────────────────────────────────────
+using System.Collections.Generic;
+using UnityEngine;  
+
+[CreateAssetMenu(menuName = "Narrative/Dialogue Node")]
+public class DialogueNode : ScriptableObject
+{
+    [TextArea(1,2)]
+    public string editorNote; // your own reminder of what this node is
+
+    public List&lt;DialogueLine&gt; lines;     // all the lines spoken in this node
+    public List&lt;DialogueChoice&gt; choices; // if empty = auto-advance to nextNode
+
+    public DialogueNode nextNode;        // used when there are no choices
+    public PerspectiveShift perspectiveShift; // fires after this node ends (if set)
+}
+
+
+// ── Story.cs ──────────────────────────────────────────────────────
+using UnityEngine;
+[CreateAssetMenu(menuName = "Narrative/Story")]
+public class Story : ScriptableObject
+{
+    public string storyTitle;
+    public string characterName;
+    public DialogueNode entryNode; // where this story begins
+}
+
+
+// ── SceneReference.cs ─────────────────────────────────────────────
+[System.Serializable]
+public class SceneReference
+{
+    public string sceneName;
+}
+      </code></pre>
+    </div>
+
+    <!-- TAB 2: DIALOGUE MANAGER -->
+    <div id="dlgManagerTab" class="tabcontent">
+      <p class="code-context">
+        The runtime engine. Drives typewriter display, spawns choice buttons dynamically,
+        and resolves each node to either the next node or a perspective shift.
+        <code>PlayAndWait</code> lets other coroutines pause until dialogue finishes.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> <code>ResolveNode</code> is the single exit point for
+        every node — whether it auto-advances, a choice is selected, or a shift fires.
+        This means the flow is always predictable regardless of how a node ends.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using TMPro;
+
+public class DialogueManager : MonoBehaviour
+{
+    public static DialogueManager Instance;
+
+    [Header("UI References")]
+    public GameObject dialoguePanel;
+    public TextMeshProUGUI speakerNameText;
+    public TextMeshProUGUI dialogueText;
+    public Image portraitImage;
+    public Transform choiceContainer;
+    public GameObject choiceButtonPrefab;
+
+    [Header("Typewriter")]
+    public float typewriterSpeed = 0.04f;
+
+    [Header("Input")]
+    public InputActionReference advanceAction;
+
+    private DialogueNode currentNode;
+    private int currentLineIndex;
+    private bool isTyping = false;
+    private Coroutine typingCoroutine;
+
+    void Awake() =&gt; Instance = this;
+    private void Start()
+    {
+        dialoguePanel.SetActive(true);
+    }
+    void OnEnable()
+    {
+        advanceAction.action.performed += OnAdvancePerformed;
+    }
+
+    void OnDisable()
+    {
+        advanceAction.action.performed -= OnAdvancePerformed;
+    }
+
+    void OnAdvancePerformed(InputAction.CallbackContext ctx)
+    {
+        if (dialoguePanel.activeSelf)
+            Advance();
+    }
+
+    public void StartNode(DialogueNode node)
+    {
+        currentNode = node;
+        currentLineIndex = 0;
+        dialoguePanel.SetActive(true);
+        ShowCurrentLine();
+    }
+
+    void ShowCurrentLine()
+    {
+        foreach (Transform child in choiceContainer)
+            Destroy(child.gameObject);
+
+        var line = currentNode.lines[currentLineIndex];
+        speakerNameText.text = line.speakerName;
+        if (line.portrait) portraitImage.sprite = line.portrait;
+
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        typingCoroutine = StartCoroutine(TypeLine(line.text));
+    }
+
+    IEnumerator TypeLine(string line)
+    {
+        isTyping = true;
+        dialogueText.text = "";
+
+        foreach (char c in line)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typewriterSpeed);
+        }
+
+        isTyping = false;
+
+        bool onLastLine = currentLineIndex &gt;= currentNode.lines.Count - 1;
+        if (onLastLine &amp;&amp; currentNode.choices.Count &gt; 0)
+            ShowChoices();
+    }
+
+    public void Advance()
+    {
+        if (currentNode == null) return; // add this line
+        
+        if (isTyping)
+        {
+            StopCoroutine(typingCoroutine);
+            isTyping = false;
+            dialogueText.text = currentNode.lines[currentLineIndex].text;
+
+            bool onLastLine = currentLineIndex &gt;= currentNode.lines.Count - 1;
+            if (onLastLine &amp;&amp; currentNode.choices.Count &gt; 0)
+                ShowChoices();
+            return;
+        }
+
+        if (currentNode.choices.Count &gt; 0 &amp;&amp; currentLineIndex &gt;= currentNode.lines.Count - 1)
+            return;
+
+        currentLineIndex++;
+
+        if (currentLineIndex &lt; currentNode.lines.Count)
+        {
+            ShowCurrentLine();
+            return;
+        }
+
+        if (currentNode.choices.Count == 0)
+            ResolveNode(currentNode.nextNode, currentNode.perspectiveShift);
+    }
+
+    void ShowChoices()
+    {
+        foreach (var choice in currentNode.choices)
+        {
+            var btn = Instantiate(choiceButtonPrefab, choiceContainer);
+            btn.GetComponentInChildren&lt;TextMeshProUGUI&gt;().text = choice.choiceText;
+
+            var captured = choice;
+            btn.GetComponent&lt;Button&gt;().onClick.AddListener(() =&gt;
+                SelectChoice(captured));
+        }
+    }
+
+    void SelectChoice(DialogueChoice choice)
+    {
+        foreach (Transform child in choiceContainer)
+            Destroy(child.gameObject);
+
+        ResolveNode(choice.nextNode, choice.perspectiveShift);
+    }
+
+    void ResolveNode(DialogueNode next, PerspectiveShift shift)
+    {
+        if (shift != null)
+        {
+            PerspectiveManager.Instance.Shift(shift);
+            return;
+        }
+
+        if (next != null)
+        {
+            StartNode(next);
+            return;
+        }
+
+        dialoguePanel.SetActive(false);
+    }
+
+    /// &lt;summary&gt;
+    /// Plays a DialogueNode and waits until the panel closes.
+    /// Use with: yield return StartCoroutine(DialogueManager.Instance.PlayAndWait(node));
+    /// &lt;/summary&gt;
+    public IEnumerator PlayAndWait(DialogueNode node)
+    {
+        StartNode(node);
+        // Wait until the dialogue panel is hidden (ResolveNode sets it inactive)
+        yield return new WaitUntil(() =&gt; !dialoguePanel.activeSelf);
+    }
+}
+      </code></pre>
+    </div>
+
+    <!-- TAB 3: PERSPECTIVE & TRANSITIONS -->
+    <div id="dlgPerspTab" class="tabcontent">
+      <p class="code-context">
+        Five scripts handle the full context-switch pipeline: the ScriptableObject that
+        defines a shift, the manager that executes it, fade/transition UI, and a
+        lightweight GameState singleton that tracks the active character.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> <code>PerspectiveShift</code> is just data — it knows
+        nothing about how the shift is executed. <code>PerspectiveManager</code> reads it and
+        runs the coroutine. Separating the "what" from the "how" means shifts can be
+        created by a designer without touching any manager code.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+// ── PerspectiveShift.cs ───────────────────────────────────────────
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "Narrative/Perspective Shift")]
+public class PerspectiveShift : ScriptableObject
+{
+    public string newCharacterName;
+    public Sprite newCharacterPortrait;
+    [TextArea(2, 4)]
+    public string transitionText;
+
+    public DialogueNode storyEntryNode;
+    public SceneReference sceneToLoad;
+
+    /*[Header("Control Swap")]
+    public GameObject characterToDisableTag;
+    public GameObject characterToEnableTag;?*/
+}
+
+
+// ── PerspectiveManager.cs ─────────────────────────────────────────
+using System;
+using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class PerspectiveManager : MonoBehaviour
+{
+    [SerializeField]
+    private GameObject[] Characters;
+    public static PerspectiveManager Instance;
+    private GameObject CharEnable;
+    private GameObject CharDisable;
+    //private int currentIndex = 0;
+    void Awake() =&gt; Instance = this;
+
+    public void Shift(PerspectiveShift shift)
+    {
+
+        StartCoroutine(DoShift(shift));
+    }
+
+    public void DetermineChar()
+    {
+        Debug.Log("nigga");
+    }
+
+    IEnumerator DoShift(PerspectiveShift shift)
+    {
+        yield return FadeManager.Instance.FadeOut();
+
+        if (!string.IsNullOrEmpty(shift.transitionText))
+        {
+            TransitionUI.Instance.Show(shift.transitionText);
+            yield return new WaitForSeconds(2.5f);
+            TransitionUI.Instance.Hide();
+        }
+
+        DetermineChar();
+
+
+        GameState.Instance.SetCurrentCharacter(shift.newCharacterName);
+
+        if (shift.sceneToLoad != null &amp;&amp; !string.IsNullOrEmpty(shift.sceneToLoad.sceneName))
+            yield return SceneManager.LoadSceneAsync(shift.sceneToLoad.sceneName);
+
+        yield return FadeManager.Instance.FadeIn();
+        DialogueManager.Instance.StartNode(shift.storyEntryNode);
+    }
+
+    private GameObject FindFirstObjectByType(bool v)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+
+// ── FadeManager.cs ────────────────────────────────────────────────
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class FadeManager : MonoBehaviour
+{
+    public static FadeManager Instance;
+
+    [Header("Assign a full-screen black Image here")]
+    public Image fadeImage;
+    public float fadeDuration = 0.5f;
+
+    void Awake()
+    {
+        if (Instance != null) { Destroy(gameObject); return; }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public IEnumerator FadeOut()
+    {
+        yield return Fade(0f, 1f);
+    }
+
+    public IEnumerator FadeIn()
+    {
+        yield return Fade(1f, 0f);
+    }
+
+    IEnumerator Fade(float from, float to)
+    {
+        float elapsed = 0f;
+        Color c = fadeImage.color;
+        fadeImage.gameObject.SetActive(true);
+
+        while (elapsed &lt; fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            c.a = Mathf.Lerp(from, to, elapsed / fadeDuration);
+            fadeImage.color = c;
+            yield return null;
+        }
+
+        c.a = to;
+        fadeImage.color = c;
+
+        if (to == 0f) fadeImage.gameObject.SetActive(false);
+    }
+}
+
+
+// ── TransitionUI.cs ───────────────────────────────────────────────
+using UnityEngine;
+using TMPro;
+
+public class TransitionUI : MonoBehaviour
+{
+    public static TransitionUI Instance;
+
+    [Header("Assign a UI panel with a TextMeshPro text child")]
+    public GameObject panel;
+    public TextMeshProUGUI transitionText;
+
+    void Awake()
+    {
+        if (Instance != null) { Destroy(gameObject); return; }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void Show(string text)
+    {
+        transitionText.text = text;
+        panel.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        panel.SetActive(false);
+    }
+}
+
+
+// ── GameState.cs ──────────────────────────────────────────────────
+using UnityEngine;
+
+public class GameState : MonoBehaviour
+{
+    public static GameState Instance;
+
+    public string currentCharacterName { get; private set; }
+
+    void Awake()
+    {
+        if (Instance != null) { Destroy(gameObject); return; }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void SetCurrentCharacter(string characterName)
+    {
+        currentCharacterName = characterName;
+        Debug.Log($"[GameState] Now playing as: {characterName}");
+    }
+}
+      </code></pre>
+    </div>
+
+  </div>
+</div>
+<!-- END DIALOGUE SYSTEM MODAL -->
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- RESOURCE MANAGEMENT MODAL                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="resourceSystemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('resourceSystemModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('resourceSystemModal')">⤢</span>
+
+    <h2 class="mechanic-title">Resource Management System</h2>
+
+    <div class="case-study">
+      <h3>Architecture Overview</h3>
+      <p>
+        Resources are defined in the Inspector as a list of <code>ResourceDefinition</code>
+        entries — id, display name, value type (int or float), initial value, and bounds.
+        At runtime the manager exposes a fluent <code>Transaction</code> API: build a transaction,
+        optionally call <code>TryCommit()</code> to validate before applying, or <code>Commit()</code>
+        to apply with clamping. Every change fires typed C# events so the HUD and any other
+        listener update without polling.
+      </p>
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        Adding a new resource requires zero code changes — define it in the Inspector,
+        and it's automatically tracked, clamped, event-driven, and displayed in the HUD.
+      </div>
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">ResourceDefinition (Inspector)</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">ResourceManager.Transaction()</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">TryCommit() validates all</div>
+          <div class="flow-node">Commit() clamps all</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">OnAnyResourceChanged event</div>
+          <div class="flow-node">OnResourceDepleted / Full</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">ResourceHUD updates row</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="code-context">
+      Two tabs: the full manager with transaction API, and the event-driven HUD.
+    </p>
+
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'resManagerTab')">Resource Manager</button>
+      <button class="tablinks" onclick="openTab(event, 'resHudTab')">Resource HUD</button>
+    </div>
+
+    <!-- TAB 1: MANAGER -->
+    <div id="resManagerTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        The full manager including <code>ResourceDefinition</code>, <code>ResourceEventArgs</code>,
+        the fluent <code>ResourceTransaction</code> builder, and the <code>ResourceManager</code>
+        singleton with its full read/write/event API.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> <code>TryCommit()</code> validates every entry in the
+        transaction before applying any of them. A multi-resource spend either fully succeeds
+        or fully fails — no partial state, no need for rollback logic.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+// ─────────────────────────────────────────────
+//  RESOURCE DEFINITION
+// ─────────────────────────────────────────────
+
+public enum ResourceValueType { Int, Float }
+
+[Serializable]
+public class ResourceDefinition
+{
+    public string id;                      // Unique key, e.g. "food", "people"
+    public string displayName;
+    public ResourceValueType valueType;
+    public float initialValue;
+    public float minValue;
+    public float maxValue;
+
+    [Tooltip("Only used when valueType == Float. Minimum absolute step when spending.")]
+    public float floatStepSize = 0.5f;
+}
+
+// ─────────────────────────────────────────────
+//  RESOURCE EVENT ARGS
+// ─────────────────────────────────────────────
+
+public class ResourceEventArgs : EventArgs
+{
+    public string ResourceId  { get; }
+    public float  PreviousValue { get; }
+    public float  NewValue      { get; }
+    public float  Delta         { get; }
+
+    public ResourceEventArgs(string id, float prev, float next)
+    {
+        ResourceId    = id;
+        PreviousValue = prev;
+        NewValue      = next;
+        Delta         = next - prev;
+    }
+}
+
+// ─────────────────────────────────────────────
+//  RESOURCE TRANSACTION  (builder-style API)
+// ─────────────────────────────────────────────
+
+/// &lt;summary&gt;
+/// Fluent transaction. Build it, then call Commit() or TryCommit().
+/// &lt;code&gt;
+/// ResourceManager.Instance
+///     .Transaction()
+///     .Spend("food", 3)
+///     .Spend("water", 2)
+///     .Gain("gold", 10)
+///     .Commit();
+/// &lt;/code&gt;
+/// &lt;/summary&gt;
+public class ResourceTransaction
+{
+    private struct Entry { public string id; public float delta; }
+
+    private readonly ResourceManager _rm;
+    private readonly List&lt;Entry&gt;     _entries = new();
+
+    internal ResourceTransaction(ResourceManager rm) =&gt; _rm = rm;
+
+    public ResourceTransaction Spend(string resourceId, float amount)
+    {
+        _entries.Add(new Entry { id = resourceId, delta = -Mathf.Abs(amount) });
+        return this;
+    }
+
+    public ResourceTransaction Gain(string resourceId, float amount)
+    {
+        _entries.Add(new Entry { id = resourceId, delta = +Mathf.Abs(amount) });
+        return this;
+    }
+
+    public ResourceTransaction Set(string resourceId, float amount)
+    {
+        if (_rm.TryGetValue(resourceId, out float current))
+            _entries.Add(new Entry { id = resourceId, delta = amount - current });
+        return this;
+    }
+
+    /// &lt;summary&gt;
+    /// Returns false (and applies nothing) if any resource would go below its minimum.
+    /// &lt;/summary&gt;
+    public bool TryCommit()
+    {
+        // Validate all first
+        foreach (var e in _entries)
+        {
+            if (!_rm.TryGetValue(e.id, out float cur)) return false;
+            float projected = cur + _rm.SnapDelta(e.id, e.delta);
+            var def = _rm.GetDefinition(e.id);
+            if (projected &lt; def.minValue || projected &gt; def.maxValue) return false;
+        }
+        Apply();
+        return true;
+    }
+
+    /// &lt;summary&gt;
+    /// Commits and clamps. Never fails.
+    /// &lt;/summary&gt;
+    public void Commit() =&gt; Apply();
+
+    private void Apply()
+    {
+        foreach (var e in _entries)
+            _rm.ApplyDelta(e.id, e.delta);
+    }
+}
+
+// ─────────────────────────────────────────────
+//  RESOURCE MANAGER  (singleton)
+// ─────────────────────────────────────────────
+
+public class ResourceManager : MonoBehaviour
+{
+    // ── Singleton ──────────────────────────────
+    public static ResourceManager Instance { get; private set; }
+
+    // ── Inspector ──────────────────────────────
+    [Header("Resource Definitions")]
+    [SerializeField] private List&lt;ResourceDefinition&gt; definitions = new();
+
+    // ── Runtime state ──────────────────────────
+    private readonly Dictionary&lt;string, ResourceDefinition&gt; _defs   = new();
+    private readonly Dictionary&lt;string, float&gt;              _values = new();
+
+    // ── Events ─────────────────────────────────
+
+    /// &lt;summary&gt;Fires whenever ANY resource changes.&lt;/summary&gt;
+    public event EventHandler&lt;ResourceEventArgs&gt; OnAnyResourceChanged;
+
+    /// &lt;summary&gt;Per-resource events. Key is the resource id.&lt;/summary&gt;
+    public event EventHandler&lt;ResourceEventArgs&gt; OnResourceChanged;
+
+    /// &lt;summary&gt;Fires when a resource hits its minValue.&lt;/summary&gt;
+    public event EventHandler&lt;ResourceEventArgs&gt; OnResourceDepleted;
+
+    /// &lt;summary&gt;Fires when a resource hits its maxValue.&lt;/summary&gt;
+    public event EventHandler&lt;ResourceEventArgs&gt; OnResourceFull;
+
+    // ── Unity lifecycle ────────────────────────
+
+    private void Awake()
+    {
+        if (Instance != null &amp;&amp; Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        foreach (var def in definitions)
+            Register(def);
+    }
+
+    // ── Registration ───────────────────────────
+
+    /// &lt;summary&gt;Register a resource at runtime (e.g. from another system).&lt;/summary&gt;
+    public void Register(ResourceDefinition def)
+    {
+        if (_defs.ContainsKey(def.id))
+        {
+            Debug.LogWarning($"[ResourceManager] '{def.id}' already registered.");
+            return;
+        }
+        _defs[def.id]   = def;
+        _values[def.id] = Mathf.Clamp(def.initialValue, def.minValue, def.maxValue);
+    }
+
+    // ── Read API ───────────────────────────────
+
+    public bool TryGetValue(string id, out float value)
+    {
+        if (_values.TryGetValue(id, out value)) return true;
+        Debug.LogWarning($"[ResourceManager] Unknown resource '{id}'");
+        return false;
+    }
+
+    public float GetValue(string id)
+    {
+        TryGetValue(id, out float v);
+        return v;
+    }
+
+    /// &lt;summary&gt;Returns int-rounded value for int resources.&lt;/summary&gt;
+    public int GetIntValue(string id) =&gt; Mathf.RoundToInt(GetValue(id));
+
+    public float GetNormalized(string id)
+    {
+        var def = GetDefinition(id);
+        float range = def.maxValue - def.minValue;
+        return range == 0 ? 0 : (GetValue(id) - def.minValue) / range;
+    }
+
+    public bool IsAtMin(string id) =&gt; Mathf.Approximately(GetValue(id), GetDefinition(id).minValue);
+    public bool IsAtMax(string id) =&gt; Mathf.Approximately(GetValue(id), GetDefinition(id).maxValue);
+
+    public ResourceDefinition GetDefinition(string id)
+    {
+        _defs.TryGetValue(id, out var def);
+        return def;
+    }
+
+    public IReadOnlyDictionary&lt;string, float&gt; GetSnapshot() =&gt; _values;
+
+    // ── Write API ──────────────────────────────
+
+    /// &lt;summary&gt;Start a fluent transaction.&lt;/summary&gt;
+    public ResourceTransaction Transaction() =&gt; new ResourceTransaction(this);
+
+    /// &lt;summary&gt;Shorthand single-resource spend. Returns false if insufficient.&lt;/summary&gt;
+    public bool TrySpend(string id, float amount)
+        =&gt; Transaction().Spend(id, amount).TryCommit();
+
+    /// &lt;summary&gt;Shorthand single-resource gain (clamped).&lt;/summary&gt;
+    public void Gain(string id, float amount)
+        =&gt; Transaction().Gain(id, amount).Commit();
+
+    /// &lt;summary&gt;Set a resource to an exact value.&lt;/summary&gt;
+    public void SetValue(string id, float value)
+        =&gt; Transaction().Set(id, value).Commit();
+
+    // ── Internal helpers ───────────────────────
+
+    internal float SnapDelta(string id, float rawDelta)
+    {
+        if (!_defs.TryGetValue(id, out var def)) return rawDelta;
+        if (def.valueType == ResourceValueType.Int)
+            return Mathf.Round(rawDelta);                         // integer snap
+        if (def.floatStepSize &gt; 0)
+            return Mathf.Round(rawDelta / def.floatStepSize) * def.floatStepSize; // float step
+        return rawDelta;
+    }
+
+    internal void ApplyDelta(string id, float rawDelta)
+    {
+        if (!_values.TryGetValue(id, out float current)) return;
+        var def = _defs[id];
+
+        float snapped  = SnapDelta(id, rawDelta);
+        float newValue = Mathf.Clamp(current + snapped, def.minValue, def.maxValue);
+
+        if (Mathf.Approximately(newValue, current)) return; // no change
+
+        _values[id] = newValue;
+
+        var args = new ResourceEventArgs(id, current, newValue);
+        OnAnyResourceChanged?.Invoke(this, args);
+        OnResourceChanged?.Invoke(this, args);
+
+        if (Mathf.Approximately(newValue, def.minValue)) OnResourceDepleted?.Invoke(this, args);
+        if (Mathf.Approximately(newValue, def.maxValue)) OnResourceFull?.Invoke(this, args);
+    }
+}
+      </code></pre>
+    </div>
+
+    <!-- TAB 2: HUD -->
+    <div id="resHudTab" class="tabcontent">
+      <p class="code-context">
+        A self-building HUD that creates one text row per resource on start, then updates
+        only the changed row via the <code>OnAnyResourceChanged</code> event. No polling,
+        no Update() loop.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> The HUD subscribes to a single event and looks up the
+        changed resource by ID to update only that row. Adding a new resource to the manager
+        automatically adds a new row to the HUD — no HUD code changes needed.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+/// &lt;summary&gt;
+/// Drop on a Canvas GameObject. Assign a TextMeshProUGUI prefab that has a
+/// {label}: {value} style text.  Listens to ResourceManager events and rebuilds
+/// only the changed row — no polling.
+/// &lt;/summary&gt;
+public class ResourceHUD : MonoBehaviour
+{
+    [SerializeField] private TextMeshProUGUI rowPrefab;
+    [SerializeField] private Transform       container;
+
+    private readonly Dictionary&lt;string, TextMeshProUGUI&gt; _rows = new();
+
+    private void Start()
+    {
+        var rm = ResourceManager.Instance;
+        if (rm == null) return;
+
+        // Build initial rows
+        foreach (var kv in rm.GetSnapshot())
+            CreateRow(kv.Key, kv.Value);
+
+        rm.OnAnyResourceChanged += OnChanged;
+    }
+
+    private void OnDestroy()
+    {
+        if (ResourceManager.Instance != null)
+            ResourceManager.Instance.OnAnyResourceChanged -= OnChanged;
+    }
+
+    private void OnChanged(object sender, ResourceEventArgs e)
+        =&gt; UpdateRow(e.ResourceId, e.NewValue);
+
+    private void CreateRow(string id, float value)
+    {
+        var txt = Instantiate(rowPrefab, container);
+        _rows[id] = txt;
+        UpdateRow(id, value);
+    }
+
+    private void UpdateRow(string id, float value)
+    {
+        if (!_rows.TryGetValue(id, out var txt)) return;
+        var def = ResourceManager.Instance.GetDefinition(id);
+        string label = def?.displayName ?? id;
+
+        if (def?.valueType == ResourceValueType.Int)
+            txt.text = $"{label}: {Mathf.RoundToInt(value)}";
+        else
+            txt.text = $"{label}: {value:F1}";
+    }
+}
+      </code></pre>
+    </div>
+
+  </div>
+</div>
+<!-- END RESOURCE MANAGEMENT MODAL -->
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- 2D PLAYER & SCENE TRACKING MODAL                          -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="player2dSystemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('player2dSystemModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('player2dSystemModal')">⤢</span>
+
+    <h2 class="mechanic-title">2D Player &amp; Scene Tracking</h2>
+
+    <div class="case-study">
+      <h3>Architecture Overview</h3>
+      <p>
+        A physics-based 2D spider character that moves along surfaces, aligning its rotation
+        to the surface normal in real time. Grappling uses a <code>SpringJoint2D</code> whose
+        frequency scales dynamically with stretch ratio, simulating silk tension. The
+        <code>SceneTracker</code> persists visit and completion state across scene loads using
+        PlayerPrefs and automatically refreshes map indicators whenever a scene is loaded.
+      </p>
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        Movement, grapple physics and scene state are all decoupled — the player controller
+        knows nothing about scene tracking, and scene tracking knows nothing about physics.
+      </div>
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">Input System (New Input)</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Surface Detection</div>
+          <div class="flow-node">Grapple Node Hover</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">SpringJoint2D (silk physics)</div>
+          <div class="flow-node">Surface-aligned movement</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">SceneTracker → PlayerPrefs → Map Indicators</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="code-context">
+      Two tabs: the full 2D player controller and the persistent scene tracker.
+    </p>
+
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'p2dControllerTab')">Player Controller</button>
+      <button class="tablinks" onclick="openTab(event, 'p2dTrackerTab')">Scene Tracker</button>
+    </div>
+
+    <!-- TAB 1: PLAYER CONTROLLER -->
+    <div id="p2dControllerTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        Surface-aligned movement via CircleCast normal detection. Grapple uses SpringJoint2D
+        with dynamic frequency based on stretch ratio. Climb input adjusts the target distance
+        each frame so the player can shorten or lengthen the silk.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Rather than applying a fixed spring force, the joint
+        frequency is lerped between <code>baseFrequency</code> and <code>maxFrequency</code>
+        based on how stretched the silk is. The more it stretches, the stiffer it gets —
+        matching real spider silk behaviour without custom physics.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpringJoint2D))]
+[RequireComponent(typeof(Collider2D))]
+public class PlayerController2D : MonoBehaviour
+{
+    [Header("Animation")]
+    public float swingTiltStrength = 2.5f;
+    public float maxSwingTilt = 35f;
+    private Animator animator;
+
+    [Header("Movement")]
+    public float moveSpeed = 8f;
+    public float jumpForce = 12f;
+
+    public Transform groundCheck;
+    public LayerMask groundLayer;
+    public float groundCheckRadius = 0.2f;
+    public float groundRayLength = 0.6f;
+
+    [Header("Spider Movement")]
+    public float surfaceDetectRadius = 0.6f;
+    public float surfaceRotateSpeed = 12f;
+
+    private Vector2 surfaceNormal;
+    private bool onSurface;
+
+    [Header("Grapple")]
+    public float grappleRange = 15f;
+    public LayerMask grappleLayer;
+    public bool IsGrappling =&gt; joint.enabled;
+    public Vector2 GrappleAnchor =&gt; joint.connectedAnchor;
+
+    [Header("Silk Settings")]
+    public float baseFrequency = 6f;
+    public float maxFrequency = 9f;
+    public float dampingRatio = 0.15f;
+    public float initialTensionMultiplier = 0.95f;
+    public float climbSpeed = 5f;
+    public float extraFallGravity = 8f;
+
+    private Rigidbody2D rb;
+    private SpringJoint2D joint;
+    private SpriteRenderer sprite;
+    private Collider2D playerCollider;
+
+    private Vector2 moveInput;
+    private bool jumpPressed;
+
+    private GrappleNode currentGrappleNode;
+    private Collider2D currentNodeCollider;
+    private GrappleNode hoveredNode;
+
+    private float targetDistance;
+    private RaycastHit2D groundHit;
+
+    void Awake()
+    {
+        rb = GetComponent&lt;Rigidbody2D&gt;();
+        joint = GetComponent&lt;SpringJoint2D&gt;();
+        playerCollider = GetComponent&lt;Collider2D&gt;();
+
+        sprite = GetComponentInChildren&lt;SpriteRenderer&gt;();
+        animator = GetComponentInChildren&lt;Animator&gt;();
+
+        joint.enabled = false;
+        joint.autoConfigureDistance = false;
+        joint.autoConfigureConnectedAnchor = false;
+        joint.dampingRatio = dampingRatio;
+        joint.enableCollision = true;
+    }
+
+    void Update()
+    {
+        HandleJump();
+        UpdateSpriteDirection();
+        UpdateAnimations();
+        DetectHoverNode();
+        DetectSurface();
+    }
+
+    void FixedUpdate()
+    {
+        HandleSpiderMovement();
+
+        if (joint.enabled)
+        {
+            HandleSilkPhysics();
+            HandleClimb();
+            ApplyExtraFallGravity();
+            RotateDuringGrapple();
+            ApplySwingTilt();
+        }
+        else
+        {
+            RotateToSurface();
+        }
+    }
+
+    // ---------------- MOVEMENT ----------------
+    void HandleSpiderMovement()
+    {
+        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        if (!joint.enabled)
+        {
+            if (onSurface &amp;&amp; isGrounded)
+            {
+                Vector2 tangent = new Vector2(surfaceNormal.y, -surfaceNormal.x).normalized;
+                float horizontalSpeed = moveInput.x * moveSpeed;
+                Vector2 currentNormalVelocity = Vector2.Dot(rb.linearVelocity, surfaceNormal) * surfaceNormal;
+                rb.linearVelocity = tangent * horizontalSpeed + currentNormalVelocity;
+                rb.position += -surfaceNormal * 0.001f;
+            }
+            else
+            {
+                rb.linearVelocity = new Vector2(moveInput.x * moveSpeed, rb.linearVelocity.y);
+            }
+        }
+        else
+        {
+            rb.AddForce(new Vector2(moveInput.x * moveSpeed * 4f, 0f));
+        }
+    }
+
+    // ---------------- JUMP ----------------
+    void HandleJump()
+    {
+        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        if (jumpPressed &amp;&amp; isGrounded)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            jumpPressed = false;
+        }
+    }
+
+    // ---------------- SURFACE DETECTION ----------------
+    void DetectSurface()
+    {
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, surfaceDetectRadius, Vector2.zero, 0f, groundLayer);
+        if (hit.collider != null)
+        {
+            onSurface = true;
+            surfaceNormal = hit.normal;
+        }
+        else
+        {
+            onSurface = false;
+        }
+    }
+
+    void RotateToSurface()
+    {
+        if (!onSurface) return;
+        float angle = Mathf.Atan2(surfaceNormal.y, surfaceNormal.x) * Mathf.Rad2Deg - 90f;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, angle), surfaceRotateSpeed * Time.fixedDeltaTime);
+    }
+
+    // ---------------- SPRITE DIRECTION ----------------
+    void UpdateSpriteDirection()
+    {
+        if (moveInput.x &gt; 0.1f) sprite.flipX = false;
+        else if (moveInput.x &lt; -0.1f) sprite.flipX = true;
+    }
+
+    // ---------------- GRAPPLE ----------------
+    void DetectHoverNode()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, grappleRange, grappleLayer);
+
+        if (hit.collider != null)
+        {
+            GrappleNode node = hit.collider.GetComponent&lt;GrappleNode&gt;();
+            if (node != null &amp;&amp; node.canBeGrappled)
+            {
+                if (hoveredNode != node)
+                {
+                    if (hoveredNode != null) hoveredNode.SetHover(false);
+                    hoveredNode = node;
+                    hoveredNode.SetHover(true);
+                }
+                return;
+            }
+        }
+
+        if (hoveredNode != null)
+        {
+            hoveredNode.SetHover(false);
+            hoveredNode = null;
+        }
+    }
+
+    void TryGrapple()
+    {
+        if (hoveredNode == null) return;
+
+        currentGrappleNode = hoveredNode;
+        currentNodeCollider = hoveredNode.GetComponent&lt;Collider2D&gt;();
+        Physics2D.IgnoreCollision(playerCollider, currentNodeCollider, true);
+
+        Vector2 anchor = currentNodeCollider.bounds.center;
+        joint.connectedAnchor = anchor;
+
+        float distance = Vector2.Distance(transform.position, anchor);
+        targetDistance = distance * initialTensionMultiplier;
+
+        joint.distance = targetDistance;
+        joint.frequency = baseFrequency;
+        joint.dampingRatio = dampingRatio;
+
+        joint.enabled = true;
+        currentGrappleNode.OnGrappled(this);
+
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Ground"), true);
+    }
+
+    void ReleaseGrapple()
+    {
+        if (currentGrappleNode != null) currentGrappleNode.OnReleased(this);
+        if (currentNodeCollider != null) Physics2D.IgnoreCollision(playerCollider, currentNodeCollider, false);
+
+        currentNodeCollider = null;
+        currentGrappleNode = null;
+        joint.enabled = false;
+
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Ground"), false);
+    }
+
+    void HandleSilkPhysics()
+    {
+        float currentDistance = Vector2.Distance(rb.position, joint.connectedAnchor);
+        float stretchRatio = currentDistance / targetDistance;
+
+        float newFrequency = Mathf.Lerp(baseFrequency, maxFrequency, Mathf.Clamp01(stretchRatio - 1f));
+        joint.frequency = newFrequency;
+        joint.distance = targetDistance;
+    }
+
+    void HandleClimb()
+    {
+        if (moveInput.y &gt; 0.1f) targetDistance = Mathf.Max(1f, targetDistance - climbSpeed * Time.fixedDeltaTime);
+        else if (moveInput.y &lt; -0.1f) targetDistance += climbSpeed * Time.fixedDeltaTime;
+    }
+
+    void ApplyExtraFallGravity()
+    {
+        if (rb.linearVelocity.y &lt; 0) rb.AddForce(Vector2.down * extraFallGravity);
+    }
+
+    void RotateDuringGrapple()
+    {
+        Vector2 dir = (Vector2)transform.position - joint.connectedAnchor;
+        float baseAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+        float tilt = Mathf.Clamp(-rb.linearVelocity.x * swingTiltStrength, -maxSwingTilt, maxSwingTilt);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, baseAngle + tilt), 10f * Time.fixedDeltaTime);
+    }
+
+    void ApplySwingTilt()
+    {
+        if (!joint.enabled) return;
+        float tilt = Mathf.Clamp(-rb.linearVelocity.x * swingTiltStrength, -maxSwingTilt, maxSwingTilt);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, tilt), 6f * Time.fixedDeltaTime);
+    }
+
+    // ---------------- INPUT ----------------
+    public void OnMove(InputAction.CallbackContext context) =&gt; moveInput = context.ReadValue&lt;Vector2&gt;();
+    public void OnJump(InputAction.CallbackContext context) { if (context.performed) jumpPressed = true; }
+    public void OnGrapple(InputAction.CallbackContext context)
+    {
+        if (context.started) TryGrapple();
+        else if (context.canceled) ReleaseGrapple();
+    }
+
+    // ---------------- ANIMATION ----------------
+    void UpdateAnimations()
+    {
+        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        float animSpeed = isGrounded ? Mathf.Abs(moveInput.x) : 0f;
+        animator.SetFloat("Speed", animSpeed);
+    }
+}
+      </code></pre>
+    </div>
+
+    <!-- TAB 2: SCENE TRACKER -->
+    <div id="p2dTrackerTab" class="tabcontent">
+      <p class="code-context">
+        Singleton that survives scene loads. Listens to <code>SceneManager.sceneLoaded</code>
+        and re-finds indicator GameObjects by name each time (since they don't persist),
+        then sets their active state based on PlayerPrefs visit flags.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Re-finding indicators by name on each scene load
+        (rather than holding references) means the tracker works correctly even when the
+        objects don't persist — the references are refreshed rather than going stale.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class SceneTracker : MonoBehaviour
+{
+    public static SceneTracker Instance;
+
+    [Header("Map Indicators")]
+    public GameObject dogIndicator;
+    public GameObject kidIndicator;
+    public GameObject memoryIndicator;
+    [Header("Map Visited Objects")]
+    public GameObject dogVisitedObject;
+    public GameObject kidVisitedObject;
+    public GameObject memoryVisitedObject;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    void Start()
+    {
+        ResetAll();
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Fires every time any scene loads — refresh indicator states
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        RefreshIndicators();
+    }
+
+    void RefreshIndicators()
+    {
+        if (dogIndicator == null) dogIndicator = GameObject.Find("DogIndicator");
+        if (kidIndicator == null) kidIndicator = GameObject.Find("KidIndicator");
+        if (memoryIndicator == null) memoryIndicator = GameObject.Find("MemoryIndicator");
+
+        if (dogVisitedObject == null) dogVisitedObject = GameObject.Find("DogVisitedObject");
+        if (kidVisitedObject == null) kidVisitedObject = GameObject.Find("KidVisitedObject");
+        if (memoryVisitedObject == null) memoryVisitedObject = GameObject.Find("MemoryVisitedObject");
+
+        if (dogIndicator != null) dogIndicator.SetActive(!HasVisited("dog"));
+        if (kidIndicator != null) kidIndicator.SetActive(!HasVisited("kid"));
+        if (memoryIndicator != null) memoryIndicator.SetActive(!HasVisited("memory"));
+
+        if (dogVisitedObject != null) dogVisitedObject.SetActive(HasVisited("dog"));
+        if (kidVisitedObject != null) kidVisitedObject.SetActive(HasVisited("kid"));
+        if (memoryVisitedObject != null) memoryVisitedObject.SetActive(HasVisited("memory"));
+    }
+
+    public void MarkVisited(string sceneName)
+    {
+        PlayerPrefs.SetInt(sceneName + "_visited", 1);
+        PlayerPrefs.Save();
+        RefreshIndicators();
+    }
+
+    public void MarkCompleted(string sceneName)
+    {
+        PlayerPrefs.SetInt(sceneName + "_completed", 1);
+        PlayerPrefs.Save();
+    }
+
+    public bool HasVisited(string sceneName)
+    {
+        return PlayerPrefs.GetInt(sceneName + "_visited", 0) == 1;
+    }
+
+    public bool HasCompleted(string sceneName)
+    {
+        return PlayerPrefs.GetInt(sceneName + "_completed", 0) == 1;
+    }
+
+    public void ResetAll()
+    {
+        PlayerPrefs.DeleteAll();
+        RefreshIndicators();
+    }
+}
+      </code></pre>
+    </div>
+
+  </div>
+</div>
+<!-- END 2D PLAYER & SCENE TRACKING MODAL -->
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- ENDING SEQUENCES MODAL                                     -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="endingSystemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('endingSystemModal')">&times;</span>
+    <span class="fullscreen-toggle" onclick="toggleFullscreen('endingSystemModal')">⤢</span>
+
+    <h2 class="mechanic-title">Ending Sequences</h2>
+
+    <div class="case-study">
+      <h3>Architecture Overview</h3>
+      <p>
+        A fully coroutine-driven cinematic ending with six sequenced stages: gun load animation,
+        click-through alien typewriter dialogue, flashback with auto-advancing dialogue running
+        in parallel, character swap, ship landing, and fade to black with end text.
+        The alien typewriter builds a complete garbled string first, then translates
+        character-by-character to readable text — with skip support at any point.
+        Credits is a separate self-contained scroller with fast-forward and reverse input.
+      </p>
+      <div class="highlight-box">
+        <strong>Core Goal:</strong><br>
+        The entire sequence is data-driven through Inspector fields — every duration,
+        dialogue line, and animation reference is configurable without touching the coroutine logic.
+      </div>
+      <h3>How It Works</h3>
+      <div class="flowchart">
+        <div class="flow-row">
+          <div class="flow-node">OnTriggerEnter2D</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Gun Animation</div>
+          <div class="flow-node">Alien Typewriter Dialogue</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Flashback + Parallel Dialogue</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">Ship Landing → Fade to Black</div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-row">
+          <div class="flow-node">End Text (alien translate) → Credits Scroller</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="code-context">
+      Two tabs: the full ending sequence and the credits scroller.
+    </p>
+
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'endSeqTab')">Ending Sequence</button>
+      <button class="tablinks" onclick="openTab(event, 'creditsTab')">Credits</button>
+    </div>
+
+    <!-- TAB 1: ENDING SEQUENCE -->
+    <div id="endSeqTab" class="tabcontent" style="display:block;">
+      <p class="code-context">
+        The main coroutine chain. <code>RunEndingSequence</code> owns the primary flow.
+        <code>RunFlashbackDialogue</code> runs in parallel via <code>StartCoroutine</code> (not
+        yielded) so flashback dialogue overlays the flashback animation independently.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> The alien typewriter shows the full garbled line length
+        immediately, then translates each character in place. This prevents layout shifts
+        during translation and makes the effect feel intentional rather than like slow loading.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using System.Collections;
+using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+
+public class EndingSequence : MonoBehaviour
+{
+    [Header("World Space Animations")]
+    public GameObject gunLoadAnimation;
+    public GameObject flashbackAnimation;
+    public GameObject shotGuy;
+    public GameObject unshotGuy;
+    public GameObject shipAnimation;
+
+    [Header("Ship Movement")]
+    public Transform shipSpawnPoint;
+    public Transform shipLandingPoint;
+    public float shipMoveDuration = 1.5f;
+
+    [Header("Dialogue")]
+    public GameObject dialogueBubble;
+    public TextMeshPro dialogueText;
+    public string[] dialogueLines = new string[]
+    {
+        "Wait . . .",
+        "What... are you?"
+    };
+
+    [Header("Flashback Dialogue")]
+    public GameObject flashbackDialogueBubble;
+    public TextMeshPro flashbackDialogueText;
+
+    [Header("Flashback Dialogue")]
+    [Tooltip("Auto types during flashback, no click needed")]
+    public string[] flashbackLines = new string[]
+    {
+        "They're not who they say they are.",
+        "You're not who you think you are."
+    };
+    [Tooltip("How far into the flashback before lines start appearing")]
+    public float flashbackDialogueDelay = 2f;
+    [Tooltip("How long each flashback line holds before the next one auto advances")]
+    public float flashbackLineHoldDuration = 2f;
+
+    [Header("Fade &amp; End Text")]
+    public SpriteRenderer fadeSprite;
+    public TextMeshPro endText;
+    public string[] endLines = new string[]
+    {
+        "Find what happened.",
+        "Find your origin."
+    };
+
+    [Header("Alien Text Effect")]
+    public string alienCharacters = "ꓤꓡꓢꓥꓦꓧꓨꓩꓪꓫꓬꓭꓮꓯꓰꓱꓲꓳꓴꓵ";
+    public float alienHoldDuration = 0.6f;
+    public float translateSpeed = 0.03f;
+
+    [Header("Timing")]
+    public float gunLoadDuration = 1f;
+    public float flashbackDuration = 5f;
+    public float fadeInDuration = 0.8f;
+    public float shipDuration = 3f;
+    public float endTextHoldDuration = 2.5f;
+    public float endTextFadeDuration = 0.5f;
+    public float inputDelay = 0.3f;
+
+    [Header("Scene")]
+    public string mainMenuScene = "MainMenu";
+
+    private bool hasTriggered = false;
+    private bool isTyping = false;
+    private bool skipRequested = false;
+    private bool readyForInput = false;
+    private int currentLine = 0;
+    private ClickRunnerController playerController;
+
+    private void Start()
+    {
+        if (gunLoadAnimation != null) gunLoadAnimation.SetActive(false);
+        if (flashbackAnimation != null) flashbackAnimation.SetActive(false);
+        if (shipAnimation != null)
+        {
+            shipAnimation.SetActive(false);
+            shipAnimation.transform.position = shipSpawnPoint.position;
+        }
+        if (dialogueBubble != null) dialogueBubble.SetActive(false);
+        if (endText != null) endText.text = "";
+        if (unshotGuy != null) unshotGuy.SetActive(true);
+        if (shotGuy != null) shotGuy.SetActive(false);
+        if (flashbackDialogueBubble != null) flashbackDialogueBubble.SetActive(false);
+        if (flashbackDialogueText != null) flashbackDialogueText.text = "";
+
+        SetFadeAlpha(0f);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (hasTriggered) return;
+        if (!other.CompareTag("Player")) return;
+
+        hasTriggered = true;
+        playerController = other.GetComponent&lt;ClickRunnerController&gt;();
+        StartCoroutine(RunEndingSequence());
+    }
+
+    private IEnumerator RunEndingSequence()
+    {
+        // Stop player
+        if (playerController != null)
+        {
+            playerController.enabled = false;
+            playerController.isMoving = false;
+
+            Rigidbody2D rb = playerController.GetComponent&lt;Rigidbody2D&gt;();
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+
+            Animator anim = playerController.GetComponent&lt;Animator&gt;();
+            if (anim != null)
+                anim.SetBool("isMoving", false);
+        }
+
+        // Gun load animation plays, stays on during dialogue
+        gunLoadAnimation.SetActive(true);
+
+        // Initial dialogue — player clicks through, gun stays visible
+        currentLine = 0;
+        dialogueBubble.SetActive(true);
+        yield return StartCoroutine(AlienTypewriterLine(dialogueText, dialogueLines[currentLine]));
+        yield return new WaitUntil(() =&gt; currentLine &gt;= dialogueLines.Length);
+
+        // Hide dialogue and gun
+        dialogueBubble.SetActive(false);
+        dialogueText.text = "";
+        gunLoadAnimation.SetActive(false);
+
+        // Flashback starts — run dialogue automatically on top of it
+        flashbackAnimation.SetActive(true);
+        yield return StartCoroutine(FadeGameObject(flashbackAnimation, 0f, 1f, fadeInDuration));
+        StartCoroutine(RunFlashbackDialogue());
+        yield return new WaitForSeconds(flashbackDuration);
+
+        // Swap shot guy — unshot was visible, now show shot
+        unshotGuy.SetActive(false);
+        shotGuy.SetActive(true);
+
+        // Fade out flashback
+        yield return StartCoroutine(FadeGameObject(flashbackAnimation, 1f, 0f, fadeInDuration));
+        flashbackAnimation.SetActive(false);
+
+        // Hide dialogue bubble in case flashback dialogue is still showing
+        dialogueBubble.SetActive(false);
+        dialogueText.text = "";
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Move ship down into position then play its animation
+        shipAnimation.SetActive(true);
+        shipAnimation.transform.position = shipSpawnPoint.position;
+        yield return StartCoroutine(MoveShip());
+
+        yield return new WaitForSeconds(shipDuration);
+        shipAnimation.SetActive(false);
+
+        // Re-enable player to walk to portal
+        if (playerController != null)
+            playerController.enabled = true;
+    }
+
+    private IEnumerator RunFlashbackDialogue()
+    {
+        yield return new WaitForSeconds(flashbackDialogueDelay);
+
+        flashbackDialogueBubble.SetActive(true);
+
+        foreach (string line in flashbackLines)
+        {
+            yield return StartCoroutine(AutoAlienTypewriterLine(flashbackDialogueText, line));
+            yield return new WaitForSeconds(flashbackLineHoldDuration);
+            flashbackDialogueText.text = "";
+        }
+
+        flashbackDialogueBubble.SetActive(false);
+    }
+
+    private IEnumerator MoveShip()
+    {
+        float elapsed = 0f;
+        Vector3 start = shipSpawnPoint.position;
+        Vector3 end = shipLandingPoint.position;
+
+        while (elapsed &lt; shipMoveDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / shipMoveDuration);
+            shipAnimation.transform.position = Vector3.Lerp(start, end, t);
+            yield return null;
+        }
+
+        shipAnimation.transform.position = end;
+    }
+
+    public void TriggerEnding()
+    {
+        StartCoroutine(RunEnding());
+    }
+
+    private IEnumerator RunEnding()
+    {
+        if (playerController != null)
+        {
+            playerController.enabled = false;
+            playerController.isMoving = false;
+        }
+
+        yield return StartCoroutine(FadeToBlack());
+
+        foreach (string line in endLines)
+        {
+            Color tc = endText.color;
+            tc.a = 1f;
+            endText.color = tc;
+
+            yield return StartCoroutine(AlienTypewriterLine(endText, line));
+            yield return new WaitForSeconds(endTextHoldDuration);
+            yield return StartCoroutine(FadeOutText());
+            endText.text = "";
+        }
+
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene(mainMenuScene);
+    }
+
+    // ── Click-through alien typewriter ───────────────────────────────────────
+    private IEnumerator AlienTypewriterLine(TextMeshPro tmp, string line)
+    {
+        isTyping = true;
+        readyForInput = false;
+        skipRequested = false;
+
+        string alienLine = BuildAlienString(line);
+        tmp.text = alienLine;
+
+        yield return new WaitForSeconds(alienHoldDuration);
+
+        if (skipRequested)
+        {
+            tmp.text = line;
+            isTyping = false;
+            yield return new WaitForSeconds(inputDelay);
+            readyForInput = true;
+            yield break;
+        }
+
+        char[] current = alienLine.ToCharArray();
+        for (int i = 0; i &lt; line.Length; i++)
+        {
+            if (skipRequested)
+            {
+                tmp.text = line;
+                break;
+            }
+            current[i] = line[i];
+            tmp.text = new string(current);
+            yield return new WaitForSeconds(translateSpeed);
+        }
+
+        tmp.text = line;
+        isTyping = false;
+        yield return new WaitForSeconds(inputDelay);
+        readyForInput = true;
+    }
+
+    // ── Auto alien typewriter (no click, just plays through) ─────────────────
+    private IEnumerator AutoAlienTypewriterLine(TextMeshPro tmp, string line)
+    {
+        string alienLine = BuildAlienString(line);
+        tmp.text = alienLine;
+
+        yield return new WaitForSeconds(alienHoldDuration);
+
+        char[] current = alienLine.ToCharArray();
+        for (int i = 0; i &lt; line.Length; i++)
+        {
+            current[i] = line[i];
+            tmp.text = new string(current);
+            yield return new WaitForSeconds(translateSpeed);
+        }
+
+        tmp.text = line;
+    }
+
+    private string BuildAlienString(string line)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        foreach (char c in line)
+        {
+            if (char.IsLetter(c))
+                sb.Append(alienCharacters[Random.Range(0, alienCharacters.Length)]);
+            else
+                sb.Append(c);
+        }
+        return sb.ToString();
+    }
+
+    private void Update()
+    {
+        if (!dialogueBubble.activeSelf) return;
+        if (Mouse.current == null) return;
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (isTyping)
+                skipRequested = true;
+            else if (readyForInput)
+                AdvanceLine();
+        }
+    }
+
+    private void AdvanceLine()
+    {
+        currentLine++;
+        if (currentLine &gt;= dialogueLines.Length) return;
+        StartCoroutine(AlienTypewriterLine(dialogueText, dialogueLines[currentLine]));
+    }
+
+    // ── Fade a GameObject's SpriteRenderer ───────────────────────────────────
+    private IEnumerator FadeGameObject(GameObject go, float from, float to, float duration)
+    {
+        SpriteRenderer sr = go.GetComponent&lt;SpriteRenderer&gt;();
+        if (sr == null) yield break;
+
+        float elapsed = 0f;
+        Color c = sr.color;
+        c.a = from;
+        sr.color = c;
+
+        while (elapsed &lt; duration)
+        {
+            elapsed += Time.deltaTime;
+            c.a = Mathf.Lerp(from, to, elapsed / duration);
+            sr.color = c;
+            yield return null;
+        }
+
+        c.a = to;
+        sr.color = c;
+    }
+
+    private IEnumerator FadeToBlack()
+    {
+        float elapsed = 0f;
+        while (elapsed &lt; fadeInDuration)
+        {
+            elapsed += Time.deltaTime;
+            SetFadeAlpha(Mathf.Lerp(0f, 1f, elapsed / fadeInDuration));
+            yield return null;
+        }
+        SetFadeAlpha(1f);
+    }
+
+    private IEnumerator FadeOutText()
+    {
+        float elapsed = 0f;
+        Color c = endText.color;
+
+        while (elapsed &lt; endTextFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            c.a = Mathf.Lerp(1f, 0f, elapsed / endTextFadeDuration);
+            endText.color = c;
+            yield return null;
+        }
+
+        c.a = 0f;
+        endText.color = c;
+    }
+
+    private void SetFadeAlpha(float alpha)
+    {
+        Color c = fadeSprite.color;
+        c.a = alpha;
+        fadeSprite.color = c;
+    }
+}
+      </code></pre>
+    </div>
+
+    <!-- TAB 2: CREDITS -->
+    <div id="creditsTab" class="tabcontent">
+      <p class="code-context">
+        Simple self-contained credits scroller. Left click fast-forwards, right click
+        reverses. Loads the next scene automatically when the text scrolls past the end Y threshold.
+      </p>
+      <div class="key-insight">
+        <strong>Key Insight:</strong> Speed is recalculated every frame from current input
+        rather than stored as a state — this means releasing a button instantly snaps back
+        to normal speed with no lingering state to reset.
+      </div>
+      <pre class="code-block"><code class="language-csharp">
+using UnityEngine;
+using TMPro;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+
+public class CreditsScroller : MonoBehaviour
+{
+    [Header("Credits Text")]
+    [TextArea(10, 30)]
+    public string creditsText;
+
+    public TextMeshProUGUI textUI;
+
+    [Header("Scrolling")]
+    public float scrollSpeed = 30f;
+    public float fastMultiplier = 3f;
+    public float reverseMultiplier = -1.5f;
+
+    [Header("End")]
+    public float endY = 2000f; // when credits finish
+    public string sceneToLoad = "meun";
+
+    private RectTransform rect;
+    private float currentSpeed;
+
+    void Start()
+    {
+        rect = textUI.GetComponent&lt;RectTransform&gt;();
+        textUI.text = creditsText;
+
+        currentSpeed = scrollSpeed;
+    }
+
+    void Update()
+    {
+        HandleInput();
+
+        // Move text
+        rect.anchoredPosition += Vector2.up * currentSpeed * Time.deltaTime;
+
+        // End condition
+        if (rect.anchoredPosition.y &gt;= endY)
+        {
+            SceneManager.LoadScene(sceneToLoad);
+        }
+    }
+
+    void HandleInput()
+    {
+        if (Mouse.current == null) return;
+
+        // Default speed
+        currentSpeed = scrollSpeed;
+
+        // LEFT CLICK = FAST FORWARD
+        if (Mouse.current.leftButton.isPressed)
+        {
+            currentSpeed = scrollSpeed * fastMultiplier;
+        }
+
+        // RIGHT CLICK = REVERSE
+        if (Mouse.current.rightButton.isPressed)
+        {
+            currentSpeed = scrollSpeed * reverseMultiplier;
+        }
+    }
+}
+      </code></pre>
+    </div>
+
+  </div>
+</div>
+<!-- END ENDING SEQUENCES MODAL -->
+
+
 <section id="contact" class="contact">
   <h2 class="section-title">Contact</h2>
  
