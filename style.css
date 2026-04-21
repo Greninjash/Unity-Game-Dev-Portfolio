@@ -850,3 +850,238 @@ section {
 .system-lab-btn:hover {
   background: #053a91;
 }
+
+/* Game Design Document Stuff */
+
+.gdd-page {
+  max-width: 900px;
+  margin: auto;
+  padding: 60px 20px;
+  line-height: 1.6;
+}
+
+.hero-sub {
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+section {
+  margin-bottom: 50px;
+}
+
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.pillar {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.gdd-image {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 15px;
+}
+
+.gdd-button {
+  display: inline-block;
+  padding: 12px 20px;
+  background: #0645ad;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+/* ═══════════════════════════════════════════
+   GDD BUTTON (inline with project title)
+   ═══════════════════════════════════════════ */
+ 
+.project-title-row {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 15px;
+}
+ 
+.project-title-row .project-title {
+  margin-bottom: 0;
+}
+ 
+.gdd-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: white;
+  border: 2px solid #0645ad;
+  color: #0645ad;
+  border-radius: 6px;
+  font-size: 0.88em;
+  font-weight: 700;
+  text-decoration: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  margin-bottom: -2px;
+}
+ 
+.gdd-link-btn:hover {
+  background: #0645ad;
+  color: white;
+}
+ 
+/* ═══════════════════════════════════════════
+   GAME DESIGN DOCUMENT PAGE
+   ═══════════════════════════════════════════ */
+ 
+.gdd-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+  line-height: 1.7;
+  font-family: 'Sora', Arial, sans-serif;
+  color: #222;
+}
+ 
+.gdd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 40px;
+  color: #0645ad;
+  font-weight: 700;
+  font-size: 0.9em;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+ 
+.gdd-back:hover { opacity: 0.7; }
+ 
+.gdd-page h1 {
+  font-size: 2.4em;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+ 
+.gdd-page h2 {
+  font-size: 1.2em;
+  color: #0645ad;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+ 
+.gdd-page .hero-sub {
+  font-size: 1.05em;
+  color: #555;
+  margin-bottom: 50px;
+  line-height: 1.6;
+}
+ 
+.gdd-divider {
+  border: none;
+  border-top: 1px solid #e0e6f5;
+  margin: 0 0 50px;
+}
+ 
+.gdd-page section {
+  margin-bottom: 48px;
+}
+ 
+.gdd-page section h3 {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #0645ad;
+  border-left: 4px solid #0645ad;
+  padding-left: 12px;
+  margin-bottom: 16px;
+}
+ 
+.gdd-page section p,
+.gdd-page section ul {
+  color: #333;
+  font-size: 0.97em;
+}
+ 
+.gdd-page ul {
+  padding-left: 20px;
+}
+ 
+.gdd-page ul li {
+  margin-bottom: 6px;
+}
+ 
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+ 
+.pillar {
+  background: #f5f7fb;
+  border: 1px solid #e0e6f5;
+  border-left: 4px solid #0645ad;
+  padding: 16px 18px;
+  border-radius: 8px;
+}
+ 
+.pillar h4 {
+  margin: 0 0 6px;
+  font-size: 0.95em;
+  color: #0645ad;
+}
+ 
+.pillar p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #444;
+}
+ 
+.gdd-image {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 16px;
+  border: 1px solid #e0e6f5;
+}
+ 
+.gdd-full {
+  background: #f5f7fb;
+  border-radius: 12px;
+  padding: 28px;
+  border: 1px solid #e0e6f5;
+  text-align: center;
+}
+ 
+.gdd-full h3 {
+  border-left: none !important;
+  padding-left: 0 !important;
+  text-align: center;
+}
+ 
+.gdd-full p {
+  margin-bottom: 20px;
+  color: #555;
+}
+ 
+.gdd-button {
+  display: inline-block;
+  padding: 12px 28px;
+  background: #0645ad;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.95em;
+  box-shadow: 0 4px 12px rgba(6,69,173,0.25);
+  transition: all 0.2s ease;
+}
+ 
+.gdd-button:hover {
+  background: #053a91;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(6,69,173,0.35);
+}

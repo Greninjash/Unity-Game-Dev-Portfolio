@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Design — Spent</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+ 
+<body>
+ 
+  <!-- Reuse the same navbar style -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">Lucas Patricio</div>
+      <div class="nav-links">
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#systems">Systems</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+ 
+  <div class="gdd-page">
+ 
+    <a href="index.html#projects" class="gdd-back">← Back to Portfolio</a>
+ 
+    <h1>Spent</h1>
+    <h2>Game Design Case Study — Momentum-Based FPS</h2>
+ 
+    <p class="hero-sub">
+      A fast-paced FPS built around fluid movement, player expression,
+      and maintaining momentum through chained mechanics. This document
+      covers the design decisions behind the systems and how thinking
+      like a designer shaped the technical implementation.
+    </p>
+ 
+    <hr class="gdd-divider">
+ 
+    <section>
+      <h3>Overview</h3>
+      <p>
+        Spent is a momentum-driven FPS designed around fluid traversal and
+        high-speed combat. The player navigates an arena using mobility-based
+        mechanics while eliminating waves of enemies and maintaining flow state.
+        Every system was designed with the question: <em>"does this preserve or break momentum?"</em>
+      </p>
+    </section>
+ 
+    <section>
+      <h3>Design Pillars</h3>
+      <div class="pillars">
+        <div class="pillar">
+          <h4>Flow Motion</h4>
+          <p>Maintain constant momentum and responsiveness. No ability should feel like a full stop.</p>
+        </div>
+        <div class="pillar">
+          <h4>Skill Expression</h4>
+          <p>Reward precision, timing, and chaining mechanics. The skill ceiling should feel meaningful.</p>
+        </div>
+        <div class="pillar">
+          <h4>Stylized Immersion</h4>
+          <p>Distorted visuals and feedback reinforce the robotic identity of the character.</p>
+        </div>
+        <div class="pillar">
+          <h4>Challenge Clarity</h4>
+          <p>Fast-paced gameplay that stays readable and fair — no cheap deaths.</p>
+        </div>
+      </div>
+    </section>
+ 
+    <section>
+      <h3>Core Gameplay Loop</h3>
+      <p>
+        The player navigates the arena using mobility abilities, eliminates enemy waves,
+        and chains mechanics to maintain speed and control. Each wave is designed to
+        create pressure that rewards movement over static play.
+      </p>
+    </section>
+ 
+    <section>
+      <h3>System Design</h3>
+      <ul>
+        <li><strong>Movement:</strong> Wall running, sliding, grappling, and dashing — each built as an independent component sharing a velocity state.</li>
+        <li><strong>Combat:</strong> Precision shooting combined with movement positioning — standing still is a disadvantage.</li>
+        <li><strong>Abilities:</strong> Ground slam, environmental interaction — abilities that reward aerial play.</li>
+        <li><strong>Enemies:</strong> Ranged, melee, and flying types with FOV-based detection — variety that demands different movement responses.</li>
+      </ul>
+    </section>
+ 
+    <section>
+      <h3>Key Design Decisions</h3>
+      <p>
+        The core decision that shaped everything: instead of overriding movement during
+        abilities, every system <strong>modifies existing velocity</strong>. Wall running adds
+        forward force. Sliding adds a downward impulse. The grapple accelerates rather
+        than teleports. This means mechanics chain naturally — a slide into a grapple
+        into a wall run all feel connected because they share the same velocity state.
+      </p>
+      <p>
+        This was a deliberate design choice that required a central state machine
+        (<code>PlayerMovementAdvancedFinished</code>) to coordinate which system owns
+        velocity at any given moment. The result is a movement system that feels
+        expressive without adding complexity for the player.
+      </p>
+      <p>
+        The arena is designed as a movement puzzle — vertical space, walls at useful
+        angles, grapple points placed to reward creative traversal rather than just
+        providing shortcuts.
+      </p>
+    </section>
+ 
+    <section>
+      <h3>Design → Code Connection</h3>
+      <p>
+        Each design pillar has a direct code equivalent:
+      </p>
+      <ul>
+        <li><strong>Flow Motion</strong> → <code>SmoothlyLerpMoveSpeed()</code> — speed transitions are lerped, not snapped, so state changes feel fluid.</li>
+        <li><strong>Skill Expression</strong> → Wall memory system — you can't re-use the same wall without leaving it first, so chaining requires intentional movement.</li>
+        <li><strong>Challenge Clarity</strong> → FOV + line-of-sight checks on enemies — they never shoot through walls or from off-screen.</li>
+        <li><strong>Scalability</strong> → All enemy behaviour is component-based — a flying shooter is just <code>FlyingEnemy</code> + <code>EnemyShooting</code> + <code>EnemyHits</code> with no duplicated logic.</li>
+      </ul>
+    </section>
+ 
+    <section>
+      <h3>Testing & Iteration</h3>
+      <ul>
+        <li>Movement feel rated as the strongest element during playtesting — the momentum system was validated early and kept stable</li>
+        <li>Enemy detection ranges and fire rates were tuned iteratively to ensure fairness without reducing difficulty</li>
+        <li>UI clarity improved after feedback — status indicators and ammo counter repositioned for better readability at speed</li>
+        <li>Tutorial dialogue system added after testing showed new players weren't discovering mechanics organically</li>
+      </ul>
+    </section>
+ 
+    <section>
+      <h3>Design Visuals</h3>
+      <img src="images/gdd/map_design.png" class="gdd-image" alt="Arena map design">
+    </section>
+ 
+    <section class="gdd-full">
+      <h3>Full Game Design Document</h3>
+      <p>The complete GDD covers level design breakdowns, full enemy behaviour specs,
+      ability tuning values, and the full narrative context for the setting.</p>
+      <a href="docs/spent_gdd.pdf" target="_blank" class="gdd-button">
+        📄 Open Full GDD (PDF)
+      </a>
+    </section>
+ 
+  </div>
+ 
+</body>
+</html>

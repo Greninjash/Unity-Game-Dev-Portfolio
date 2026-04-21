@@ -246,10 +246,13 @@
     <!-- SPENT GAME -->
     <div class="project">
  
-      <h2 class="project-title">
-        Spent
-        <span class="personal-tag">Personal Project</span>
-      </h2>
+      <div class="project-title-row">
+        <h2 class="project-title">
+          Spent
+          <span class="personal-tag">Personal Project</span>
+        </h2>
+        <a href="gamedesign.html" class="gdd-link-btn" target="_blank">📄 Game Design Doc</a>
+      </div>
  
       <img
         src="gifs/fps_preview.png"
@@ -369,8 +372,6 @@
         </div>
  
       </div>
- 
-    </div>
  
     </div>
  
@@ -3638,8 +3639,8 @@ public class GrappleSystem : MonoBehaviour
 }
       </code></pre>
     </div>
-    </div>
  
+  </div>
 </div>
   <!-- ========================= -->
 <!-- PLAYER COMBAT MODAL START -->
@@ -5106,6 +5107,33 @@ public class GoToMenu : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene(0);
+        }
+    }
+}
+
+
+// ── AmmoPickup.cs ────────────────────────────────────────────────
+using UnityEngine;
+using TMPro;
+
+public class AmmoPickup : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private GunData gunData;
+    public TextMeshProUGUI BulletCounts;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            gunData.currentAmmo += 18;
+            gunData.numberOfMags += 1;
+
+            BulletCounts.text = 
+                "Bullets: " + gunData.currentAmmo + "/" + gunData.magSize + 
+                "<br>Number of Mags Left: " + gunData.numberOfMags;
+
+            Destroy(gameObject);
         }
     }
 }

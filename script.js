@@ -60,18 +60,19 @@ function toggleFullscreen(modalId) {
 
 function toggleGif(imgId, gifPath, previewPath) {
   const img = document.getElementById(imgId);
+  if (!img) return;
+
   const header = img.previousElementSibling;
-  const icon = header.querySelector(".play-icon");
-  if (!img || !icon) return;
+  const icon = header ? header.querySelector(".play-icon") : null;
 
   const isGif = img.src.includes(gifPath.split('/').pop());
 
   if (isGif) {
     img.src = previewPath;
-    icon.textContent = "▶️"; // play icon
+    if (icon) icon.textContent = "▶️";
   } else {
     img.src = gifPath;
-    icon.textContent = "⏸️"; // pause icon
+    if (icon) icon.textContent = "⏸️";
   }
 }
 
@@ -102,6 +103,7 @@ function enableHoverGif(id, gif, preview) {
 // Run it after page loads
 window.addEventListener("DOMContentLoaded", () => {
   enableHoverGif("projectGif1", "gifs/startMachine.gif", "gifs/startMachine_preview.png");
+  enableHoverGif("fpsGif", "gifs/fps.gif", "gifs/fps_preview.png");
 });
 
 function toggleViewMode2() {
