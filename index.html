@@ -52,25 +52,39 @@
  
         <div class="about-text">
           <h2>About Me</h2>
- 
+
           <p>
-            Creative Media and Game Technologies student specializing in gameplay systems 
-            and interactive design.
+            Creative Media and Game Technologies student specializing in gameplay systems
+            and interactive design. I build the kinds of systems that make games feel
+            good to play — responsive movement, scalable combat, branching narrative —
+            and I care as much about how the code is structured as how the mechanic feels.
           </p>
- 
+
           <p>
-            I focus on building structured, scalable systems in Unity while combining
-            technical development with visual design.
+            My work sits at the intersection of programming and game design. I approach
+            every system by asking what the player should <em>feel</em> first, then
+            engineering backwards from that — which is why things like the wall memory
+            system in Spent or the validation pipeline in the Milling Machine exist
+            the way they do.
           </p>
- 
+
+          <p>
+            Beyond the code I have experience writing full Game Design Documents,
+            defining design pillars, and iterating on systems based on playtesting
+            feedback. I want to work somewhere that values programmers who think
+            like designers and designers who understand constraints.
+          </p>
+
           <div class="skill-badges">
             <span class="skill-badge">Unity</span>
             <span class="skill-badge">C#</span>
             <span class="skill-badge">Systems Design</span>
             <span class="skill-badge">Gameplay Programming</span>
+            <span class="skill-badge">Game Design</span>
             <span class="skill-badge">UI/UX</span>
             <span class="skill-badge">Scriptable Objects</span>
             <span class="skill-badge">PlayFab</span>
+            <span class="skill-badge">2D Physics</span>
           </div>
         </div>
  
@@ -99,14 +113,12 @@
  
    </section>
  
-</main>
- 
   <!-- PROJECTS -->
   <h2 class="section-title">Projects</h2>
   <section id="projects" class="projects">
  
     <!-- 🔴 MILLING MACHINE -->
-    <div class="project">
+    <div class="project" id="milling-machine">
  
       <h2 class="project-title">
           Milling Machine Simulator 
@@ -375,6 +387,8 @@
  
     </div>
  
+</main>
+
   <!-- MODALS MILLING -->
   <!-- Start Machine Modal (2 tabs) -->
   <div id="startMachineModal" class="modal">
@@ -7288,12 +7302,36 @@ public class CreditsScroller : MonoBehaviour
 <!-- END ENDING SEQUENCES MODAL -->
 
 
-<section id="contact" class="contact">
-  <h2 class="section-title">Contact</h2>
- 
-  <p>Email: lpatriciogalle@gmail.com</p>
-  <p>Number: +34 604541670</p>
-</section>
+<footer id="contact" class="site-footer">
+  <div class="footer-inner">
+
+    <div class="footer-left">
+      <div class="footer-name">Lucas Patricio</div>
+      <p class="footer-tagline">Gameplay Programmer &amp; Game Designer<br>
+        Looking for roles where technical depth and design thinking go hand in hand.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <a href="mailto:lpatriciogalle@gmail.com" class="footer-link">
+        <span class="footer-link-icon">✉</span> lpatriciogalle@gmail.com
+      </a>
+      <a href="tel:+34604541670" class="footer-link">
+        <span class="footer-link-icon">📞</span> +34 604 541 670
+      </a>
+      <a href="https://github.com/LucasPG-Dev" target="_blank" class="footer-link">
+        <span class="footer-link-icon">⌥</span> GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/lucas-patricio-0665193a7" target="_blank" class="footer-link">
+        <span class="footer-link-icon">in</span> LinkedIn
+      </a>
+    </div>
+
+  </div>
+  <div class="footer-bottom">
+    <span>Built by Lucas Patricio · 2025</span>
+  </div>
+</footer>
  
   <script src="script.js"></script>
 </body>
