@@ -33,11 +33,11 @@
   <!-- HERO -->
   <section class="hero">
       <h1>Lucas Patricio</h1>
-      <h2>Gameplay Programmer & Creative Developer</h2>
+      <h2>Game Mechanics Programmer & Game Designer</h2>
  
       <p class="hero-description">
-        I design and build interactive systems using Unity and C#, 
-        combining technical gameplay logic with visual design.
+        I specialize in desigining and building interactive systems 
+        using Unity and C#, combining technical gameplay logic with visual design.
       </p>
  
       <div class="hero-buttons">
@@ -55,28 +55,30 @@
 
           <p>
             Creative Media and Game Technologies student specializing in gameplay systems
-            and interactive design. I build the kinds of systems that make games feel
-            good to play — responsive movement, scalable combat, branching narrative —
-            and I care as much about how the code is structured as how the mechanic feels.
+            and interactive design. I want to improve and build the kinds of systems that 
+            make games feel good to play. Responsive movement, scalable combat and 
+            branching narrative. I care as much about how the code is structured as 
+            how the mechanic feels.
           </p>
 
           <p>
-            My work sits at the intersection of programming and game design. I approach
+            My work is a combination of programming and game design. I plan out
             every system by asking what the player should <em>feel</em> first, then
-            engineering backwards from that — which is why things like the wall memory
+            engineering backwards from that. This is why things like the wall memory
             system in Spent or the validation pipeline in the Milling Machine exist
             the way they do.
           </p>
 
           <p>
-            Beyond the code I have experience writing full Game Design Documents,
+            Besides coding; I have experience writing full Game Design Documents,
             defining design pillars, and iterating on systems based on playtesting
-            feedback. I want to work somewhere that values programmers who think
-            like designers and designers who understand constraints.
+            feedback. I strive to work in a way where my coded mechanics adjust
+            to the deeper game design and its constraints.
           </p>
 
           <div class="skill-badges">
             <span class="skill-badge">Unity</span>
+            <span class="skill-badge">Unreal</span>
             <span class="skill-badge">C#</span>
             <span class="skill-badge">Systems Design</span>
             <span class="skill-badge">Gameplay Programming</span>
@@ -84,7 +86,8 @@
             <span class="skill-badge">UI/UX</span>
             <span class="skill-badge">Scriptable Objects</span>
             <span class="skill-badge">PlayFab</span>
-            <span class="skill-badge">2D Physics</span>
+            <span class="skill-badge">2D/3D Physics</span>
+            <span class="skill-badge">2D Art</span>
           </div>
         </div>
  
@@ -402,7 +405,7 @@
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/startMachine_preview.png" alt="Start Machine Preview" class="mechanic-gif" id="startMachineGif">
+    <img src="gifs/startMachine_preview.png" alt="Start Machine Preview" class="mechanic-gif" id="startMachineGif" onclick="toggleGif('startMachineGif', 'gifs/startMachine.gif', 'gifs/startMachine_preview.png')" style="cursor:pointer" title="Click to play/pause">
  
     <!-- Case Study -->
     <div class="case-study">
@@ -876,12 +879,12 @@ public class ButtonManager : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('buttonRotateModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('buttonRotateGif', 'gifs/ButtonRotate.gif', 'gifs/buttonpreview.png')">
+            <h2 class="mechanic-title">
         Machine Rotate Button
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/buttonpreview.png" alt="Machine Button Rotate Preview" class="mechanic-gif" id="buttonRotateGif">
+    <img src="gifs/buttonpreview.png" alt="Machine Button Rotate Preview" class="mechanic-gif" id="buttonRotateGif" onclick="toggleGif('buttonRotateGif', 'gifs/ButtonRotate.gif', 'gifs/buttonpreview.png')" style="cursor:pointer" title="Click to play/pause">
       <p>This code was made with the purpose to rotate the milling machine, 
         this was done because we wanted to limit player movement and wanted 
         to experiment with ways for the player to reach every part of the machine 
@@ -925,12 +928,12 @@ public class ButtonRotate : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('socketValidatorModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('sockettagGif', 'gifs/SocketValidator.gif', 'gifs/sockettagpreview.png')">
+            <h2 class="mechanic-title">
         Socket Tag Validator
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/sockettagpreview.png" alt="Socket Tag Validator Preview" class="mechanic-gif" id="sockettagGif">
+    <img src="gifs/sockettagpreview.png" alt="Socket Tag Validator Preview" class="mechanic-gif" id="sockettagGif" onclick="toggleGif('sockettagGif', 'gifs/SocketValidator.gif', 'gifs/sockettagpreview.png')" style="cursor:pointer" title="Click to play/pause">
       <p>This script was done to avoid the player placing socketable objects 
         into the wrong place because it was a recurring thing that happened while testing.
       </p>
@@ -992,12 +995,12 @@ public class SocketTagValidator : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('debugModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('debugGif', 'gifs/Debug.gif', 'gifs/debugpreview.png')">
+            <h2 class="mechanic-title">
         Debug Machine Functions
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/debugpreview.png" alt="Debug Preview" class="mechanic-gif" id="debugGif">
+    <img src="gifs/debugpreview.png" alt="Debug Preview" class="mechanic-gif" id="debugGif" onclick="toggleGif('debugGif', 'gifs/Debug.gif', 'gifs/debugpreview.png')" style="cursor:pointer" title="Click to play/pause">
       <p>These scripts were done with the goal of checking of triggers and collisions 
         in order to isolate problems such as the clamp, workpiece socket and others.
         I used refined versions in the final prototype to aid with future scriptable 
@@ -1248,12 +1251,12 @@ public class ToolSocket : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('uiIndicatorsModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('UIindicatorsGif', 'gifs/UIindicator.gif', 'gifs/UIpreview.png')">
+            <h2 class="mechanic-title">
         UI Indicators
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/UIpreview.png" alt="UI indicators Preview" class="mechanic-gif" id="UIindicatorsGif">
+    <img src="gifs/UIpreview.png" alt="UI indicators Preview" class="mechanic-gif" id="UIindicatorsGif" onclick="toggleGif('UIindicatorsGif', 'gifs/UIindicator.gif', 'gifs/UIpreview.png')" style="cursor:pointer" title="Click to play/pause">
       <p>These scripts had the goal of giving feedback to the player of which materials, 
         mill bits and rpm they were using, this was made because through testing it was clear 
         that the player didn't seem to know what they were setting up or if it was set up correctly.
@@ -1357,12 +1360,12 @@ public class RPMIndicator : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('dialsModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('dialsGif', 'gifs/Dials.gif', 'gifs/dialspreview.png')">
+      <h2 class="mechanic-title">
         Dials Mechanic
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/dials.png" alt="Dials Preview" class="mechanic-gif" id="dialsGif">
+    <img src="gifs/dials.png" alt="Dials Preview" class="mechanic-gif" id="dialsGif" onclick="toggleGif('dialsGif', 'gifs/Dials.gif', 'gifs/dials.png')" style="cursor:pointer" title="Click to play/pause">
       <p>These scripts are the ones who manage and control the dials of the machine, 
         translating their degrees into a float value in order to move objects 
         such as the clamp and workbench, the rpm dial was the most challenging and important 
@@ -1850,12 +1853,12 @@ public class DialManagerRPM : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('leaderboardModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('leaderboardGif', 'gifs/Leadrboard.gif', 'gifs/leaderboardpreview.png')">
+      <h2 class="mechanic-title">
         Leaderboard Mechanic
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/leaderboardpreview.png" alt="Leaderboard Preview" class="mechanic-gif" id="leaderboardGif">
+    <img src="gifs/leaderboardpreview.png" alt="Leaderboard Preview" class="mechanic-gif" id="leaderboardGif" onclick="toggleGif('leaderboardGif', 'gifs/leaderboard.gif', 'gifs/leaderboardpreview.png')" style="cursor:pointer" title="Click to play/pause">
       <p>This online leaderboard was done using the PlayFab service due to its ease to set up and manage, 
         we decided on making a leaderboard to incite competitiveness between players 
         and to add a more game-like element, I also made the run timer script separate 
@@ -2230,12 +2233,12 @@ public class RunTimer : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('workpieceModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('workpiecestagesGif', 'gifs/WorkpieceStages.gif', 'gifs/workpiecestagespreview.png')">
+            <h2 class="mechanic-title">
         Workpiece Stages Mechanic
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/workpiecestagespreview.png" alt="Workpiece Stages Preview" class="mechanic-gif" id="workpiecestagesGif">
+    <img src="gifs/workpiecestagespreview.png" alt="Workpiece Stages Preview" class="mechanic-gif" id="workpiecestagesGif" onclick="toggleGif('workpiecestagesGif', 'gifs/WorkpieceStages.gif', 'gifs/workpiecestagespreview.png')" style="cursor:pointer" title="Click to play/pause">
       <p>These scripts are what manages and gives the feeling of milling to the player, 
         I added these because through testing it was apparent that the player had no feedback 
         when they were milling so the game had a unfinished/pointless feel to it. 
@@ -2527,12 +2530,12 @@ public class WorkpieceStageManager : MonoBehaviour
       <span class="fullscreen-toggle" onclick="toggleFullscreen('scriptableObjectModal')">⤢</span>
  
       <!-- HEADER: Mechanic Name -->
-      <h2 class="mechanic-title" onclick="toggleGif('scriptableobjectGif', 'gifs/ScriptableObjects.gif', 'gifs/scriptableobjectspreview.png')">
+            <h2 class="mechanic-title">
         Machine System Scriptable Object
         <span class="play-icon">▶️</span>
     </h2>
     <!-- GIF PREVIEW/PLAY -->
-    <img src="gifs/scriptableobjectspreview.png" alt="Scriptable Object Preview" class="mechanic-gif" id="scriptableobjectGif">
+    <img src="gifs/scriptableobjectspreview.png" alt="Scriptable Object Preview" class="mechanic-gif" id="scriptableobjectGif" onclick="toggleGif('scriptableobjectGif', 'gifs/ScriptableObjects.gif', 'gifs/scriptableobjectspreview.png')" style="cursor:pointer" title="Click to play/pause">
       <p>This is the backbone of not only the machine but the whole project, 
         I used a scriptable object to store all possible material/mill bit combinations 
         and then added their optimal RPM range and Feed Speed Range, 
@@ -2744,7 +2747,7 @@ MonoBehaviour:
          SWAP THIS IMAGE PATH for your FPS movement preview GIF
          e.g. src="gifs/fps_preview.png"
     ===================================================== -->
-    <img src="gifs/fps_preview.png" alt="Player Movement Preview" class="mechanic-gif" id="playermoveGif">
+    <img src="gifs/playermove_preview.png" alt="Player Movement Preview" class="mechanic-gif" id="playermoveGif" onclick="toggleGif('playermoveGif', 'gifs/playermove.gif', 'gifs/playermove_preview.png')" style="cursor:pointer" title="Click to play/pause">
  
     <div class="case-study">
  
@@ -4122,7 +4125,7 @@ public class PlayerSlamAttack : MonoBehaviour
 
     <h2 class="mechanic-title">Enemy Combat System</h2>
 
-    <img src="gifs/enemy_preview.png" alt="Enemy Combat Preview" class="mechanic-gif">
+    <img src="gifs/enemy_preview.png" alt="Enemy Combat Preview" class="mechanic-gif" id="enemyGif" onclick="toggleGif('enemyGif', 'gifs/enemy.gif', 'gifs/enemy_preview.png')" style="cursor:pointer" title="Click to play/pause">
 
     <div class="case-study">
 
@@ -4677,7 +4680,7 @@ public class EnemySpawner : MonoBehaviour
 
     <h2 class="mechanic-title">Gameplay Systems</h2>
 
-    <img src="gifs/gameplay_preview.png" alt="Gameplay Systems Preview" class="mechanic-gif">
+    <img src="gifs/gameplay_preview.png" alt="Gameplay Systems Preview" class="mechanic-gif" id="gameplayGif" onclick="toggleGif('gameplayGif', 'gifs/gameplay.gif', 'gifs/gameplay_preview.png')" style="cursor:pointer" title="Click to play/pause">
 
     <div class="case-study">
 

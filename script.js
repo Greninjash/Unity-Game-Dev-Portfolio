@@ -11,7 +11,14 @@ function openModal(modalId) {
 // Close modal by ID
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
-  if (modal) modal.style.display = "none";
+  if (modal) {
+    // Reset all mechanic-gif images back to their preview (static) state
+    modal.querySelectorAll(".mechanic-gif[onclick]").forEach(img => {
+      const match = img.getAttribute("onclick").match(/toggleGif\('[^']+',\s*'[^']+',\s*'([^']+)'\)/);
+      if (match) img.src = match[1]; // match[1] is the previewPath argument
+    });
+    modal.style.display = "none";
+  }
   document.body.style.overflow = "auto";
 }
 
@@ -30,33 +37,92 @@ function openTab(evt, tabName) {
   evt.currentTarget.className += " active";
 }
 
-// Fullscreen toggle
+// Fullscreen code viewer
 function toggleFullscreen(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
 
-  const content = modal.querySelector(".modal-content");
-  const title = modal.querySelector(".mechanic-title");
-  const gif = modal.querySelector("img");
-  // optional: description if exists
-  const desc = modal.querySelector(".mechanic-description");
+  // Find the active tab's code, fall back to first tab
+  const codeEl = modal.querySelector(".tabcontent[style*='display: block'] code")
+              || modal.querySelector(".tabcontent[style*='display:block'] code")
+              || modal.querySelector(".tabcontent code");
 
-  if (!fullscreen) {
-    title.style.display = "none";
-    if(desc) desc.style.display = "none";
-    if(gif) gif.style.display = "none";
-    content.style.width = "95%";
-    content.style.height = "90%";
-  } else {
-    title.style.display = "block";
-    if(desc) desc.style.display = "block";
-    if(gif) gif.style.display = "block";
-    content.style.width = "80%";
-    content.style.height = "auto";
-  }
+  const title      = modal.querySelector(".mechanic-title");
+  const titleText  = title ? title.textContent.trim() : "Code Viewer";
+  const activeTab  = modal.querySelector(".tablinks.active");
+  const tabLabel   = activeTab ? activeTab.textContent.trim() : "";
+  const viewerTitle = tabLabel ? `${titleText} — ${tabLabel}` : titleText;
+  const code       = codeEl ? codeEl.textContent : "No code found in this tab.";
 
-  fullscreen = !fullscreen;
+  openCodeViewer(viewerTitle, code);
 }
+
+function openCodeViewer(title, code) {
+  const existing = document.getElementById("codeViewerOverlay");
+  if (existing) existing.remove();
+
+  const overlay = document.createElement("div");
+  overlay.id = "codeViewerOverlay";
+  overlay.innerHTML = `
+    <div class="cv-panel">
+      <div class="cv-header">
+        <span class="cv-title">${title}</span>
+        <div class="cv-actions">
+          <button class="cv-copy-btn" onclick="copyViewerCode(this)">Copy</button>
+          <button class="cv-close-btn" onclick="closeCodeViewer()">✕ Close</button>
+        </div>
+      </div>
+      <pre class="cv-pre"><code class="cv-code">${escapeHtml(code.trim())}</code></pre>
+    </div>
+  `;
+
+  // Close on backdrop click
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeCodeViewer();
+  });
+
+  document.body.appendChild(overlay);
+  document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => overlay.classList.add("cv-visible"));
+}
+
+function closeCodeViewer() {
+  const overlay = document.getElementById("codeViewerOverlay");
+  if (!overlay) return;
+  overlay.classList.remove("cv-visible");
+  overlay.addEventListener("transitionend", () => {
+    overlay.remove();
+    const anyModalOpen = [...document.querySelectorAll(".modal")]
+      .some(m => m.style.display === "block");
+    if (!anyModalOpen) document.body.style.overflow = "auto";
+  }, { once: true });
+}
+
+function copyViewerCode(btn) {
+  const code = document.querySelector(".cv-code");
+  if (!code) return;
+  navigator.clipboard.writeText(code.textContent).then(() => {
+    btn.textContent = "Copied!";
+    setTimeout(() => btn.textContent = "Copy", 2000);
+  });
+}
+
+function escapeHtml(str) {
+  // Unescape HTML entities already in the code block, then re-escape for display
+  return str
+    .replace(/&amp;/g,  "&")
+    .replace(/&lt;/g,   "<")
+    .replace(/&gt;/g,   ">")
+    .replace(/&/g,  "&amp;")
+    .replace(/</g,  "&lt;")
+    .replace(/>/g,  "&gt;");
+}
+
+// Escape key closes viewer
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && document.getElementById("codeViewerOverlay"))
+    closeCodeViewer();
+});
 
 function toggleGif(imgId, gifPath, previewPath) {
   const img = document.getElementById(imgId);
