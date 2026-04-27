@@ -1292,7 +1292,6 @@ section {
   tab-size: 4;
 }
 
-/* Scrollbars */
 .cv-pre::-webkit-scrollbar        { width: 8px; height: 8px; }
 .cv-pre::-webkit-scrollbar-track  { background: #1a1d27; }
 .cv-pre::-webkit-scrollbar-thumb  { background: #374151; border-radius: 4px; }

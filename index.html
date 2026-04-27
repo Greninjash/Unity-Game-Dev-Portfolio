@@ -33,11 +33,11 @@
   <!-- HERO -->
   <section class="hero">
       <h1>Lucas Patricio</h1>
-      <h2>Game Mechanics Programmer & Game Designer</h2>
+      <h2>Gameplay Programmer & Creative Developer</h2>
  
       <p class="hero-description">
-        I specialize in desigining and building interactive systems 
-        using Unity and C#, combining technical gameplay logic with visual design.
+        I design and build interactive systems using Unity and C#, 
+        combining technical gameplay logic with visual design.
       </p>
  
       <div class="hero-buttons">
@@ -55,30 +55,28 @@
 
           <p>
             Creative Media and Game Technologies student specializing in gameplay systems
-            and interactive design. I want to improve and build the kinds of systems that 
-            make games feel good to play. Responsive movement, scalable combat and 
-            branching narrative. I care as much about how the code is structured as 
-            how the mechanic feels.
+            and interactive design. I build the kinds of systems that make games feel
+            good to play — responsive movement, scalable combat, branching narrative —
+            and I care as much about how the code is structured as how the mechanic feels.
           </p>
 
           <p>
-            My work is a combination of programming and game design. I plan out
+            My work sits at the intersection of programming and game design. I approach
             every system by asking what the player should <em>feel</em> first, then
-            engineering backwards from that. This is why things like the wall memory
+            engineering backwards from that — which is why things like the wall memory
             system in Spent or the validation pipeline in the Milling Machine exist
             the way they do.
           </p>
 
           <p>
-            Besides coding; I have experience writing full Game Design Documents,
+            Beyond the code I have experience writing full Game Design Documents,
             defining design pillars, and iterating on systems based on playtesting
-            feedback. I strive to work in a way where my coded mechanics adjust
-            to the deeper game design and its constraints.
+            feedback. I want to work somewhere that values programmers who think
+            like designers and designers who understand constraints.
           </p>
 
           <div class="skill-badges">
             <span class="skill-badge">Unity</span>
-            <span class="skill-badge">Unreal</span>
             <span class="skill-badge">C#</span>
             <span class="skill-badge">Systems Design</span>
             <span class="skill-badge">Gameplay Programming</span>
@@ -86,8 +84,7 @@
             <span class="skill-badge">UI/UX</span>
             <span class="skill-badge">Scriptable Objects</span>
             <span class="skill-badge">PlayFab</span>
-            <span class="skill-badge">2D/3D Physics</span>
-            <span class="skill-badge">2D Art</span>
+            <span class="skill-badge">2D Physics</span>
           </div>
         </div>
  
@@ -409,57 +406,43 @@
  
     <!-- Case Study -->
     <div class="case-study">
- 
-      <h3>What This System Does</h3>
+
+      <h3>Overview</h3>
       <p>
-        This system controls whether the milling machine can start based on multiple
-        safety and configuration checks such as RPM, feed rate, and tool setup.
+        The machine won't start unless every safety condition passes — correct RPM range,
+        feed rate, tool installed, material loaded, and clamp engaged. Each check runs
+        independently and reports its own failure, so the player always knows exactly
+        what's wrong rather than hitting a generic error.
       </p>
- 
-      <h3>Design Goal</h3>
-      <p>
-        The goal was to simulate real-world machine validation logic, ensuring that
-        incorrect setups are caught before execution, reinforcing learning through feedback.
-      </p>
- 
-      <h3>System Breakdown</h3>
+
+      <h3>Problem → Solution</h3>
+      <p><strong>Problem:</strong> A single boolean "can start" check would work for a
+      simple prototype, but the client needed the simulation to mirror real workshop
+      safety logic where each condition has its own consequence.</p>
+      <p><strong>Solution:</strong> Each check is a separate validation step that writes
+      to a shared result. If anything fails, the machine stays off and the specific
+      failure is surfaced to the player through the UI. No silent failures.</p>
       <ul>
-        <li>Validates RPM and feed rate against acceptable ranges</li>
-        <li>Checks tool and material compatibility</li>
-        <li>Prevents machine start if any condition fails</li>
-        <li>Triggers UI feedback for incorrect configurations</li>
+        <li>RPM and feed rate validated against configurable safe ranges</li>
+        <li>Tool and material compatibility checked independently</li>
+        <li>Each failed check triggers its own UI feedback message</li>
+        <li>Once running, real-time feedback marks the setup as optimal, suboptimal, or dangerous</li>
       </ul>
- 
+
       <h3>Why This Approach</h3>
-          <p>
-            Instead of directly starting the machine, the system separates validation 
-            into a dedicated step. This allows each condition (RPM, feed rate, tool setup)
-            to be evaluated independently and reused across other systems such as UI feedback.
-          </p>
- 
-          <p>
-            This structure improves scalability and makes it easier to extend the system 
-            with additional checks without modifying core logic.
-          </p>
+      <p>
+        Separating validation from execution meant the client could adjust safety ranges
+        per-machine without touching the start logic. It also made the system easier
+        to test — each condition could be triggered in isolation during development.
+      </p>
+
     </div>
  
-      <!-- DESCRIPTION -->
-      <p>
-        This is a combination of scripts which check if the machine
-        is okay to be started, checking for safety gear, proper tool
-        and material installation, and correct RPM and clamp status.
-        If any of these checks fail, the machine will not start and
-        a message will be displayed to the player indicating what needs
-        to be fixed. Once the machine is running, the UI provides real-time
-        feedback on the RPM and feed rate, updating the machine status
-        to reflect whether the current setup is optimal, suboptimal, or dangerous.
-      </p>
-      
       <!-- Code Context -->
       <p class="code-context">
-      Below is the core logic that validates whether the machine can start,
-      ensuring all safety and configuration requirements are met.
-    </p>
+        The validation runs sequentially — each check is its own method, and any
+        failure exits early and writes a reason to the UI before returning false.
+      </p>
       <!-- TABS -->
       <div class="tab">
         <button class="tablinks active" onclick="openTab(event, 'MachineBehaviour')">MachineBehaviour.cs</button>
@@ -545,8 +528,7 @@
  
             </div>
             <p class="code-context">
-              This code controls the machine state and ensures all required conditions 
-              are met before allowing the machine to start.
+              The state handler. Reads all individual check results and decides whether the machine transitions to running — nothing else touches that decision.
             </p>
         </div>
         <pre class="code-block"><code class="language-csharp" data-line="20-60">
@@ -2800,8 +2782,8 @@ MonoBehaviour:
     </div>
  
     <p class="code-context">
-      Four scripts cover the full movement system. Each tab is a standalone component
-      that plugs into the shared PlayerMovement state handler.
+      Four tabs, four responsibilities. The state handler coordinates everything —
+      the other three scripts just read and write to shared velocity.
     </p>
  
     <!-- ===================== TABS ===================== -->
@@ -2815,8 +2797,8 @@ MonoBehaviour:
     <!-- ===================== TAB 1: STATE HANDLING ===================== -->
     <div id="moveStateTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        Central state machine — determines which movement mode is active and smoothly
-        lerps speed between states (e.g. sprint → slide preserves momentum).
+        The coordinator. Every other movement script checks in here — this is what
+        decides whether you're sliding, wall running, or in the air at any given frame.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Speed is lerped rather than snapped when transitioning
@@ -3199,9 +3181,9 @@ public class PlayerMovementStateHandling : MonoBehaviour
     <!-- ===================== TAB 2: WALL RUNNING ===================== -->
     <div id="moveWallRunTab" class="tabcontent">
       <p class="code-context">
-        Raycasts left and right each frame to detect walls. When a wall is found and
-        the player is airborne, it activates wall-running movement and starts a timer.
-        Wall jumps launch the player away from the wall surface with configurable force.
+        Detects walls via left/right raycasts every frame. Starts a countdown on contact —
+        if you don't jump in time, you slide off. Wall jumps push you away from the surface
+        with separate up and sideways force values you can tune independently.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Wall memory (<code>lastWall</code>) prevents the player from
@@ -3434,9 +3416,9 @@ public class WallRunning : MonoBehaviour
     <!-- ===================== TAB 3: SLIDING ===================== -->
     <div id="moveSlidingTab" class="tabcontent">
       <p class="code-context">
-        Shrinks the player's collider and adds a downward impulse on start.
-        On flat ground it applies a timed force in the input direction; on slopes it
-        uses the slope projection so the player accelerates naturally downhill.
+        Squashes the collider, kicks the player downward, and runs on a timer.
+        On a slope it swaps to the projected surface direction, so you accelerate
+        downhill instead of fighting the geometry.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Checking <code>pm.wallrunning</code> before starting a slide
@@ -3535,10 +3517,9 @@ public class Sliding : MonoBehaviour
     <!-- ===================== TAB 4: GRAPPLE ===================== -->
     <div id="moveGrappleTab" class="tabcontent">
       <p class="code-context">
-        A raycast from the camera detects grapple-able surfaces and shows a world-space
-        indicator. On right-click the player is pulled toward the hit point using
-        acceleration force. A rope is drawn via LineRenderer with a camera-relative
-        offset so it feels attached to the player's hand.
+        Casts a ray from the camera to find a valid surface, shows a world-space
+        indicator on it, and pulls the player using acceleration on right-click.
+        The rope offset is relative to the camera so it always looks hand-mounted.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Using <code>ForceMode.Acceleration</code> (not Impulse)
@@ -3730,8 +3711,8 @@ public class GrappleSystem : MonoBehaviour
     </div>
 
     <p class="code-context">
-      Seven scripts, grouped into four tabs by responsibility.
-      Multiple scripts in one tab are shown as clearly labelled sections.
+      Seven scripts across four tabs. Input fires events, weapons listen to them,
+      damage handles consequences, abilities sit outside that chain entirely.
     </p>
 
     <!-- TABS -->
@@ -3745,8 +3726,8 @@ public class GrappleSystem : MonoBehaviour
     <!-- ===== TAB 1: INPUT ===== -->
     <div id="combatInputTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        Fires static C# Actions on mouse click and reload key. All weapon scripts
-        subscribe to these events — the input layer never imports or references them directly.
+        Two static events — shoot and reload. Weapon scripts subscribe at startup.
+        This script has no idea what the weapons are; it just broadcasts.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Using static <code>Action</code> events means any number of
@@ -3782,9 +3763,9 @@ public class PlayerShoot : MonoBehaviour
     <!-- ===== TAB 2: WEAPON ===== -->
     <div id="combatWeaponTab" class="tabcontent">
       <p class="code-context">
-        Three scripts make up the weapon layer. <code>GunData</code> is a ScriptableObject
-        that stores all stats. <code>Bullets</code> handles firing and the inspect animation.
-        <code>Gun</code> subscribes to the reload event and drives the HUD ammo counter.
+        <code>GunData</code> holds all the numbers. <code>Bullets</code> spawns and launches them.
+        <code>Gun</code> handles reloading and keeps the HUD in sync. Swap the data asset,
+        swap the weapon — no code changes.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> <code>GunData</code> as a ScriptableObject means weapon
@@ -3942,9 +3923,9 @@ public class Gun : MonoBehaviour
     <!-- ===== TAB 3: DAMAGE ===== -->
     <div id="combatDamageTab" class="tabcontent">
       <p class="code-context">
-        Two scripts handle the damage layer. <code>Target</code> implements the
-        <code>IDamageable</code> interface for health/destruction. <code>EnemyHit</code> tracks
-        player lives and triggers the loss state when they run out.
+        <code>Target</code> is anything that can die — implements <code>IDamageable</code> so
+        damage dealers never need to know what they're hitting. <code>EnemyHit</code> sits on
+        the player and counts incoming bullets until lives hit zero.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> <code>Target</code> implements an <code>IDamageable</code>
@@ -4005,9 +3986,9 @@ public class EnemyHit : MonoBehaviour
     <!-- ===== TAB 4: ABILITY ===== -->
     <div id="combatAbilityTab" class="tabcontent">
       <p class="code-context">
-        Ground slam ability — only activates when the player is airborne and high enough
-        above the ground. On landing it fires an <code>OverlapSphere</code> and calls
-        <code>HitBySlam()</code> on every enemy in range.
+        Checks height before committing — slam too close to the ground and nothing happens,
+        which tells the player why it failed. On impact, an <code>OverlapSphere</code>
+        hits every enemy in radius without needing projectiles or colliders.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> The height check uses a separate raycast before
@@ -4178,7 +4159,8 @@ public class PlayerSlamAttack : MonoBehaviour
     </div>
 
     <p class="code-context">
-      Five scripts grouped into four tabs. Tabs with multiple scripts show each one as a clearly labelled section.
+      Five scripts, four tabs. Each enemy type is assembled from these components —
+      hit detection is always shared, movement and shooting are optional add-ons.
     </p>
 
     <!-- TABS -->
@@ -4192,8 +4174,9 @@ public class PlayerSlamAttack : MonoBehaviour
     <!-- ===== TAB 1: HIT DETECTION ===== -->
     <div id="enemyHitDetectTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        Tracks headshots and body hits separately with configurable thresholds.
-        Notifies the Wave Spawner on death so it can decrement the alive counter.
+        One headshot kills. Body shots don't — you need several. Both thresholds
+        are configurable per enemy, and death always notifies the spawner so the
+        wave counter stays accurate.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Headshots and body hits use separate counters with
@@ -4259,9 +4242,9 @@ public class EnemyHits : MonoBehaviour
     <!-- ===== TAB 2: AI & MOVEMENT ===== -->
     <div id="enemyAITab" class="tabcontent">
       <p class="code-context">
-        Two enemy movement types. <code>FlyingEnemy</code> drifts in random directions within
-        a spawn-relative bounding box. <code>MeleeEnemyAI</code> chases the player using
-        a FOV + line-of-sight check and randomised strafing.
+        Flying enemies drift randomly within a spawn-relative box — place the prefab
+        anywhere and it patrols its own local area. Melee enemies only chase if you're
+        in their FOV cone and nothing is blocking the raycast.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Both scripts use kinematic Rigidbody movement —
@@ -4421,8 +4404,8 @@ public class MeleeEnemyAI : MonoBehaviour
     <!-- ===== TAB 3: SHOOTING ===== -->
     <div id="enemyShootingTab" class="tabcontent">
       <p class="code-context">
-        Raycasts toward the player each frame to check range and line of sight.
-        Only fires when both conditions are met, preventing shooting through walls.
+        Range check first, then line of sight. If the raycast hits a wall before
+        it hits the player, the enemy holds fire. No shooting through cover.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> The line-of-sight raycast uses a combined obstacle +
@@ -4510,8 +4493,9 @@ public class EnemyShooting : MonoBehaviour
     <!-- ===== TAB 4: SPAWNING ===== -->
     <div id="enemySpawnTab" class="tabcontent">
       <p class="code-context">
-        Data-driven wave system. Validates each spawn point with a slope check and
-        overlap sphere. Automatically triggers the win condition when all waves clear.
+        Waves are defined as data — enemy types and counts, no code changes to add
+        a new wave. Each spawn position is validated for slope and clearance before
+        placing anything, so enemies never appear inside geometry.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Up to 200 spawn attempts are made per enemy — the
@@ -4734,7 +4718,8 @@ public class EnemySpawner : MonoBehaviour
     </div>
 
     <p class="code-context">
-      Seven scripts grouped into three tabs by responsibility: Dialogue, Game Flow, and Camera.
+      The glue. These scripts don't implement mechanics — they sequence events,
+      manage scene state, and make sure gameplay systems don't have to talk to each other directly.
     </p>
 
     <!-- TABS -->
@@ -4747,9 +4732,9 @@ public class EnemySpawner : MonoBehaviour
     <!-- ===== TAB 1: DIALOGUE ===== -->
     <div id="gpDialogueTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        Two dialogue systems. <code>IntroDialogue</code> blocks the player and runs a
-        typewriter sequence before the game starts. <code>TutorialDialogue</code> detects
-        mechanic usage via public bools on each script and advances prompts automatically.
+        <code>IntroDialogue</code> owns the opening — player is disabled, canvas is up,
+        nothing else runs. <code>TutorialDialogue</code> watches for mechanic usage
+        and advances on its own when you actually do the thing it's asking for.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> The tutorial reads public bool properties
@@ -5007,9 +4992,9 @@ public class TutorialDialogue : MonoBehaviour
     <!-- ===== TAB 2: GAME FLOW ===== -->
     <div id="gpFlowTab" class="tabcontent">
       <p class="code-context">
-        Three scripts manage game state. <code>WinManager</code> handles win/loss with a shared
-        dialogue coroutine. <code>WaveManager</code> is a lightweight trigger that activates the
-        spawner. <code>GoToMenu</code> returns to the main menu on Escape.
+        <code>WinManager</code> gets called by the spawner when waves finish — it takes
+        over from there. <code>WaveManager</code> just activates a GameObject.
+        <code>GoToMenu</code> is twelve lines and does exactly one thing.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Win and loss both funnel through the same
@@ -5160,9 +5145,9 @@ public class AmmoPickup : MonoBehaviour
     <!-- ===== TAB 3: CAMERA ===== -->
     <div id="gpCameraTab" class="tabcontent">
       <p class="code-context">
-        Two scripts split camera responsibility. <code>MoveCamera</code> snaps the camera body
-        to the player's position. <code>PlayerCam</code> handles mouse-look rotation on the
-        camera child, clamping vertical look and rotating an orientation transform for movement.
+        Position and rotation are separate scripts on separate objects.
+        <code>MoveCamera</code> follows the player. <code>PlayerCam</code> handles the mouse.
+        Neither knows the other exists.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Separating position (MoveCamera) from rotation
@@ -5246,18 +5231,18 @@ public class PlayerCam : MonoBehaviour
       <h3>Dialogue System</h3>
     </div>
     <p>
-      Node-based dialogue with typewriter rendering, branching choices,
-      and perspective shifting — changing the active character, loading a new scene,
-      and resuming story from a new entry node, all through a single ScriptableObject chain.
+      A full narrative engine built on ScriptableObjects — nodes chain together, choices
+      branch the story, and a single asset can switch the active character, load a new scene,
+      and resume from a different entry point all at once.
     </p>
     <div class="system-lab-tags">
       <span>ScriptableObjects</span><span>Branching Narrative</span>
       <span>Perspective Shifts</span><span>Scene Loading</span>
     </div>
     <div class="key-insight">
-      <strong>Key Insight:</strong> A <code>PerspectiveShift</code> ScriptableObject carries
-      everything needed for a full context switch — character name, transition text, scene
-      to load, and the new entry node — so the dialogue manager never hard-codes story logic.
+      <strong>Key Insight:</strong> A <code>PerspectiveShift</code> is just data — character,
+      text, scene, entry node. The manager reads it and runs the sequence.
+      Writers can create new perspective shifts without opening a single script.
     </div>
     <button class="system-lab-btn" onclick="openModal('dialogueSystemModal')">
       View Code <span class="case-study-tag">+ Architecture</span>
@@ -5271,18 +5256,18 @@ public class PlayerCam : MonoBehaviour
       <h3>Resource Management</h3>
     </div>
     <p>
-      Data-driven resource manager with a fluent transaction API, integer/float snapping,
-      and C# events for every state change. Resources are defined as inspector entries —
-      no code changes needed to add a new resource type.
+      Add a resource in the Inspector and it's automatically tracked, clamped, event-driven,
+      and shown in the HUD. Multi-resource transactions validate before applying anything —
+      no partial states, no rollback logic.
     </p>
     <div class="system-lab-tags">
       <span>Singleton</span><span>Event System</span>
       <span>Fluent API</span><span>Data-driven</span>
     </div>
     <div class="key-insight">
-      <strong>Key Insight:</strong> The fluent <code>Transaction</code> API validates all
-      changes before applying any of them — a multi-resource spend either succeeds
-      completely or fails completely, preventing partial state corruption.
+      <strong>Key Insight:</strong> <code>TryCommit()</code> checks every resource in the
+      transaction before touching any of them. An action either fully succeeds or does nothing —
+      which makes every system that calls it safe to retry.
     </div>
     <button class="system-lab-btn" onclick="openModal('resourceSystemModal')">
       View Code <span class="case-study-tag">+ Architecture</span>
@@ -5296,18 +5281,18 @@ public class PlayerCam : MonoBehaviour
       <h3>2D Player &amp; Scene Tracking</h3>
     </div>
     <p>
-      Physics-based 2D spider character with surface-aligned movement, spring-joint
-      grappling with silk physics simulation, and climb input. Scene Tracker persists
-      visit state across loads using PlayerPrefs and refreshes map indicators automatically.
+      A spider character that walks on any surface, swings on a spring-joint silk rope,
+      and climbs by adjusting rope length. Scene Tracker keeps a persistent map of
+      where the player has been — survives scene loads, no save system needed.
     </p>
     <div class="system-lab-tags">
       <span>SpringJoint2D</span><span>Surface Rotation</span>
       <span>Grapple Physics</span><span>Persistent State</span>
     </div>
     <div class="key-insight">
-      <strong>Key Insight:</strong> The spring joint's frequency is dynamically scaled by
-      stretch ratio — the silk gets stiffer the more it's stretched, simulating real
-      spider silk tension without any extra physics components.
+      <strong>Key Insight:</strong> The spring gets stiffer as it stretches — frequency
+      scales with stretch ratio, so the silk behaves like real silk without a custom
+      physics solver or extra components.
     </div>
     <button class="system-lab-btn" onclick="openModal('player2dSystemModal')">
       View Code <span class="case-study-tag">+ Architecture</span>
@@ -5321,19 +5306,18 @@ public class PlayerCam : MonoBehaviour
       <h3>Ending Sequences</h3>
     </div>
     <p>
-      Coroutine-driven cinematic ending with an alien typewriter effect that displays
-      garbled characters before translating to readable text. Fully sequenced: gun
-      animation, flashback with auto-advancing dialogue, ship landing, fade to black,
-      and scrolling credits.
+      A six-stage cinematic driven entirely by coroutines: gun load, alien typewriter
+      dialogue, flashback with parallel auto-advancing text, character swap, ship landing,
+      fade to black, end titles, credits. Every duration and line is an Inspector field.
     </p>
     <div class="system-lab-tags">
       <span>Coroutine Sequencing</span><span>Typewriter FX</span>
       <span>Sprite Fading</span><span>Credits Scroller</span>
     </div>
     <div class="key-insight">
-      <strong>Key Insight:</strong> The alien typewriter builds a full garbled string
-      first, then replaces characters one by one with the real text — this means the
-      full line length is always visible, preventing layout shifts during translation.
+      <strong>Key Insight:</strong> The garbled string is built at full length first,
+      then translated in place character by character — the line never reflows or jumps,
+      which makes the alien-to-readable effect feel deliberate rather than glitchy.
     </div>
     <button class="system-lab-btn" onclick="openModal('endingSystemModal')">
       View Code <span class="case-study-tag">+ Architecture</span>
@@ -5395,7 +5379,8 @@ public class PlayerCam : MonoBehaviour
     </div>
 
     <p class="code-context">
-      Three tabs: Data structures (ScriptableObjects), the runtime manager, and the perspective/transition layer.
+      Three layers: the data that defines the story, the manager that plays it,
+      and the perspective system that switches characters and scenes mid-narrative.
     </p>
 
     <div class="tab">
@@ -5407,8 +5392,9 @@ public class PlayerCam : MonoBehaviour
     <!-- TAB 1: DATA STRUCTURES -->
     <div id="dlgDataTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        Four small ScriptableObjects and data classes that define the entire story graph.
-        No manager references — pure data.
+        The full story lives in these assets. Nodes reference other nodes,
+        choices reference shifts, nothing references a scene object.
+        Entirely portable.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> <code>DialogueNode</code> as a ScriptableObject means nodes
@@ -5479,9 +5465,9 @@ public class SceneReference
     <!-- TAB 2: DIALOGUE MANAGER -->
     <div id="dlgManagerTab" class="tabcontent">
       <p class="code-context">
-        The runtime engine. Drives typewriter display, spawns choice buttons dynamically,
-        and resolves each node to either the next node or a perspective shift.
-        <code>PlayAndWait</code> lets other coroutines pause until dialogue finishes.
+        Reads a node, types it out, spawns buttons if there are choices.
+        When a choice is made or the node ends, <code>ResolveNode</code> decides
+        what happens next — the rest of the game can wait on <code>PlayAndWait</code>.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> <code>ResolveNode</code> is the single exit point for
@@ -5665,9 +5651,9 @@ public class DialogueManager : MonoBehaviour
     <!-- TAB 3: PERSPECTIVE & TRANSITIONS -->
     <div id="dlgPerspTab" class="tabcontent">
       <p class="code-context">
-        Five scripts handle the full context-switch pipeline: the ScriptableObject that
-        defines a shift, the manager that executes it, fade/transition UI, and a
-        lightweight GameState singleton that tracks the active character.
+        A shift is just data — character name, transition text, scene, entry node.
+        <code>PerspectiveManager</code> reads that data and runs the coroutine:
+        fade out, show text, load scene, fade in, start dialogue.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> <code>PerspectiveShift</code> is just data — it knows
@@ -5920,7 +5906,8 @@ public class GameState : MonoBehaviour
     </div>
 
     <p class="code-context">
-      Two tabs: the full manager with transaction API, and the event-driven HUD.
+      The manager handles all reads, writes, validation and events.
+      The HUD just listens and updates — it never polls.
     </p>
 
     <div class="tab">
@@ -5931,9 +5918,9 @@ public class GameState : MonoBehaviour
     <!-- TAB 1: MANAGER -->
     <div id="resManagerTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        The full manager including <code>ResourceDefinition</code>, <code>ResourceEventArgs</code>,
-        the fluent <code>ResourceTransaction</code> builder, and the <code>ResourceManager</code>
-        singleton with its full read/write/event API.
+        Everything in one file: the definition struct, the event args, the transaction
+        builder, and the manager itself. Define a resource in the Inspector —
+        the rest is automatic.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> <code>TryCommit()</code> validates every entry in the
@@ -6205,9 +6192,9 @@ public class ResourceManager : MonoBehaviour
     <!-- TAB 2: HUD -->
     <div id="resHudTab" class="tabcontent">
       <p class="code-context">
-        A self-building HUD that creates one text row per resource on start, then updates
-        only the changed row via the <code>OnAnyResourceChanged</code> event. No polling,
-        no Update() loop.
+        Builds itself on start from whatever resources are registered.
+        After that it only wakes up when something changes — one event, one row update,
+        nothing else.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> The HUD subscribes to a single event and looks up the
@@ -6326,7 +6313,8 @@ public class ResourceHUD : MonoBehaviour
     </div>
 
     <p class="code-context">
-      Two tabs: the full 2D player controller and the persistent scene tracker.
+      The movement and the memory. One script controls how the character moves;
+      the other remembers where they've been across scene loads.
     </p>
 
     <div class="tab">
@@ -6337,9 +6325,9 @@ public class ResourceHUD : MonoBehaviour
     <!-- TAB 1: PLAYER CONTROLLER -->
     <div id="p2dControllerTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        Surface-aligned movement via CircleCast normal detection. Grapple uses SpringJoint2D
-        with dynamic frequency based on stretch ratio. Climb input adjusts the target distance
-        each frame so the player can shorten or lengthen the silk.
+        Walks on walls, swings on silk, climbs the rope. Surface alignment comes from
+        a CircleCast normal. The spring stiffens as it stretches — the physics does
+        the silk simulation, no custom solver needed.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Rather than applying a fixed spring force, the joint
@@ -6641,9 +6629,9 @@ public class PlayerController2D : MonoBehaviour
     <!-- TAB 2: SCENE TRACKER -->
     <div id="p2dTrackerTab" class="tabcontent">
       <p class="code-context">
-        Singleton that survives scene loads. Listens to <code>SceneManager.sceneLoaded</code>
-        and re-finds indicator GameObjects by name each time (since they don't persist),
-        then sets their active state based on PlayerPrefs visit flags.
+        Persists across scenes and re-finds map indicators by name each time a scene
+        loads — since the indicators don't persist, the references are refreshed
+        rather than going stale. Visit state lives in PlayerPrefs.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Re-finding indicators by name on each scene load
@@ -6807,7 +6795,8 @@ public class SceneTracker : MonoBehaviour
     </div>
 
     <p class="code-context">
-      Two tabs: the full ending sequence and the credits scroller.
+      The ending and the outro. The sequence is a coroutine chain that hands
+      off between stages. Credits is self-contained and handles its own input.
     </p>
 
     <div class="tab">
@@ -6818,9 +6807,9 @@ public class SceneTracker : MonoBehaviour
     <!-- TAB 1: ENDING SEQUENCE -->
     <div id="endSeqTab" class="tabcontent" style="display:block;">
       <p class="code-context">
-        The main coroutine chain. <code>RunEndingSequence</code> owns the primary flow.
-        <code>RunFlashbackDialogue</code> runs in parallel via <code>StartCoroutine</code> (not
-        yielded) so flashback dialogue overlays the flashback animation independently.
+        One coroutine drives the whole thing in order. The flashback dialogue is fired
+        without <code>yield</code> so it runs alongside the animation — two things
+        happening at once without threading.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> The alien typewriter shows the full garbled line length
@@ -7221,8 +7210,8 @@ public class EndingSequence : MonoBehaviour
     <!-- TAB 2: CREDITS -->
     <div id="creditsTab" class="tabcontent">
       <p class="code-context">
-        Simple self-contained credits scroller. Left click fast-forwards, right click
-        reverses. Loads the next scene automatically when the text scrolls past the end Y threshold.
+        Scrolls text upward. Left click speeds it up, right click runs it back.
+        When the text clears the end threshold, the next scene loads. No state machine needed.
       </p>
       <div class="key-insight">
         <strong>Key Insight:</strong> Speed is recalculated every frame from current input

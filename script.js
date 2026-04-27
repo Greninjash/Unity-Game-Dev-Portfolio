@@ -22,18 +22,23 @@ function closeModal(modalId) {
   document.body.style.overflow = "auto";
 }
 
-// Tabs
+// Tabs — scoped to the modal containing the clicked button
 function openTab(evt, tabName) {
-  let i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(tabName).style.display = "block";
+  // Find the modal that contains this tab button
+  const modal = evt.currentTarget.closest(".modal, .modal-content") 
+             || document.body;
+
+  // Hide all tabcontent within this modal only
+  modal.querySelectorAll(".tabcontent").forEach(t => t.style.display = "none");
+
+  // Remove active from all tablinks within this modal only
+  modal.querySelectorAll(".tablinks").forEach(t => 
+    t.className = t.className.replace(" active", "")
+  );
+
+  // Show the selected tab and mark button active
+  const tab = document.getElementById(tabName);
+  if (tab) tab.style.display = "block";
   evt.currentTarget.className += " active";
 }
 
@@ -42,15 +47,20 @@ function toggleFullscreen(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
 
-  // Find the active tab's code, fall back to first tab
-  const codeEl = modal.querySelector(".tabcontent[style*='display: block'] code")
-              || modal.querySelector(".tabcontent[style*='display:block'] code")
-              || modal.querySelector(".tabcontent code");
+  // Find the active tab by checking the JS style property directly —
+  // avoids "display:block" vs "display: block" attribute spacing issues
+  let codeEl = null;
+  modal.querySelectorAll(".tabcontent").forEach(tab => {
+    if (tab.style.display === "block" && !codeEl)
+      codeEl = tab.querySelector("code");
+  });
+  // Fall back to first tab's code if nothing is visibly open yet
+  if (!codeEl) codeEl = modal.querySelector(".tabcontent code");
 
   const title      = modal.querySelector(".mechanic-title");
   const titleText  = title ? title.textContent.trim() : "Code Viewer";
-  const activeTab  = modal.querySelector(".tablinks.active");
-  const tabLabel   = activeTab ? activeTab.textContent.trim() : "";
+  const activeBtn  = modal.querySelector(".tablinks.active");
+  const tabLabel   = activeBtn ? activeBtn.textContent.trim() : "";
   const viewerTitle = tabLabel ? `${titleText} — ${tabLabel}` : titleText;
   const code       = codeEl ? codeEl.textContent : "No code found in this tab.";
 
@@ -76,7 +86,6 @@ function openCodeViewer(title, code) {
     </div>
   `;
 
-  // Close on backdrop click
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeCodeViewer();
   });
@@ -108,7 +117,6 @@ function copyViewerCode(btn) {
 }
 
 function escapeHtml(str) {
-  // Unescape HTML entities already in the code block, then re-escape for display
   return str
     .replace(/&amp;/g,  "&")
     .replace(/&lt;/g,   "<")
@@ -123,6 +131,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && document.getElementById("codeViewerOverlay"))
     closeCodeViewer();
 });
+
 
 function toggleGif(imgId, gifPath, previewPath) {
   const img = document.getElementById(imgId);
