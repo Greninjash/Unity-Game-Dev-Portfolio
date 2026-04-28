@@ -24,22 +24,29 @@ function closeModal(modalId) {
 
 // Tabs — scoped to the modal containing the clicked button
 function openTab(evt, tabName) {
-  // Find the modal that contains this tab button
   const modal = evt.currentTarget.closest(".modal, .modal-content") 
              || document.body;
 
-  // Hide all tabcontent within this modal only
-  modal.querySelectorAll(".tabcontent").forEach(t => t.style.display = "none");
+  // Hide all tabcontent in THIS modal
+  modal.querySelectorAll(".tabcontent").forEach(t => {
+    t.style.display = "none";
+  });
 
-  // Remove active from all tablinks within this modal only
-  modal.querySelectorAll(".tablinks").forEach(t => 
-    t.className = t.className.replace(" active", "")
-  );
+  // Remove active state from buttons
+  modal.querySelectorAll(".tablinks").forEach(t => {
+    t.className = t.className.replace(" active", "");
+  });
 
-  // Show the selected tab and mark button active
-  const tab = document.getElementById(tabName);
+  // Show the selected tab (scoped!)
+  const tab = modal.querySelector(`#${tabName}`);
   if (tab) tab.style.display = "block";
+
   evt.currentTarget.className += " active";
+
+  //IMPORTANT: re-run Prism so code appears
+  if (window.Prism) {
+    Prism.highlightAllUnder(modal);
+  }
 }
 
 // Fullscreen code viewer
@@ -47,22 +54,27 @@ function toggleFullscreen(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
 
-  // Find the active tab by checking the JS style property directly —
-  // avoids "display:block" vs "display: block" attribute spacing issues
-  let codeEl = null;
+  // Find the active tab by checking JS style property (avoids spacing issues)
+  let activeTab = null;
   modal.querySelectorAll(".tabcontent").forEach(tab => {
-    if (tab.style.display === "block" && !codeEl)
-      codeEl = tab.querySelector("code");
+    if (tab.style.display === "block") activeTab = tab;
   });
-  // Fall back to first tab's code if nothing is visibly open yet
-  if (!codeEl) codeEl = modal.querySelector(".tabcontent code");
+  // Fall back to first tab if nothing is visibly open yet
+  if (!activeTab) activeTab = modal.querySelector(".tabcontent");
+  if (!activeTab) return;
+
+  // Collect ALL <code> blocks in the tab, not just the first one
+  // Multi-script tabs have one <code> per script — join them with a separator
+  const codeBlocks = [...activeTab.querySelectorAll("pre > code")];
+  const code = codeBlocks.length > 0
+    ? codeBlocks.map(c => c.textContent.trim()).join("\n\n\n")
+    : "No code found in this tab.";
 
   const title      = modal.querySelector(".mechanic-title");
   const titleText  = title ? title.textContent.trim() : "Code Viewer";
   const activeBtn  = modal.querySelector(".tablinks.active");
   const tabLabel   = activeBtn ? activeBtn.textContent.trim() : "";
   const viewerTitle = tabLabel ? `${titleText} — ${tabLabel}` : titleText;
-  const code       = codeEl ? codeEl.textContent : "No code found in this tab.";
 
   openCodeViewer(viewerTitle, code);
 }
